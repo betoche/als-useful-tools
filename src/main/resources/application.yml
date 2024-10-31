@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: Random Utils
+  thymeleaf:
+    cache: false
+  datasource:
+    url: jdbc:postgresql://localhost:32768/mydatabase
+    username: graffos
+    password: graffosPassword2024
+  devtools:
+    restart:
+      poll-interval: 2s
+      quiet-period: 1s
+
+server:
+  port : 3333
+
+

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Maven Project Viewer</title>
+    <link th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" rel="stylesheet" />
+
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}" defer></script>
+    <link th:href="@{/css/maven-project.css}" rel="stylesheet" />
+    <script th:src="@{/js/maven-project.js}" defer></script>
+
+</head>
+<body>
+    <form action="/maven-project/project-view" method="get">
+        <div class="container">
+            <div class="row text-center">
+                <h3>Maven Project Viewer</h3>
+            </div>
+            <br><br>
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-8"><p>Please add the paths for the directory that contains all the projects and also specify the initial project.</p></div>
+                <div class="col-3"></div>
+            </div>
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-2 text-end"><label for="project-dir">Project Directory :</label></div>
+                <div class="col-6"><input id="project-dir" name="project-dir" type="text" size="65"></div>
+                <div class="col-2"></div>
+            </div>
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-2 text-end"><label for="initial-project-dir">Initial Project Directory:</label></div>
+                <div class="col-6"><input id="initial-project-dir" name="initial-project-dir" type="text"  size="65"></div>
+                <div class="col-2"></div>
+            </div>
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-2"><input type="submit" value="submit">   <input type="button" value="reset"></div>
+                <div class="col-6"></div>
+            </div>
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-10"><hr></div>
+                <div class="col-2"></div>
+            </div>
+        </div>
+    </form>
+    <div th:if="${project}">
+        <div class="container">
+            <div class="row">
+                <h3 th:text="${project.name}"></h3>
+            </div>
+            <div class="row border-top">
+                <div class="col-1"></div>
+                <div class="col-2 text-end border-left">Project dir:</div>
+                <div class="col-8" th:text="${project.directory}"></div>
+                <div class="col-1"></div>
+            </div>
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-10">
+                    <div class="container">
+                        <div class="row border-top">
+                            <div class="col-1"></div>
+                            <div class="col-2 text-end border-left">Name :</div>
+                            <div class="col-8" th:text="${project.name}"></div>
+                            <div class="col-1"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-1"></div>
+                            <div class="col-2 text-end border-left">Model Version :</div>
+                            <div class="col-8" th:text="${project.modelVersion}"></div>
+                            <div class="col-1"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-1"></div>
+                            <div class="col-2 text-end border-left">GroupId :</div>
+                            <div class="col-8" th:text="${project.groupId}"></div>
+                            <div class="col-1"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-1"></div>
+                            <div class="col-2 text-end border-left">ArtifactId :</div>
+                            <div class="col-8" th:text="${project.artifactId}"></div>
+                            <div class="col-1"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-1"></div>
+                            <div class="col-2 text-end border-left">Version :</div>
+                            <div class="col-8" th:text="${project.version}"></div>
+                            <div class="col-1"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-1"></div>
+                            <div class="col-2 text-end border-left">Packaging :</div>
+                            <div class="col-8" th:text="${project.packaging}"></div>
+                            <div class="col-1"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-1"></div>
+                            <div class="col-10">
+                                <div class="container">
+                                    <div class="row border-top">
+                                        <div class="col-1"></div>
+                                        <div class="col-5 text-end border-left">Modules Count :</div>
+                                        <div class="col-5" th:text="${project.moduleMap.size()}"></div>
+                                        <div class="col-1"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-1"></div>
+                                        <div class="col-5 text-end border-left">Profiles Count :</div>
+                                        <div class="col-5" th:text="${project.profileList.size()}"></div>
+                                        <div class="col-1"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-1"></div>
+                                        <div class="col-5 text-end border-left">Dependencies Count :</div>
+                                        <div class="col-5" th:text="${project.dependencyList.size()}"></div>
+                                        <div class="col-1"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-1"></div>
+                                        <div class="col-5 text-end border-left">Dependencies Management Count :</div>
+                                        <div class="col-5" th:text="${project.dependencyManagementList.size()}"></div>
+                                        <div class="col-1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

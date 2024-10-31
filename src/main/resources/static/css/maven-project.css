@@ -1,0 +1,69 @@
+.maven-border {
+    border: 1px solid gray !important;
+}
+
+.maven-border-top {
+    border-top: 1px solid lightgrey;
+}
+
+.maven-border-bottom {
+    border-bottom: 1px solid lightgrey;
+}
+
+.maven-border-left {
+    border-left: 1px solid grey;
+}
+
+.maven-border-right {
+    border-right: 1px solid lightgrey;
+}
+
+.maven-margin-top {
+    margin-top: 10px;
+}
+
+.maven-margin-bottom {
+    margin-bottom: 10px;
+}
+
+.maven-margin-left {
+    margin-left: 10px;
+}
+
+.maven-margin-right {
+    margin-right: 10px;
+}
+
+.maven-padding-top {
+    padding-top: 10px;
+}
+
+.maven-element-list:hover {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.maven-font-result-details {
+    font-size: 13px;
+}
+
+.maven-font-result-summary {
+    font-weight: bold;
+}
+
+.maven-font-details-title {
+    font-weight: bold;
+}
+
+.maven-font-result-details div div.col-4 {
+    text-align: end;
+    padding-right: 5px;
+}
+.maven-font-result-details div div.col-8 {
+    padding-left: 5px;
+}
+
+.hidden {
+    display: none;
+}
+
