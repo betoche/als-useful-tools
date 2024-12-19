@@ -13,20 +13,22 @@ public class StringPatternSearch {
     private String directory;
     private String[] patterns;
     private String[] fileTypes;
+    private String[] exclusions;
     private List<String> filesPathList;
     private Map<String, List<String>> linesWithPatternMap;
     private RandomLogger logger = new RandomLogger(StringPatternSearch.class);
 
-    public StringPatternSearch( String directory, String[] patterns, String[] fileTypes ) {
+    public StringPatternSearch( String directory, String[] patterns, String[] fileTypes, String[] exclusions ) {
         this.directory = directory;
         this.patterns = patterns;
         this.fileTypes = fileTypes;
+        this.exclusions = exclusions;
     }
 
     public List<String> getFilePathList() {
         if(Objects.isNull(filesPathList) ) {
             MavenProjectFileSystemFinder mavenProjFileSystem = new MavenProjectFileSystemFinder();
-            filesPathList = mavenProjFileSystem.getFilePathList(directory, fileTypes);
+            filesPathList = mavenProjFileSystem.getFilePathList(directory, fileTypes, exclusions);
         }
 
         return filesPathList;
@@ -104,13 +106,15 @@ public class StringPatternSearch {
         String types = Objects.nonNull(fileTypes)?String.join(", ", fileTypes):"*";
 
         logger.info("=========================================================");
-        logger.info(String.format("Searching for %s into [ %s ] file types...", pattern, types));
+        logger.info(String.format("Searching for \"%s\" into [ %s ] file types...", pattern, types));
         logger.info("=========================================================");
         getLinesWithPatternMap();
         logger.info("  - Results:");
         logger.info("  ========");
 
         List<String> openWithCode = new ArrayList<>();
+        List<String> results = new ArrayList<>();
+        results.add("\n");
         for( Map.Entry<String, List<String>> entry : getLinesWithPatternMap().entrySet() ) {
             String filePath = entry.getKey();
             List<String> lines = entry.getValue();
@@ -119,10 +123,11 @@ public class StringPatternSearch {
                 String line = l.substring(0, l.lastIndexOf(":"));
                 String lineNumber = l.replace(String.format("%s:", line), "");
 
-                logger.info(String.format("    - %s:%s -> %s", filePath, lineNumber, line.trim()));
+                results.add(String.format("- %s:%s -> %s%s", filePath, lineNumber, line.trim(), "\n"));
                 openWithCode.add(String.format("%scode --goto \"%s:%s\"", "\n", filePath, lineNumber));
             }
         }
+        logger.info( String.join("",results));
         logger.info("  - Summary:");
         logger.info("  ==========");
         logger.info(String.format("Directory       : %s", directory));
@@ -137,25 +142,57 @@ public class StringPatternSearch {
         logger.info("=========================================================");
     }
 
+    public void sumOddNumbers(){
+        List<Integer> numeros = Arrays.asList(1, 2, 3, 4, 5, 6);
+        int result = numeros.stream().map(n -> { return (n%2==0)?n:0; }).reduce(0, Integer::sum);
+
+        logger.info(String.format("result: %s", result));
+
+    }
+
+    public void createLadder( int size ){
+        if( size <= 0 )
+            return;
+
+        StringBuilder builder = new StringBuilder();
+
+        for( int i = 0 ; i < size ; i++ ) {
+            String characters = "#".repeat(i+1);
+            builder.append(String.format("%"+size+"s%s", characters, "\n"));
+        }
+
+        logger.info(String.format("Ladder: %s%s", "\n", builder.toString()));
+
+    }
+
     public static void main( String[] args ) {
+
         //String directory = "C:\\Users\\betoc\\repositories\\TCE7.1.0\\teamconnectenterprise";
-        String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\teamconnectenterprise";
+        //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\teamconnectenterprise";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE7.0.0\\teamconnectenterprise";
+        String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.6\\teamconnectenterprise";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\eclipse";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\maven-3.6.3";
+        //String directory = "C:\\Users\\betoc\\repositories\\datawarehouse";
         //String[] patterns = new String[]{ "submitFormWithEntityCode" };
         //String[] patterns = new String[]{ "Parent Object" };
         //String[] patterns = new String[]{ "m2/repository" };
         //String[] patterns = new String[]{ "java.home" };
         //String[] patterns = new String[]{ ">org.openjfk<" };
-        String[] patterns = new String[]{ "design-pomgen-maven-plugin" };
+        //String[] patterns = new String[]{ "design-pomgen-maven-plugin" };
+        //String[] patterns = new String[]{ "varchar2" };
+        //String[] patterns = new String[]{".submitForm(", " submitForm(" };
+        String[] patterns = new String[]{"BQDetailFieldValues" };
 
-
-        //String[] fileExtensions = new String[]{ ".java", ".jsp" };
-        //String[] fileExtensions = new String[]{ ".xml", ".ini", ".prefs" };
         String[] fileExtensions = new String[]{ ".xml" };
+        //String[] fileExtensions = new String[]{ ".xml", ".ini", ".prefs" };
+        //String[] fileExtensions = new String[]{ ".xml" };
+        //String[] fileExtensions = new String[]{};
 
-        StringPatternSearch sps = new StringPatternSearch(directory, patterns, fileExtensions);
+        StringPatternSearch sps = new StringPatternSearch(directory, patterns, fileExtensions, new String[]{".class", ".png", ".css", ".jar", ".jsp", ".log"});
+        //sps.sumOddNumbers();
+        //sps.createLadder(6);
         sps.showResults();
+
     }
 }

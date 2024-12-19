@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8">
+  <title>Import Excel file data into DB</title>
+  <link th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+
+  <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}" defer></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+  <style>
+    body {
+      padding: 15px;
+    }
+    .list-group.list-group-tree {
+      padding: 0;
+    }
+    .list-group.list-group-tree .list-group {
+      margin-bottom: 0;
+    }
+    .list-group.list-group-tree > .list-group > .list-group-item {
+      padding-left: 30px;
+    }
+    .list-group.list-group-tree > .list-group > .list-group > .list-group-item {
+      padding-left: 45px;
+    }
+    .list-group.list-group-tree > .list-group > .list-group > .list-group-item > .list-group-item {
+      padding-left: 60px;
+    }
+    .list-group.list-group-tree > .list-group > .list-group > .list-group-item > .list-group-item > .list-group-item {
+      padding-left: 75px;
+    }
+    .list-group.list-group-tree > .list-group > .list-group > .list-group-item > .list-group-item > .list-group-item > .list-group-item {
+      padding-left: 90px;
+    }
+    .list-group-item .fa {
+      margin-right: 5px;
+    }
+    .fa-chevron:before {
+          content: "\f054"; /*right*/
+    }
+    .in > .fa-chevron:before {
+          content: "\f078"; /*down*/
+    }
+  </style>
+  <script>
+    $(function() {
+        // delegated handler
+        $(".list-group-tree").on('click', "[data-toggle=collapse]", function(){
+          $(this).toggleClass('in')
+            $(this).next(".list-group.collapse").collapse('toggle');
+
+          // next up, when you click, dynamically load contents with ajax - THEN toggle
+          return false;
+        })
+
+        let disabledImportButton = false;
+    });
+
+    function importData() {
+      console.log('Importing data...');
+      let form = document.getElementById('import-form');
+      form.action='/lookup-table/import-data';
+      form.submit();
+    }
+  </script>
+</head>
+<body>
+  <div class="container text-sm">
+    <div class="row text-center">
+      <div class="col-12" style="border-bottom: 1px solid grey; margin-bottom:35px;">
+        <a href="/lookup-table/import"><h3>XLSX data importer</h3></a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-4">
+      <br>
+        <form id="import-form" th:action="@{/lookup-table/analyze}" method="post" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label for="file-name" class="form-label">Choose a xlsx file</label>
+            <input id="file-name" type="file" th:name="file-name" class="form-control">
+          </div>
+          <h6>Select a table name</h6>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="table-name" id="Y_DETAIL_LOOKUP_ITEM" value="Y_DETAIL_LOOKUP_ITEM" checked>
+            <label class="form-check-label" for="Y_DETAIL_LOOKUP_ITEM">
+              Y_DETAIL_LOOKUP_ITEM
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="table-name" id="Y_DESIGN_CHANGE" value="Y_DESIGN_CHANGE">
+            <label class="form-check-label" for="Y_DESIGN_CHANGE">
+              Y_DESIGN_CHANGE
+            </label>
+          </div>
+          <input th:type="submit" value="Upload and analyze" />
+          <input th:type="button" value="Import Data" onclick="javascript:importData();" th:disabled="${!hasDataToImport}" />
+        </form>
+      </div>
+      <div class="col-8">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <h4>Data contained in file</h4>
+            </div>
+          </div>
+          <div class="row">
+            <th:block th:if="${detailLookupItemList != null}">
+              <div class="col-12" th:insert="fragments/list-views.html :: lookupItemTreeView(${detailLookupItemList})"></div>
+            </th:block>
+            <th:block th:if="${designChangeList != null}">
+              <div class="col-12" th:insert="fragments/list-views.html :: designChanges(${designChangeList})"></div>
+            </th:block>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

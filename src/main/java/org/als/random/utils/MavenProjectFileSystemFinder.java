@@ -15,27 +15,27 @@ public class MavenProjectFileSystemFinder {
         projectPath = "";
     }
 
-    public List<String> getFilePathList( String dir, String[] fileExtensions ) {
+    public List<String> getFilePathList( String dir, String[] fileExtensions, String[] exclusions ) {
         List<String> filePathList = new ArrayList<>();
         File directory = new File(dir);
 
         if( directory.exists() && Objects.nonNull(directory.listFiles()) ) {
-            filePathList.addAll(getFilePathList(directory, fileExtensions));
+            filePathList.addAll(getFilePathList(directory, fileExtensions, exclusions));
         }
 
         return filePathList;
     }
 
-    private List<String> getFilePathList( File dir, String[] fileExtensions ) {
+    private List<String> getFilePathList( File dir, String[] fileExtensions, String[] exclusions ) {
         List<String> filePathList = new ArrayList<>();
         if( dir.exists() && Objects.nonNull( dir.listFiles() ) ) {
             for( File file : dir.listFiles() ) {
                 if( file.exists() && file.isFile() ){
-                    if( isFileExtensionIn(file.getName(), fileExtensions) ) {
+                    if( isFileExtensionIn(file.getName(), fileExtensions, exclusions) ) {
                         filePathList.add( file.getAbsolutePath() );
                     }
                 } else if( file.exists() && file.isDirectory() && !file.getAbsolutePath().contains("target") && !file.getAbsolutePath().contains("selenium") ) {
-                    filePathList.addAll( getFilePathList(file, fileExtensions) );
+                    filePathList.addAll( getFilePathList(file, fileExtensions, exclusions) );
                 }
             }
         }
@@ -43,19 +43,37 @@ public class MavenProjectFileSystemFinder {
         return filePathList;
     }
 
-    private boolean isFileExtensionIn( String fileName, String[] fileExtensions ) {
-        if( Objects.isNull(fileExtensions) || fileExtensions.length == 0 )
-            return true;
+    private boolean isFileExtensionIn( String fileName, String[] fileExtensions, String[] exclusions ) {
+        String fileNameLower = fileName.toLowerCase();
 
-        for( String extension : fileExtensions ){
-            String fileNameLower = fileName.toLowerCase();
+        if( Objects.isNull(fileExtensions) || fileExtensions.length == 0 ) {
+            return !isFileExtensionNotIn(fileNameLower, exclusions);
+        }
+
+
+        for( String extension : fileExtensions ) {
+
             String testFiles = String.format("test%s", extension ).toLowerCase();
-            if( fileNameLower.endsWith(extension.toLowerCase()) && !fileNameLower.endsWith(testFiles) ) {
+            if( isFileExtensionNotIn(fileNameLower, exclusions) && fileNameLower.endsWith(extension.toLowerCase()) && !fileNameLower.endsWith(testFiles) ) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    private boolean isFileExtensionNotIn( String fileName, String[] exclusions ) {
+        if (Objects.isNull(exclusions))
+            return true;
+
+        for( String extension : exclusions ) {
+            String fileNameLower = fileName.toLowerCase();
+            if( fileNameLower.endsWith(extension.toLowerCase()) ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public Map<String, File> getPomFileMap() {

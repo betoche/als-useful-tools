@@ -1,0 +1,1 @@
+select salario from empleados order by salario desc limit 1 offset 1;

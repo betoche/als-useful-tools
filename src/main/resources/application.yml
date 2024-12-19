@@ -1,12 +1,21 @@
 spring:
+  debug: true
   application:
     name: Random Utils
   thymeleaf:
     cache: false
   datasource:
-    url: jdbc:postgresql://localhost:32768/mydatabase
-    username: graffos
-    password: graffosPassword2024
+    random:
+      url: jdbc:postgresql://localhost:32768/mydatabase
+      username: graffos
+      password: graffosPassword2024
+    teamconnect636:
+      url: jdbc:sqlserver://localhost:1433;databaseName=teamconnect_636;Encrypt=true;TrustServerCertificate=true
+      username: teamconnect
+      password: password
+      driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      show-sql: true
+      dialect: org.hibernate.dialect.SQLServer2012Dialect
   devtools:
     restart:
       poll-interval: 2s

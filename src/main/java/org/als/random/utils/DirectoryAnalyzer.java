@@ -54,7 +54,7 @@ public class DirectoryAnalyzer {
     }
 
     public static void main( String[] args ) {
-        String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\eclipse";
+        String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\teamconnectenterprise";
         DirectoryAnalyzer da = new DirectoryAnalyzer(directory);
         da.printDirectoryFileTypesCount();
     }
