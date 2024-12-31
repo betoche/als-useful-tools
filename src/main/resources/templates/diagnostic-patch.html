@@ -13,8 +13,8 @@
     <body>
         <div class="container">
             <div class="row">
-                <div class="col-12">
-                    <a href="/diagnostic-patch"><h2>Diagnostic Patch Tool</h2></a>
+                <div class="col-12 text-end">
+                    <a href="/diagnostic-patch"><h2>Diagnostic Patch Creator Tool</h2></a>
                 </div>
             </div>
             <br/>
@@ -54,31 +54,31 @@
                         <div class="row">
                             <div class="col-12">
                                 <form action="/diagnostic-patch/process" method="post" id="diagnostic-patch-form" >
-                                    <p>Add the details of the diagnostic patch.</p>
+                                    <h5>Add the details of the diagnostic patch.</h5>
                                     <hr>
                                     <div class="form-group row">
-                                        <label for="ticket-number" class="col-sm-3 col-form-label">Ticket #:</label>
+                                        <label for="ticket-number" class="col-sm-2 col-form-label">Ticket #:</label>
                                         <div class="col-sm-3">
                                             <input id="ticket-number" class="form-control" name="ticket-number" type="text" th:value="${ticketNumber}">
                                         </div>
                                         <label for="branch-name" class="col-sm-1 col-form-label ">Branch:</label>
-                                        <div class="col-sm-5">
+                                        <div class="col-sm-6">
                                             <input id="branch-name" class="form-control" name="branch-name" type="text" th:value="${branchName}">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="project-dir" class="col-sm-3 col-form-label">Project Directory:</label>
+                                        <label for="project-dir" class="col-sm-2 col-form-label">Project Directory:</label>
                                         <div class="col-sm-6">
                                             <input id="project-dir" class="form-control input-sm" name="project-dir" type="text" th:value="${projectDir}">
                                         </div>
                                         <label for="tce-version" class="col-sm-2 col-form-label">TCE version:</label>
-                                        <div class="col-sm-1">
+                                        <div class="col-sm-2">
                                             <input id="tce-version" class="form-control" name="tce-number" type="text" th:value="${tceNumber}">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="jar-files-directory" class="col-sm-3 col-form-label">Jar Files Dir:</label>
-                                        <div class="col-sm-9">
+                                        <label for="jar-files-directory" class="col-sm-2 col-form-label">Jar Files Dir:</label>
+                                        <div class="col-sm-10">
                                             <input id="jar-files-directory" class="form-control input-sm" name="jar-files-directory" type="text" th:value="${jarFilesDir}">
                                         </div>
                                     </div>
@@ -94,7 +94,7 @@
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-3">
-                                            <label class="col-sm-2 col-form-label">Classes:</label>
+                                            <label class="col-sm-2 col-form-label font-weight-bold">Classes:</label>
                                         </div>
                                         <div class="col-10">
                                             <ul id="class-name-list" name="class-name-list" class="list-group list-group-flush">
@@ -109,7 +109,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group row text-end">
-                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
                                     </div>
                                 </form>
                             </div>

@@ -27,7 +27,8 @@ function loadClassNameList() {
     let classNameListElement = $('#add-file');
     let classNameList = classNameListElement.val().slice(1).slice(0,-1).split(',');
      for( let i = 0; i < classNameList.length; i++ ) {
-        createClassElement(classNameList[i]);
+        if( classNameList[i] )
+            createClassElement(classNameList[i]);
      }
      classNameListElement.val('');
 }

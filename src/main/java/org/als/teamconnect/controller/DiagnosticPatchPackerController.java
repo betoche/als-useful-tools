@@ -29,12 +29,14 @@ public class DiagnosticPatchPackerController {
     @GetMapping({"", "/", "/process"})
     public ModelAndView getDiagnosticPatchHome(){
         ModelAndView mv = new ModelAndView("diagnostic-patch");
+        /*
         mv.addObject("ticketNumber", "SOH-4877");
         mv.addObject("tceNumber", "6.3.6");
         mv.addObject("projectDir", "C:\\Users\\betoc\\repositories\\TCE6.3.6\\teamconnectenterprise");
         mv.addObject("jarFilesDir", "C:\\Users\\betoc\\repositories\\TCE6.3.6\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps\\teamconnect-webui\\WEB-INF\\lib");
         mv.addObject("branchName", "bugfix/SOH-4877-diagnostic-patch");
         mv.addObject("addFile", Arrays.asList("BQDetailFieldDynamicValue,CaptureDesignChanges,DLTable".split(",")));
+        */
 
         return mv;
     }
@@ -158,7 +160,7 @@ public class DiagnosticPatchPackerController {
         instructions.add("");
         instructions.add("- First Backup the following class files:");
         for( DiagnosticPatchInfo.FoundClass filePath : classFileList ){
-            instructions.add(String.format("    - %s", filePath.getClassPath()));
+            instructions.add(String.format("    - %s\\%s", filePath.getJarFileSimpleName(), filePath.getPackagePath()));
         }
         instructions.add("- Second copy the classes contained in the zip file in their respectives directories:");
         for( DiagnosticPatchInfo.FoundClass filePath : classFileList ){
