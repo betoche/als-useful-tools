@@ -43,6 +43,35 @@ public class MavenProjectFileSystemFinder {
         return filePathList;
     }
 
+    public List<String> getFilePathListInTarget( String dir) {
+        List<String> filePathList = new ArrayList<>();
+        File directory = new File(dir);
+
+        if( directory.exists() && Objects.nonNull(directory.listFiles()) ) {
+            filePathList.addAll(getFilePathListInTarget(directory));
+        }
+
+        return filePathList;
+    }
+
+    private List<String> getFilePathListInTarget( File dir ) {
+        List<String> filePathList = new ArrayList<>();
+        if( dir.exists() && Objects.nonNull( dir.listFiles() ) ) {
+            for( File file : dir.listFiles() ) {
+                if( file.exists() && file.isFile() ){
+                    if( isFileExtensionIn(file.getName(), new String[]{".class"}, null) ) {
+                        if(file.getAbsolutePath().contains("target"))
+                            filePathList.add( file.getAbsolutePath() );
+                    }
+                } else if( file.exists() && file.isDirectory() && !file.getAbsolutePath().contains("selenium") ) {
+                    filePathList.addAll( getFilePathListInTarget(file) );
+                }
+            }
+        }
+
+        return filePathList;
+    }
+
     private boolean isFileExtensionIn( String fileName, String[] fileExtensions, String[] exclusions ) {
         String fileNameLower = fileName.toLowerCase();
 

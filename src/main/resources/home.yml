@@ -1,0 +1,19 @@
+random-options-configuration:
+    name: "Random Tools"
+    string-list: >
+        String1,
+        String2
+    generic-options:
+      - title: "Global Search in Directory"
+        description: "Search by multiple values inside a specific directory, this search allows you to define specific file types."
+        path: "/global-search"
+      - title: "Database Search"
+        description: "Search by multiple values in all the available tables inside a specific database."
+        path: "/database-search"
+    specific-options:
+      - title: "Global Search in Directory"
+        description: "Search by multiple values inside a specific directory, this search allows you to define specific file types."
+        path: "/global-search"
+      - title: "Database Search"
+        description: "Search by multiple values in all the available tables inside a specific database."
+        path: "/database-search"

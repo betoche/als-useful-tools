@@ -296,7 +296,7 @@ public class StringPatternSearchInDB {
             if( Objects.isNull(this.queryStringList) ){
                 this.queryStringList = new ArrayList<>();
                 for( DBTable table : getTableList() ) {
-                    this.queryStringList.add(String.format("SELECT %s FROM %s WHERE %s",
+                    this.queryStringList.add(String.format("SELECT PRIMARY_KEY, %s FROM %s WHERE %s;",
                             table.getColumnsString(), table.getName(), table.getWhereBlockStr(pattern) ));
                 }
             }
@@ -320,8 +320,8 @@ public class StringPatternSearchInDB {
         String username = "teamconnect";
         String host = "localhost";
         int port = 1433;
-        String databaseName = "teamconnect_636";
-        String[] searchPattern = new String[]{ "Alberto", "Chicago" };
+        String databaseName = "teamconnect_710_custom";
+        String[] searchPattern = new String[]{ "YYYY" };
 
         StringPatternSearchInDB spsidb = new StringPatternSearchInDB( username, password, host, port, databaseName, searchPattern );
         spsidb.printTablesWithPattern();
