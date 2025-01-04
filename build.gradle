@@ -38,6 +38,9 @@ dependencies {
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+	implementation 'org.json:json:20240303'
+	implementation 'javax.xml.bind:jaxb-api:2.1'
+
 
 	//implementation 'org.eclipse.persistence:eclipselink:2.7.1'
 	implementation 'org.apache.poi:poi:5.3.0'
