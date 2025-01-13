@@ -2,7 +2,6 @@ package org.als.teamconnect.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 

@@ -1,19 +1,46 @@
-random-options-configuration:
-    name: "Random Tools"
-    string-list: >
-        String1,
-        String2
-    generic-options:
-      - title: "Global Search in Directory"
-        description: "Search by multiple values inside a specific directory, this search allows you to define specific file types."
-        path: "/global-search"
-      - title: "Database Search"
-        description: "Search by multiple values in all the available tables inside a specific database."
-        path: "/database-search"
-    specific-options:
-      - title: "Global Search in Directory"
-        description: "Search by multiple values inside a specific directory, this search allows you to define specific file types."
-        path: "/global-search"
-      - title: "Database Search"
-        description: "Search by multiple values in all the available tables inside a specific database."
-        path: "/database-search"
+name: "Random Tools"
+genericOptions:
+  -
+    key: diagnostic-patch
+    title: Diagnostic Patch Tool
+    description: With this tool you can easily create zip Diagnostic Patches which include the class files and the Instruction text file.
+    path: /diagnostic-patch
+  -
+    key: file-search
+    title: Maven Analyzer
+    description: Perform analysis over an existing Maven project.
+    path: /maven-project
+  -
+    key: db-utils
+    title: Database Utils
+    description: This tool allows you to create DB Snapshots and also is able to find the difference between snapshots
+    path: /db-utils
+    subOptions:
+      - key: db-snapshot-manager
+        title: Snapshots
+        description: Manage database snapshots
+        path: /snapshots
+      - key: db-snapshot-comparator
+        title: Snapshots Comparator
+        description: Compare two snapshots each other to find their differences for table structure and data.
+        path: /snapshots/snapshot-comparator
+      - key: db-global-search
+        title: Database Search
+        description: Search by multiple values in all the available tables inside a specific database.
+        path: /db-utils/database-search
+specificOptions:
+  -
+    key: lookup-table
+    title: Lookup Table Import Tool
+    description: Import Lookup Table data from Excel files
+    path: /lookup-table/import
+  -
+    key: global-search-2
+    title: "Global Search in Directory"
+    description: "Search by multiple values inside a specific directory, this search allows you to define specific file types."
+    path: "/global-search"
+  -
+    key: global-search-1
+    title: "Database Search"
+    description: "Search by multiple values in all the available tables inside a specific database."
+    path: "/database-search"

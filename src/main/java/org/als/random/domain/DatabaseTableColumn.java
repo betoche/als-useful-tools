@@ -21,7 +21,7 @@ public class DatabaseTableColumn {
     private DatabaseTable table;
 
     public static final String NAME_JSON_KEY = "name";
-    public static final String COLUMN_TYPE_JSON_KEY = "column-type";
+    public static final String COLUMN_TYPE_JSON_KEY = "columnType";
     public static final String COLUMN_JSON_KEY = "column";
 
     public boolean equals(DatabaseTableColumn o) {

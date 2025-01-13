@@ -26,8 +26,8 @@ public class DatabaseTable {
     private Database database;
 
     public static final String NAME_JSON_KEY = "name";
-    public static final String NUMBER_OF_RECORDS_JSON_KEY = "number-of-records";
-    public static final String LAST_PRIMARY_KEY_JSON_KEY = "last-primary-key";
+    public static final String NUMBER_OF_RECORDS_JSON_KEY = "numberOfRecords";
+    public static final String LAST_PRIMARY_KEY_JSON_KEY = "lastPrimaryKey";
     public static final String DATA_JSON_KEY = "data";
     public static final String COLUMNS_JSON_KEY = "columns";
     public static final String TABLE_JSON_KEY = "table";
@@ -161,5 +161,21 @@ public class DatabaseTable {
         }
 
         return null;
+    }
+
+    public static class TableSortByRecordsCount implements Comparator<DatabaseTable> {
+        public int compare(DatabaseTable a, DatabaseTable b) {
+            return b.getNumberOfRecords() - a.getNumberOfRecords();
+        }
+    }
+    public static class TableSortByTableName implements Comparator<DatabaseTable> {
+        public int compare(DatabaseTable a, DatabaseTable b) {
+            return a.getName().compareTo(b.getName());
+        }
+    }
+    public static class TableSortByColumnCount implements Comparator<DatabaseTable> {
+        public int compare(DatabaseTable a, DatabaseTable b) {
+            return b.getColumnList().size() - a.getColumnList().size();
+        }
     }
 }

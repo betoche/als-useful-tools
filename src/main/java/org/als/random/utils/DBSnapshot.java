@@ -3,6 +3,9 @@ package org.als.random.utils;
 import org.als.random.domain.Database;
 import org.als.random.domain.DatabaseTable;
 import org.als.random.enums.DatabaseTypeEnum;
+import org.als.random.enums.RandomConstants;
+import org.als.random.helper.DateHelper;
+import org.als.random.service.DBSnapshotService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.json.JSONException;
@@ -31,7 +34,6 @@ public class DBSnapshot {
     private Connection dbConn;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DBSnapshot.class);
-    public static final String SNAPSHOTS_DIR_STR = "db_snapshots";
 
     public DBSnapshot( DatabaseTypeEnum databaseTypeEnum, String databaseName, String databaseUserName,
                        String databasePassword, boolean retrieveData ) {
@@ -50,9 +52,12 @@ public class DBSnapshot {
         return dbConn;
     }
 
-    private Database getDatabase() {
+    public Database getDatabase() {
         if(Objects.isNull(this.database)) {
             this.database = Database.builder().name(databaseName).build();
+            this.database.setUsername(this.databaseUserName);
+            this.database.setPassword(this.databasePassword);
+            this.database.setName(this.databaseName);
             try {
                 List<DatabaseTable> tableList = DBConnectionManager.getDatabaseTables(databaseType, getDbConnection(), this.databaseName);
                 DBConnectionManager.retrieveColumnListDetails(databaseType, getDbConnection(), tableList, retrieveData);
@@ -66,12 +71,11 @@ public class DBSnapshot {
     }
 
     public void createDatabaseSnapshot() throws JSONException, IOException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
-        File snapshotsDir = new File(SNAPSHOTS_DIR_STR);
+        File snapshotsDir = new File(RandomConstants.SNAPSHOT_STORAGE_DIRECTORY);
         if( !snapshotsDir.exists() )
             Files.createDirectory(Path.of(snapshotsDir.getAbsolutePath()));
 
-        String snapshotName = String.format("db_snapshots/%s-snapshot-%s.snap", databaseName, sdf.format(Calendar.getInstance().getTime()) );
+        String snapshotName = String.format("db_snapshots/%s", DBSnapshotService.generateSnapshotFileName(database));
         JSONObject json = getDatabase().toJson();
 
         try (FileWriter fileWriter = new FileWriter(snapshotName)) {

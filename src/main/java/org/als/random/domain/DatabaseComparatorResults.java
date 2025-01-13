@@ -136,30 +136,30 @@ public class DatabaseComparatorResults {
     public static void main( String[] args ) {
         List<String> snapshotListToCompare = new ArrayList<>();
         /*
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-00-05.snap"); // Initial
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-00-10.snap"); // new Contact
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-10-58.snap"); // new User
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-03.snap"); // New Group
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-07.snap"); // Add User to Group
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-20.snap"); // Add User, Admin and Setup Rights
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-22.snap"); // Add Tools Rights
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-24.snap"); // Add Category and Custom Field Rights
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-34.snap"); // Logging with newly created user "Alberto"
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-36.snap"); // Change system logging settings
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-42.snap"); // New Object Definition
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-52.snap"); // New Rule Created
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-58.snap"); // Activate Rule (update)
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-12-04.snap"); // New Custom Field created
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-12-14.snap"); // Add Qualifier And Action (Add Items Button)
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-12-18.snap"); // Add Qualifier And Action (Save)
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-12-20.snap"); // Create List Route
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-12-31.snap"); // Add Stops and Email Notifications to List Route
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-12-35.snap"); // Adding Action to Alberto Test Rule
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-14-24.snap"); // Adding Action to Alberto Test Rule with data
-        //snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-19-57.snap"); // Adding new object definition
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-00-05.snap"); // Initial
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-00-10.snap"); // new Contact
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-10-58.snap"); // new User
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-03.snap"); // New Group
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-07.snap"); // Add User to Group
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-20.snap"); // Add User, Admin and Setup Rights
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-22.snap"); // Add Tools Rights
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-24.snap"); // Add Category and Custom Field Rights
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-34.snap"); // Logging with newly created user "Alberto"
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-36.snap"); // Change system logging settings
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-42.snap"); // New Object Definition
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-52.snap"); // New Rule Created
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-11-58.snap"); // Activate Rule (update)
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-12-04.snap"); // New Custom Field created
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-12-14.snap"); // Add Qualifier And Action (Add Items Button)
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-12-18.snap"); // Add Qualifier And Action (Save)
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-12-20.snap"); // Create List Route
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-12-31.snap"); // Add Stops and Email Notifications to List Route
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-12-35.snap"); // Adding Action to Alberto Test Rule
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-14-24.snap"); // Adding Action to Alberto Test Rule with data
+        snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-19-57.snap"); // Adding new object definition
         snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-21-01.snap"); // Testing data
-        */
         snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-21-04.snap"); // Testing data
+        */
         snapshotListToCompare.add("teamconnect_637-snapshot-2025-01-03-21-10.snap"); // Testing data
         try {
             DatabaseComparatorResults dbComparator = new DatabaseComparatorResults(snapshotListToCompare);

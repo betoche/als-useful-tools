@@ -3,10 +3,14 @@ package org.als.random.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.als.random.enums.RandomConstants;
+import org.als.random.helper.FileDirHelper;
 import org.als.random.utils.DBSnapshot;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,17 +23,34 @@ import java.util.Objects;
 @Builder
 public class Database {
     private String name;
+    private String username;
+    private String password;
+    private String dbHost;
+    private int dbPort;
+    private int totalRecordsCount;
     private List<DatabaseTable> tableList;
     private String snapshotFileName;
 
+    public static final String USERNAME_JSON_KEY = "username";
+    public static final String PASSWORD_JSON_KEY = "password";
+    public static final String HOST_JSON_KEY = "host";
+    public static final String PORT_JSON_KEY = "port";
     public static final String NAME_JSON_KEY = "name";
     public static final String TABLES_JSON_KEY = "tables";
-    public static final String DATABASE_JSON_KEY = "database";
+    public static final String RECORDS_COUNT_JSON_KEY = "recordsCount";
 
-    public static Database parseFromJson(JSONObject json) {
+    private final static Logger LOGGER = LoggerFactory.getLogger(Database.class);
+
+    public static Database parseFromJson(JSONObject databaseJson) {
         DatabaseBuilder dbBuilder = Database.builder();
-        JSONObject databaseJson = json.getJSONObject(DATABASE_JSON_KEY);
-        dbBuilder.name(databaseJson.get(NAME_JSON_KEY).toString());
+
+        try { dbBuilder.name(databaseJson.getString(NAME_JSON_KEY)); } catch( JSONException ex ) {}
+        try { dbBuilder.password(databaseJson.getString(PASSWORD_JSON_KEY)); } catch( JSONException ex ) {}
+        try { dbBuilder.username(databaseJson.getString(USERNAME_JSON_KEY)); } catch( JSONException ex ) {}
+        try { dbBuilder.dbHost(databaseJson.getString(HOST_JSON_KEY)); } catch( JSONException ex ) {}
+        try { dbBuilder.dbPort(databaseJson.getInt(PORT_JSON_KEY)); } catch( JSONException ex ) {}
+        try { dbBuilder.totalRecordsCount(databaseJson.getInt(RECORDS_COUNT_JSON_KEY)); } catch( JSONException ex ) {}
+
         Database db = dbBuilder.build();
         List<DatabaseTable> tableList = new ArrayList<>();
 
@@ -46,7 +67,8 @@ public class Database {
     }
 
     public static Database parseFromJsonFile(String snapshotFileName) throws IOException {
-        String jsonStr = new String(Files.readAllBytes(Paths.get(String.format("%s/%s", DBSnapshot.SNAPSHOTS_DIR_STR, snapshotFileName))));
+        String jsonStr = new String(Files.readAllBytes(Paths.get(String.format("%s/%s",
+                RandomConstants.SNAPSHOT_STORAGE_DIRECTORY, snapshotFileName))));
         JSONObject jsonDB = new JSONObject(jsonStr);
         Database db = parseFromJson(jsonDB);
         db.setSnapshotFileName(snapshotFileName);
@@ -90,8 +112,17 @@ public class Database {
         return isEqual;
     }
 
+    private int getRecordsCount(){
+        int total = 0;
+
+        for( DatabaseTable table : getTableList() ){
+            total+=table.getNumberOfRecords();
+        }
+
+        return total;
+    }
+
     public JSONObject toJson() throws JSONException {
-        JSONObject root = new JSONObject();
         JSONObject json = new JSONObject();
         JSONArray tableArray = new JSONArray();
         if( Objects.nonNull(getTableList()) ) {
@@ -100,11 +131,14 @@ public class Database {
             }
         }
 
+        json.put(USERNAME_JSON_KEY, getUsername());
+        json.put(PASSWORD_JSON_KEY, getPassword());
+        json.put(HOST_JSON_KEY, getDbHost());
+        json.put(PORT_JSON_KEY, getDbPort());
         json.put(NAME_JSON_KEY, getName());
         json.put(TABLES_JSON_KEY, tableArray);
+        json.put(RECORDS_COUNT_JSON_KEY, getRecordsCount());
 
-        root.put(DATABASE_JSON_KEY, json);
-
-        return root;
+        return json;
     }
 }

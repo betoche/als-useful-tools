@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <!--
+    <link th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css">
+    <link th:href="@{/css/database.css}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.0/css/dataTables.dataTables.css" />
+    -->
+    <link th:href="@{/css/tree-list-view.css}" rel="stylesheet" />
+
+    <!--
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/2.2.0/js/dataTables.js"></script>
+    <script th:src="@{/js/database.js}" defer></script> -->
+    <script type="text/html">
+      $(document).ready(function() {
+      debugger;
+        addSnapshotGroupListener();
+        addDbSnapshotListener()
+      });
+</script>
+    <meta charset="UTF-8">
+    <title>Database Snapshots</title>
+  </head>
+  <body>
+    <div class="container" style="max-width: 100%;">
+      <div class="row">
+        <div class="col-12 text-center"><h3>Database Snapshots</h3></div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-3">
+          <h5>Databases</h5>
+          <div class="container">
+            <div class="row">
+              <div class="col-12 list-group list-group-tree well snapshot-groups">
+                <div th:each="snapshotGroup, iStat : ${snapshotGroupList}" class="list-group-item" data-toggle="collapse">
+                  <div onclick="javascript:showHideDBSnapshots($(this));" style="cursor:pointer;">
+                    <i th:if="${snapshotGroup.getSnapshotListSize()>0}" class="fa fa-chevron"></i>
+                    <i th:unless="${snapshotGroup.getSnapshotListSize()>0}" class="fa fa-minus"></i>
+                    <span th:text="${snapshotGroup.getSimpleDirectoryName()}"></span>
+                    <span class="badge rounded-pill float-end bg-primary" th:text="${snapshotGroup.getSnapshotListSize()}"></span>
+                  </div>
+                  <div class="list-group-flush collapse" style="padding-left:15px;">
+                    <div th:each="databaseSnapshot, iStat2 : ${snapshotGroup.getSnapshotList()}"
+                       href="javascript:void(0);" class="list-group-item" data-toggle="collapse" style="height:36px;">
+                      <!-- <span th:text="${databaseSnapshot.getSnapshotFileName()}"></span> -->
+                      <span class="badge rounded-pill float-end bg-secondary db-snapshot-badge">
+                        <span th:attr="data-path=${databaseSnapshot.getRelativePath()}" class="db-snapshot" onclick="javascript:loadDbSnapshotDetails($(this));">[[${databaseSnapshot.getFormatedCreationDate()}]]</span>
+                        <i class='bi bi-trash' th:attr="data-path=${databaseSnapshot.getRelativePath()}" onclick="javascript:deleteSnapshot(this);"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-9">
+          <div class="container text-end">
+            <h5>Database details</h5>
+            <div class="form-group row">
+              <label for="name" class="col-sm-2 col-form-label">DB Name:</label>
+              <div class="col-sm-3">
+                <input type="text" class="form-control" id="name">
+              </div>
+              <label for="host" class="col-sm-1 col-form-label">Host:</label>
+              <div class="col-sm-3">
+                <input type="text" class="form-control" id="host">
+              </div>
+              <label for="port" class="col-sm-1 col-form-label">Port:</label>
+              <div class="col-sm-2">
+                <input type="number" class="form-control" id="port">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="username" class="col-sm-2 col-form-label">DB User:</label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" id="username">
+              </div>
+              <label for="password" class="col-sm-2 col-form-label">Password:</label>
+              <div class="col-sm-4">
+                <input type="password" class="form-control" id="password">
+              </div>
+            </div>
+            <div class="form-group row">
+              <button class="btn btn-primary" onclick="javascript:takeDBSnapshot();" type="button">Take DB Snapshot!</button>
+            </div>
+            <hr>
+            <div class="row text-start">
+              <h5>Summary</h5>
+              <div class="container">
+                <div class="row border rounded">
+                  <div class="container">
+                    <div class="row">
+                      <div class="form-group row">
+                        <span class="col-form-label col-sm-2 text-end">DB Name:</span>
+                        <span class="col-sm-3 col-form-label" id="snap-db-name"></span>
+                        <span class="col-form-label col-sm-2 text-end">File Name:</span>
+                        <span class="col-sm-5 col-form-label" id="snap-db-file-name"></span>
+                      </div>
+                      <div class="form-group row">
+                        <span class="col-form-label col-sm-2 text-end">Created:</span>
+                        <span class="col-sm-4 col-form-label" id="snap-db-creation-date"></span>
+                        <span class="col-form-label col-sm-1 text-end">Tables:</span>
+                        <span class="col-sm-1 col-form-label" id="snap-db-tables-count"></span>
+                        <span class="col-form-label col-sm-2 text-end">Records:</span>
+                        <span class="col-sm-2 col-form-label" id="snap-db-records-count"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <br>
+                <div class="row">
+                  <div class="col-4">
+                    <h6 class="border-bottom">Table List</h6>
+                    <div class="list-group list-group-flush" id="database-table-list">
+                    </div>
+                  </div>
+                  <div class="col-8">
+                    <h6 class="text-end border-bottom">Table Details</h6>
+                    <div id="database-table-details">
+                      <table class="table caption-top">
+                        <caption id="database-table-caption"></caption>
+                        <thead id="database-table-header" class="table-dark" style="font-size: small;">
+
+                        </thead>
+                        <tbody id="database-table-body" style="font-size: x-small;">
+
+                        </tbody>
+                        <tfoot>
+
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

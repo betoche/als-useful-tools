@@ -1,0 +1,24 @@
+.vertical-container{
+     display: grid;
+     grid-auto-rows: minmax(min-content, max-content);
+     grid-template-columns: auto 1fr;
+     height: 100%;
+     background: black;
+     position: absolute;
+     width: 40px;
+}
+
+.vertical{
+     transform: rotate(180deg);
+     writing-mode: vertical-lr;
+     text-align: center;
+     color: white;
+     width: 40px;
+     position: absolute;
+     height: 100%;
+}
+
+ .no-space {
+    padding: 0;
+    margin: 0;
+ }

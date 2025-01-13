@@ -1,0 +1,29 @@
+.db-snapshot-badge:hover {
+    background-color: #3d3d3d !important;
+}
+
+.db-snapshot-badge:hover .active:hover {
+    background-color: rgb(12 83 187) !important;
+}
+
+.active:hover {
+    background-color: rgb(12 83 187) !important;
+}
+
+.database-table {
+    height: 45px;
+    padding: 0px;
+    padding-bottom: 0px;
+    font-size:small;
+    cursor: pointer;
+}
+.database-table:hover {
+    background-color: #d3d5d7 !important;
+}
+.database-table.active:hover {
+    background-color: rgb(12 83 187) !important;
+}
+.db-snapshot {
+    cursor: pointer;
+}
+

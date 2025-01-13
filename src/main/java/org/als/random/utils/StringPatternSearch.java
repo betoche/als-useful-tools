@@ -167,10 +167,11 @@ public class StringPatternSearch {
 
     public static void main( String[] args ) {
 
-        String directory = "C:\\Users\\betoc\\repositories\\TCE7.1.0\\teamconnectenterprise";
+        //String directory = "C:\\Users\\betoc\\repositories\\TCE7.1.0\\teamconnectenterprise";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\teamconnectenterprise";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE7.0.0\\teamconnectenterprise";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.6\\teamconnectenterprise";
+        String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.7\\teamconnectenterprise";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\eclipse";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\maven-3.6.3";
         //String directory = "C:\\Users\\betoc\\repositories\\datawarehouse";
@@ -182,9 +183,10 @@ public class StringPatternSearch {
         //String[] patterns = new String[]{ "design-pomgen-maven-plugin" };
         //String[] patterns = new String[]{ "varchar2" };
         //String[] patterns = new String[]{".submitForm(", " submitForm(" };
-        String[] patterns = new String[]{"FORMAT_DATE_INPUT" };
+        //String[] patterns = new String[]{"FORMAT_DATE_INPUT" };
+        String[] patterns = new String[]{"TLObjdRules"};
 
-        String[] fileExtensions = new String[]{ ".java", ".jsp" };
+        String[] fileExtensions = new String[]{ ".java", "jsp" };
         //String[] fileExtensions = new String[]{ ".xml", ".ini", ".prefs" };
         //String[] fileExtensions = new String[]{ ".xml" };
         //String[] fileExtensions = new String[]{};

@@ -14,9 +14,7 @@ public class MavenProjectController {
 
     @GetMapping("")
     public ModelAndView getInitialMajenProjectView() {
-        var genericFormView = new ModelAndView("maven-project");
-
-        return genericFormView;
+        return new ModelAndView("maven-project");
     }
 
     @GetMapping("/project-view")

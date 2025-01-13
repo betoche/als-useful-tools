@@ -19,7 +19,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 
 @Controller
 @RequestMapping("/diagnostic-patch")
@@ -28,17 +27,7 @@ public class DiagnosticPatchPackerController {
 
     @GetMapping({"", "/", "/process"})
     public ModelAndView getDiagnosticPatchHome(){
-        ModelAndView mv = new ModelAndView("diagnostic-patch");
-        /*
-        mv.addObject("ticketNumber", "SOH-4877");
-        mv.addObject("tceNumber", "6.3.6");
-        mv.addObject("projectDir", "C:\\Users\\betoc\\repositories\\TCE6.3.6\\teamconnectenterprise");
-        mv.addObject("jarFilesDir", "C:\\Users\\betoc\\repositories\\TCE6.3.6\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps\\teamconnect-webui\\WEB-INF\\lib");
-        mv.addObject("branchName", "bugfix/SOH-4877-diagnostic-patch");
-        mv.addObject("addFile", Arrays.asList("BQDetailFieldDynamicValue,CaptureDesignChanges,DLTable".split(",")));
-        */
-
-        return mv;
+        return new ModelAndView("diagnostic-patch");
     }
 
     @PostMapping("/download-zip-file")

@@ -93,8 +93,11 @@ function downloadZipFile() {
     let zipFileNameStr = $('#zip-file-name').text();
     let instructions = $('#patch-instructions').text();
     let fileListPath = [];
-    for( let i = 0 ; i < fileListPathElements.length ; i++ ){
-        fileListPath.push($(fileListPathElements[i]).text());
+    for( let i = 0 ; i < fileListPathElements.length ; i++ ) {
+        try{
+            if($(fileListPathElements[i]).parent().parent().find('th input').is(':checked'))
+                fileListPath.push($(fileListPathElements[i]).text());
+        } catch(error){}
     }
 
     let formData = {};

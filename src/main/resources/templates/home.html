@@ -7,11 +7,11 @@
 
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}" defer></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script th:src="@{/js/random.js}" defer></script>
     <title>Random Utils</title>
 </head>
 <body>
     <div class="container">
-
         <div class="row">
             <div class="col-12 text-center">
                 <h3>Random Utils</h3>
@@ -20,23 +20,37 @@
         <br/>
         <hr>
         <div class="row">
-            <div class="col-5">
-                <h5>Links:</h5>
-                <div class="list-group">
-                    <button type="button" class="list-group-item list-group-item-action active">Maven Project Analyzer</button>
-                    <button type="button" class="list-group-item list-group-item-action">Search in Directory</button>
-                    <button type="button" class="list-group-item list-group-item-action">Search in DB</button>
-                    <button type="button" class="list-group-item list-group-item-action">Parse TCE data from Excel Files</button>
+            <div class="col-3">
+                <!--
+                <h4>Links</h4>
+                <hr>
+                -->
+                <h5>Generic Tools</h5>
+                <div th:if="${config!=null && config.getGenericOptions()!=null}" class="list-group">
+                    <button th:each="item, iStat : ${config.getGenericOptions()}"
+                            th:text="${item.getTitle()}" th:attr="data-option=${item.toJsonString()}"
+                            onclick="javascript:showInfoCard(this, 'Generic');" type="button"
+                            class="list-group-item list-group-item-action random-options"></button>
+                </div>
+                <hr>
+                <h5>Specific Tools</h5>
+                <div th:if="${config!=null && config.getSpecificOptions()!=null}" class="list-group">
+                    <button th:each="item, iStat : ${config.getSpecificOptions()}" th:text="${item.getTitle()}"
+                            th:attr="data-option=${item.toJsonString()}" onclick="javascript:showInfoCard(this, 'Specific');"
+                            type="button" class="list-group-item list-group-item-action random-options"></button>
                 </div>
             </div>
-            <div class="col-7">
-                <h5 style="color:white;">Links:</h5>
-                <div class="card">
-                    <h5 class="card-header">Generic Tool</h5>
-                    <div class="card-body">
-                        <h5 class="card-title">Maven Project Analyzer</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="/maven-project" target="_blank" class="btn btn-primary">Go to page</a>
+            <div class="col-1"></div>
+            <div class="col-6">
+                <div id="card" class="d-none">
+                    <h5 style="color:white;">Generic Options:</h5>
+                    <div class="card" id="card-info">
+                        <h5 class="card-header" id="card-info-option-type">Generic Tool</h5>
+                        <div class="card-body">
+                            <h5 class="card-title" id="card-info-title">Maven Project Analyzer</h5>
+                            <p class="card-text" id="card-info-description">With supporting text below as a natural lead-in to additional content.</p>
+                            <a id="card-info-link" href="/maven-project" target="_blank" class="btn btn-primary">Go to page</a>
+                        </div>
                     </div>
                 </div>
             </div>
