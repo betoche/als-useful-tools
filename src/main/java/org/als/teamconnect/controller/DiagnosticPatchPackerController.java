@@ -3,9 +3,11 @@ package org.als.teamconnect.controller;
 import org.als.random.utils.MavenProjectFileSystemFinder;
 import org.als.teamconnect.entity.DiagnosticPatchInfo;
 import org.als.teamconnect.entity.DownloadDiagnosticPatchRequest;
+import org.als.teamconnect.service.DiagnosticPatchService;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,8 @@ import java.util.zip.ZipFile;
 @Controller
 @RequestMapping("/diagnostic-patch")
 public class DiagnosticPatchPackerController {
+    @Autowired
+    private DiagnosticPatchService diagnosticPatchService;
     private final static Logger LOGGER = LoggerFactory.getLogger(DiagnosticPatchPackerController.class);
 
     @GetMapping({"", "/", "/process"})
@@ -135,28 +139,7 @@ public class DiagnosticPatchPackerController {
         }
 
         return new DiagnosticPatchInfo( String.format("%s-diagnostic-patch-tce%s.zip", ticketNumber,
-                tceNumber), generateSuggestedInstructions(ticketNumber, tceNumber, branchName, foundClassList), foundClassList );
-    }
-
-    private String generateSuggestedInstructions(String ticketNumber, String tceNumber, String branchName, List<DiagnosticPatchInfo.FoundClass> classFileList) {
-        List<String> instructions = new ArrayList<>();
-
-        instructions.add("Diagnostic Patch Instructions");
-        instructions.add("");
-        instructions.add(String.format("Ticket #: %s", ticketNumber));
-        instructions.add(String.format("TCE version: %s", tceNumber));
-        instructions.add(String.format("Branch: %s", branchName));
-        instructions.add("");
-        instructions.add("- First Backup the following class files:");
-        for( DiagnosticPatchInfo.FoundClass filePath : classFileList ){
-            instructions.add(String.format("    - %s\\%s", filePath.getJarFileSimpleName(), filePath.getPackagePath()));
-        }
-        instructions.add("- Second copy the classes contained in the zip file in their respectives directories:");
-        for( DiagnosticPatchInfo.FoundClass filePath : classFileList ){
-            instructions.add(String.format("    - %s -> %s\\%s", filePath.getClassName(), filePath.getJarFileSimpleName(), filePath.getPackagePath()));
-        }
-
-        return Strings.join(instructions, '\n');
+                tceNumber), diagnosticPatchService.generateSuggestedInstructions(ticketNumber, tceNumber, branchName, foundClassList), foundClassList );
     }
 
     public static String getCurrentGitBranch(File projectDir) throws IOException, InterruptedException {

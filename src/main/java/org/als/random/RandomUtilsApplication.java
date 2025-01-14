@@ -11,9 +11,10 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.FilterType;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"org.als.random.config", "org.als.random.entity", "org.als.random.repo",
-		"org.als.random.service", "org.als.random.controller", "org.als.random.domain", "org.als.teamconnect.config",
-		"org.als.teamconnect.entity", "org.als.teamconnect.repo", "org.als.teamconnect.controller"},
+@ComponentScan(basePackages = {
+		"org.als.random.config", "org.als.random.entity", "org.als.random.repo","org.als.random.service",
+		"org.als.random.controller", "org.als.random.domain", "org.als.teamconnect.config","org.als.teamconnect.entity",
+		"org.als.teamconnect.repo", "org.als.teamconnect.service", "org.als.teamconnect.controller"},
 		excludeFilters = {
 		@Filter(type = FilterType.ASSIGNABLE_TYPE, value = PostgresDatasourceConfiguration.class)
 })

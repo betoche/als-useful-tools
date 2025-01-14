@@ -18,11 +18,20 @@ public class DiagnosticPatchInfo {
         private String classPath;
         private String jarFileName;
 
-        public String getJarFileSimpleName(){
+        public static final String WEB_INF_DIR_NAME = "WEB-INF";
+
+        public String getJarFileSimpleName() {
             return jarFileName.substring(jarFileName.lastIndexOf("\\")+1);
         }
-        public String getPackagePath(){
+        public String getPackagePath() {
             return classPath.substring(classPath.lastIndexOf("target\\classes\\")+15);
+        }
+        public String getJarLibPath() {
+            int indexOf = jarFileName.indexOf(WEB_INF_DIR_NAME);
+            int indexOfJar = jarFileName.indexOf(getJarFileSimpleName());
+
+            return jarFileName.substring(indexOf, indexOfJar);
+
         }
     }
 }

@@ -13,16 +13,14 @@
                 <div class="form-group row">
                     <label for="database-1" class="col-sm-2 text-end">Database 1:</label>
                     <div class="col-sm-3">
-                        <select id="database-1" class="form-control">
-                            <option ></option>
-                            <option>teamconnect_636</option>
+                        <select id="database-1" name="database-1" class="form-control">
+                            <option th:each="group, idx : ${snapshotGroupList}" th:value="${group.getSimpleDirectoryName()}" th:text="${group.getSimpleDirectoryName()}"></option>
                         </select>
                     </div>
                     <label for="database-2" class="col-sm-2 text-end">Database 2:</label>
                     <div class="col-sm-3">
-                        <select id="database-2" class="form-control custom-select">
-                            <option ></option>
-                            <option>teamconnect_636</option>
+                        <select id="database-2" name="database-2" class="form-control custom-select">
+                            <option th:each="group, idx : ${snapshotGroupList}" th:value="${group.getSimpleDirectoryName()}" th:text="${group.getSimpleDirectoryName()}"></option>
                         </select>
                     </div>
                 </div>
