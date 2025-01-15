@@ -1,5 +1,7 @@
 package org.als.teamconnect.controller;
 
+import org.als.random.controller.RandomController;
+import org.als.random.domain.RandomConfiguration;
 import org.als.random.utils.MavenProjectFileSystemFinder;
 import org.als.teamconnect.entity.DiagnosticPatchInfo;
 import org.als.teamconnect.entity.DownloadDiagnosticPatchRequest;
@@ -27,11 +29,21 @@ import java.util.zip.ZipFile;
 public class DiagnosticPatchPackerController {
     @Autowired
     private DiagnosticPatchService diagnosticPatchService;
+    @Autowired
+    private RandomConfiguration randomConfiguration;
     private final static Logger LOGGER = LoggerFactory.getLogger(DiagnosticPatchPackerController.class);
 
     @GetMapping({"", "/", "/process"})
-    public ModelAndView getDiagnosticPatchHome(){
-        return new ModelAndView("diagnostic-patch");
+    public ModelAndView getDiagnosticPatchHome(@RequestParam String optionKey){
+        if(Objects.isNull(optionKey)) {
+            RandomController homeController = new RandomController();
+            return homeController.getHome();
+        }
+
+        ModelAndView mv = new ModelAndView("diagnostic-patch");
+        mv.addObject("option", randomConfiguration.findOptionByKey(optionKey));
+
+        return mv;
     }
 
     @PostMapping("/download-zip-file")
