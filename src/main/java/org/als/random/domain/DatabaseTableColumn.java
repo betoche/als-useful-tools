@@ -8,8 +8,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.xml.bind.DatatypeConverter;
+import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.Objects;
 
 @Getter
@@ -70,7 +72,10 @@ public class DatabaseTableColumn {
             case NTEXT -> rs.getString(getName());
             case DATETIME2 -> rs.getTimestamp(getName());
             case NCHAR -> rs.getString(getName());
-            case IMAGE -> DatatypeConverter.printBase64Binary(rs.getBytes(getName()));
+            case IMAGE -> {
+                Blob blob = rs.getBlob(getName());
+                yield "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(blob.getBytes(1, (int) blob.length()));
+            }
         };
         return value;
     }

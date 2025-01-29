@@ -31,6 +31,7 @@ public class DatabaseTable {
     public static final String DATA_JSON_KEY = "data";
     public static final String COLUMNS_JSON_KEY = "columns";
     public static final String TABLE_JSON_KEY = "table";
+    public static final String ENTITY_CLASS_DEFINITION_JSON_KEY = "entityTableDefinition";
 
     public static DatabaseTable parseFromJson(JSONObject json, Database db) {
         DatabaseTableBuilder builder = DatabaseTable.builder();
@@ -53,7 +54,7 @@ public class DatabaseTable {
             try {
                 JSONObject data = tableJson.getJSONObject(DATA_JSON_KEY);
                 table.setTableData(DatabaseTableData.parseFromJsonArray(table, data));
-            }catch( Exception e ){
+            }catch( Exception e ) {
                 e.printStackTrace();
             }
         }
@@ -132,6 +133,7 @@ public class DatabaseTable {
         json.put(NAME_JSON_KEY, getName());
         json.put(NUMBER_OF_RECORDS_JSON_KEY, getNumberOfRecords());
         json.put(LAST_PRIMARY_KEY_JSON_KEY, getLastPrimaryKey());
+        json.put(ENTITY_CLASS_DEFINITION_JSON_KEY, new EntityCodeGenerator(this).getEntityCodeHtml());
 
         if( Objects.nonNull(getColumnList()) ) {
             for (DatabaseTableColumn column : getColumnList()) {
@@ -155,7 +157,7 @@ public class DatabaseTable {
 
     public DatabaseTableColumn getDatabaseTableColumnByName(String columnName) {
         for( DatabaseTableColumn tableColumn : getColumnList() ) {
-            if( tableColumn.getName().equalsIgnoreCase(columnName) ){
+            if( tableColumn.getName().equalsIgnoreCase(columnName) ) {
                 return tableColumn;
             }
         }

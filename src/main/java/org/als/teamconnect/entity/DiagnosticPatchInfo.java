@@ -30,6 +30,13 @@ public class DiagnosticPatchInfo {
             int indexOf = jarFileName.indexOf(WEB_INF_DIR_NAME);
             int indexOfJar = jarFileName.indexOf(getJarFileSimpleName());
 
+            if( indexOf < 0 || indexOfJar <= 0 ) {
+                indexOf = classPath.lastIndexOf("teamconnectenterprise") + "teamconnectenterprise".length()+1;
+                indexOfJar = classPath.lastIndexOf("classes") + "classes".length()+1;
+
+                return classPath.substring(indexOf, indexOfJar);
+            }
+
             return jarFileName.substring(indexOf, indexOfJar);
 
         }

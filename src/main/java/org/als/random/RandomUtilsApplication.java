@@ -9,20 +9,15 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {
-		"org.als.random.config", "org.als.random.entity", "org.als.random.repo","org.als.random.service",
-		"org.als.random.controller", "org.als.random.domain", "org.als.teamconnect.config","org.als.teamconnect.entity",
-		"org.als.teamconnect.repo", "org.als.teamconnect.service", "org.als.teamconnect.controller"},
-		excludeFilters = {
-		@Filter(type = FilterType.ASSIGNABLE_TYPE, value = PostgresDatasourceConfiguration.class)
-})
 public class RandomUtilsApplication {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RandomUtilsApplication.class);
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(RandomUtilsApplication.class, args);
+		LOGGER.info(String.format("beans: %s", String.join(System.lineSeparator(), context.getBeanDefinitionNames())));
 	}
 
 }

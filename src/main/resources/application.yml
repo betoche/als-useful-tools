@@ -1,4 +1,7 @@
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
   debug: true
   application:
     name: Random Utils
@@ -6,7 +9,7 @@ spring:
     cache: false
   datasource:
     random:
-      url: jdbc:postgresql://localhost:32768/mydatabase
+      url: jdbc:postgresql://localhost:15432/graffos?createDatabaseIfNotExist=true
       username: graffos
       password: graffosPassword2024
     teamconnect636:

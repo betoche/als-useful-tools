@@ -90,7 +90,8 @@ public class DBSnapshotService {
         database.setDbHost(request.getHost());
         database.setDbPort(request.getPort());
         List<DatabaseTable> tableList = database.getTableList();
-        tableList.sort(new DatabaseTable.TableSortByRecordsCount());
+        //tableList.sort(new DatabaseTable.TableSortByRecordsCount());
+        //tableList.sort(new DatabaseTable.TableSortByTableName());
         database.setTableList(tableList);
 
         builder.database(database);

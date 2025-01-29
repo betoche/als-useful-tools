@@ -61,16 +61,23 @@ public class Database {
             tableList.add(DatabaseTable.parseFromJson(jsonObj, db));
         }
 
+        tableList.sort(new DatabaseTable.TableSortByTableName());
         db.setTableList(tableList);
 
         return db;
     }
 
     public static Database parseFromJsonFile(String snapshotFileName) throws IOException {
-        String jsonStr = new String(Files.readAllBytes(Paths.get(String.format("%s/%s",
-                RandomConstants.SNAPSHOT_STORAGE_DIRECTORY, snapshotFileName))));
+        String jsonStr = "";
+        try{
+            jsonStr = new String(Files.readAllBytes(Paths.get( snapshotFileName )));
+        }catch( Exception e ){
+            jsonStr = new String(Files.readAllBytes(Paths.get(String.format("%s/%s",RandomConstants.SNAPSHOT_STORAGE_DIRECTORY, snapshotFileName))));
+        }
+
         JSONObject jsonDB = new JSONObject(jsonStr);
-        Database db = parseFromJson(jsonDB);
+
+        Database db = parseFromJson(jsonDB.getJSONObject(DatabaseSnapshot.SNAPSHOT_KEY_NAME).getJSONObject(DatabaseSnapshot.DATABASE_JSON_KEY_NAME));
         db.setSnapshotFileName(snapshotFileName);
 
         return db;

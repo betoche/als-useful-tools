@@ -1,5 +1,8 @@
 package org.als.random.controller;
 
+import org.als.random.domain.CompareSnapshotsRequest;
+import org.als.random.domain.DatabaseComparatorResults;
+import org.als.random.domain.DatabaseDifference;
 import org.als.random.domain.DatabaseSnapshotRequest;
 import org.als.random.service.DBSnapshotService;
 import org.json.JSONObject;
@@ -10,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/snapshots")
@@ -36,6 +41,12 @@ public class DatabaseSnapshotsController {
         mv.addObject("snapshotGroupList", snapshotService.getDatabaseSnapshotGroupList());
 
         return mv;
+    }
+
+    @PostMapping("/compare")
+    public ResponseEntity<String> getSnapshotDifference(@RequestBody CompareSnapshotsRequest compareSnapshotsRequest) throws IOException {
+        DatabaseComparatorResults results = new DatabaseComparatorResults(compareSnapshotsRequest.getSnapshotList());
+        return ResponseEntity.ok(results.getDatabaseDifferenceListToJson().toString());
     }
 
     @PostMapping("/create")

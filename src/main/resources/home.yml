@@ -1,10 +1,24 @@
 name: "Random Tools"
+spinnerClasses:
+  - spinner-border
+  - spinner-border text-primary
+  - spinner-border text-secondary
+  - spinner-border text-success
+  - spinner-border text-danger
+  - spinner-border text-warning
+  - spinner-border text-info
+  - spinner-border text-light
+  - spinner-border text-dark
+  - spinner-grow
+  - spinner-grow text-primary
+  - spinner-grow text-secondary
+  - spinner-grow text-success
+  - spinner-grow text-danger
+  - spinner-grow text-warning
+  - spinner-grow text-info
+  - spinner-grow text-light
+  - spinner-grow text-dark
 genericOptions:
-  -
-    key: diagnostic-patch
-    title: Diagnostic Patch Tool
-    description: With this tool you can easily create zip Diagnostic Patches which include the class files and the Instruction text file.
-    path: /diagnostic-patch
   -
     key: file-search
     title: Maven Analyzer
@@ -28,19 +42,19 @@ genericOptions:
         title: Database Search
         description: Search by multiple values in all the available tables inside a specific database.
         path: /db-utils/database-search
+  -
+    key: files-search
+    title: Global String Search in Directory
+    description: Search by multiple values inside a specific directory, this search allows you to define specific file types.
+    path: /global-text-search
 specificOptions:
+  -
+    key: diagnostic-patch
+    title: Diagnostic Patch Tool
+    description: With this tool you can easily create zip Diagnostic Patches which include the class files and the Instruction text file.
+    path: /diagnostic-patch
   -
     key: lookup-table
     title: Lookup Table Import Tool
     description: Import Lookup Table data from Excel files
     path: /lookup-table/import
-  -
-    key: global-search-2
-    title: "Global Search in Directory"
-    description: "Search by multiple values inside a specific directory, this search allows you to define specific file types."
-    path: "/global-search"
-  -
-    key: global-search-1
-    title: "Database Search"
-    description: "Search by multiple values in all the available tables inside a specific database."
-    path: "/database-search"

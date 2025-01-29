@@ -1,6 +1,9 @@
 package org.als.random.domain;
 
+import lombok.Data;
 import lombok.Getter;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,12 +33,27 @@ public class DatabaseComparatorResults {
         return databaseDifferenceMap;
     }
 
+    public JSONArray getDatabaseDifferenceListToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for( Map.Entry<String, DatabaseDifference> entry : getDatabaseDifferenceList().entrySet() ) {
+            jsonArray.put(entry.getValue().toJsonObject());
+        }
+
+        return jsonArray;
+    }
+
     private void findDatabaseDifferences(Map<String, DatabaseDifference> databaseDifferenceMap) {
+        Set<String> dbSet = new HashSet<>();
         for( int i = 0 ; i < getDatabaseList().size() ; i++ ) {
             Database db1 = getDatabaseList().get(i);
             for( int j = 0 ; j < getDatabaseList().size() ; j++ ) {
                 Database db2 = getDatabaseList().get(j);
-                findDatabaseDifferences(databaseDifferenceMap, db1, db2);
+                if(!dbSet.contains(String.format("%s_%s", db1.toString(), db2.toString()))) {
+                    findDatabaseDifferences(databaseDifferenceMap, db1, db2);
+                }
+                dbSet.add(String.format("%s_%s", db1.toString(), db2.toString()));
+                dbSet.add(String.format("%s_%s", db2.toString(), db1.toString()));
             }
         }
     }
@@ -44,12 +62,13 @@ public class DatabaseComparatorResults {
         for( DatabaseTable table1 : db1.getTableList() ) {
             boolean existTable = false;
             for( DatabaseTable table2 : db2.getTableList() ) {
-                if( table1.getName().equalsIgnoreCase(table2.getName()) ) {
+                if (table1.getName().equalsIgnoreCase(table2.getName())) {
                     existTable = true;
 
-                    if( !table1.equals(table2) ) {
+                    if (!table1.equals(table2)) {
                         findTableDifferences(databaseDifferenceMap, table1, table2);
                     }
+
                     break;
                 }
             }
@@ -65,6 +84,9 @@ public class DatabaseComparatorResults {
                     databaseDifferenceMap.put(table1.getName(), dbDiff);
                 }
             }
+
+
+
         }
     }
 
@@ -73,27 +95,27 @@ public class DatabaseComparatorResults {
             List<String> reasonMessageList = new ArrayList<>();
             String messageStr = "";
             if( !Objects.equals( table1.getColumnList().size() , table2.getColumnList().size() ) ) {
-                messageStr = "Difference in Columns: { %s: %s cols, %s: %s cols}";
+                messageStr = "Difference in Columns: { %s cols and %s cols}";
                 reasonMessageList.add(String.format(messageStr,
-                        table1.getFullName(), table1.getColumnList().size(),
-                        table2.getFullName(), table2.getColumnList().size()));
+                        table1.getColumnList().size(),
+                        table2.getColumnList().size()));
             }
 
             if( !Objects.equals( table1.getLastPrimaryKey(), table2.getLastPrimaryKey() ) ) {
-                messageStr = "Last primary key is different: { %s: %s, %s: %s }";
+                messageStr = "Last primary key is different: { %s and %s }";
                 reasonMessageList.add(String.format(messageStr,
-                        table1.getFullName(), table1.getLastPrimaryKey(),
-                        table2.getFullName(), table2.getLastPrimaryKey()));
+                        table1.getLastPrimaryKey(),
+                        table2.getLastPrimaryKey()));
             }
 
             if( !Objects.equals( table1.getNumberOfRecords(), table2.getNumberOfRecords() ) ) {
-                messageStr = "Number of records is different: { %s: %s, %s: %s }";
+                messageStr = "Number of records is different: { %s and %s }";
                 reasonMessageList.add(String.format(messageStr,
-                        table1.getFullName(), table1.getNumberOfRecords(),
-                        table2.getFullName(), table2.getNumberOfRecords()));
+                        table1.getNumberOfRecords(),
+                        table2.getNumberOfRecords()));
             }
 
-            reasonMessageList.addAll(findDifferencesByTableData(table1, table2));
+            reasonMessageList.addAll(findDifferencesByTableData(table2, table1));
 
             if( databaseDifferenceMap.containsKey(table1.getName()) ) {
                 databaseDifferenceMap.get(table1.getName()).addReasonMessage(reasonMessageList);
@@ -108,7 +130,9 @@ public class DatabaseComparatorResults {
             DatabaseTableData data1 = table1.getTableData();
             DatabaseTableData data2 = table2.getTableData();
 
-            return data1.getDataDifferenceList(data2);
+            List<String> differenceList = data1.getDataDifferenceList(data2);
+            differenceList.addAll(data2.getDataDifferenceList(data1));
+            return differenceList;
         }
         return new ArrayList<>();
     }
@@ -167,19 +191,5 @@ public class DatabaseComparatorResults {
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
-
-        /*
-        List<String> list = new ArrayList<>();
-        list.add("1kasjdfoipajsdfopijasofi");
-        list.add("2foipajsdfopijasofi");
-        list.add("3dsjfkhsdhfasjdfoipajsdfopijasofi");
-        list.add("4dsjfkhsdhfasjdfoipajsdfopijasofi");
-
-        list.sort((string1, string2) -> Math.abs(string2.length()) - Math.abs(string1.length()));
-
-        for(String s : list) {
-            LOGGER.info(s);
-        }
-        */
     }
 }

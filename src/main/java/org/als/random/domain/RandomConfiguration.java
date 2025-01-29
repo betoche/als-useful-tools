@@ -12,8 +12,13 @@ import java.util.List;
 @Builder
 public class RandomConfiguration {
     private String name;
+    private List<String> spinnerClasses;
     private List<Option> genericOptions;
     private List<Option> specificOptions;
+
+    public String getRandomSpinnerClass() {
+        return spinnerClasses.get( (int)(Math.random() * spinnerClasses.size()) );
+    }
 
     public String toString() {
         return String.format("RandomConfiguration: { name: %s, genericOptions: %s, specificOptions: %s }", getName(), getGenericOptions(), getSpecificOptions() );
@@ -40,6 +45,7 @@ public class RandomConfiguration {
             json.put("title", getTitle());
             json.put("description", getDescription());
             json.put("path", getPath());
+            json.put("hasSubOptions", subOptions != null && !subOptions.isEmpty());
 
             return json.toString();
         }

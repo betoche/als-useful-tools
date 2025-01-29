@@ -11,8 +11,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 @Controller
@@ -26,6 +28,14 @@ public class RandomController {
     public ModelAndView getHome() {
         ModelAndView mv = new ModelAndView("home");
         mv.addObject("config", randomConfiguration);
+        return mv;
+    }
+
+    @GetMapping("random-spinner")
+    public ModelAndView getRandomSpinner() {
+        ModelAndView mv = new ModelAndView("random-spinner");
+        mv.addObject("spinnerClass", randomConfiguration.getRandomSpinnerClass());
+
         return mv;
     }
 }

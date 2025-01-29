@@ -16,8 +16,6 @@ public class RandomConfig {
     public RandomConfiguration randomConfiguration() {
         Yaml yaml = new Yaml(new Constructor(RandomConfiguration.class, new LoaderOptions()));
         InputStream inputStream = RandomConfiguration.class.getClassLoader().getResourceAsStream("home.yml");
-        RandomConfiguration randomConf = yaml.load(inputStream);
-
-        return randomConf;
+        return yaml.load(inputStream);
     }
 }

@@ -2,6 +2,8 @@ package org.als.random.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,10 @@ public class DatabaseDifference {
     private DatabaseTable table;
     private List<String> reasonList;
     private String sqlQuery;
+
+    public static final String DATABASE_DIFFERENCE_TABLE_JSON_KEY = "table";
+    public static final String DATABASE_DIFFERENCE_REASON_LIST_JSON_KEY = "reasonList";
+    public static final String DATABASE_DIFFERENCE_SQL_QUERY_JSON_KEY = "sqlQuery";
 
     public DatabaseDifference(DatabaseTable table) {
         this.table = table;
@@ -58,4 +64,17 @@ public class DatabaseDifference {
     }
 
 
+    public JSONObject toJsonObject() {
+        JSONObject json = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+
+        json.put(DATABASE_DIFFERENCE_TABLE_JSON_KEY, getTable().getName());
+        json.put(DATABASE_DIFFERENCE_SQL_QUERY_JSON_KEY, getSqlQuery());
+        for( String reason : getReasonList() ) {
+            jsonArray.put(reason);
+        }
+        json.put(DATABASE_DIFFERENCE_REASON_LIST_JSON_KEY, jsonArray);
+
+        return json;
+    }
 }

@@ -53,6 +53,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <form action="/diagnostic-patch/process" method="post" id="diagnostic-patch-form" >
+                                    <input type="hidden" name="option-key" th:value="${option.getKey()}">
                                     <h5>Add the details of the diagnostic patch.</h5>
                                     <hr>
                                     <div class="form-group row">

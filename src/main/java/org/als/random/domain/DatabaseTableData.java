@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 public class DatabaseTableData {
@@ -17,7 +18,7 @@ public class DatabaseTableData {
         this.table = table;
     }
 
-    public static DatabaseTableData parseFromJsonArray(DatabaseTable table, JSONObject json) {
+    public static DatabaseTableData parseFromJsonArray(DatabaseTable table, JSONObject json) throws UnsupportedEncodingException {
         JSONArray jsonArray = json.getJSONArray(ROWS_JSON_KEY);
         DatabaseTableData tableData = new DatabaseTableData(table);
         for( int i = 0 ; i < jsonArray.length() ; i++ ) {
@@ -79,7 +80,7 @@ public class DatabaseTableData {
             if( Objects.nonNull(tableRowData2) ) {
                 reasonMessageList.addAll(tableRowData1.getDataDifferenceList(tableRowData2));
             } else {
-                reasonMessageList.add(String.format("[Missing Record]: { %s.PRIMARY_KEY: %s, %s.PRIMARY_KEY: N/A }", getTable().getFullName(), primaryKey1, tableData2.getTable().getFullName()));
+                reasonMessageList.add(String.format("[Missing Record]: { PRIMARY_KEY: %s, PRIMARY_KEY: N/A }", primaryKey1));
             }
         });
 

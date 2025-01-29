@@ -4,15 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Getter @Setter
 @AllArgsConstructor
@@ -28,7 +27,7 @@ public class DatabaseTableColumnData<T> {
         return new DatabaseTableColumnData(column, column.getValueFromResultSet(rs), tableRowData);
     }
 
-    public static DatabaseTableColumnData parseFromJson(DatabaseTableRowData tableRowData, JSONObject tableColumnDataJson) {
+    public static DatabaseTableColumnData parseFromJson(DatabaseTableRowData tableRowData, JSONObject tableColumnDataJson) throws UnsupportedEncodingException {
         DatabaseTableColumn column = tableRowData.getTableData().getTable().getDatabaseTableColumnByName(tableColumnDataJson.getString(NAME_JSON_KEY));
         DatabaseTableColumnData tableColumnData = new DatabaseTableColumnData(column, null, tableRowData);
         Object value = tableColumnData.getValueFromJson(tableColumnDataJson);
@@ -37,7 +36,7 @@ public class DatabaseTableColumnData<T> {
         return tableColumnData;
     }
 
-    private T getValueFromJson(JSONObject tableColumnDataJson) {
+    private T getValueFromJson(JSONObject tableColumnDataJson) throws UnsupportedEncodingException {
         if(!tableColumnDataJson.has(VALUE_JSON_KEY))
             return null;
 
@@ -62,7 +61,10 @@ public class DatabaseTableColumnData<T> {
             case NTEXT -> tableColumnDataJson.getString(VALUE_JSON_KEY);
             case DATETIME2 -> tableColumnDataJson.getString(VALUE_JSON_KEY);
             case NCHAR -> tableColumnDataJson.getString(VALUE_JSON_KEY);
-            case IMAGE -> DatatypeConverter.parseBase64Binary(tableColumnDataJson.getString(VALUE_JSON_KEY));
+            case IMAGE -> {
+                String base64EncodedString = tableColumnDataJson.getString(VALUE_JSON_KEY);
+                yield new String( Base64.getDecoder().decode(base64EncodedString), "UTF-8");
+            }
         };
 
         return (T)returnVal;
@@ -72,7 +74,11 @@ public class DatabaseTableColumnData<T> {
         JSONObject json = new JSONObject();
 
         json.put(NAME_JSON_KEY, getColumn().getName());
-        json.put(VALUE_JSON_KEY, getValue());
+        if( getValue() instanceof String && ((String) getValue()).startsWith("<?") ){
+            json.put(VALUE_JSON_KEY, HtmlUtils.htmlEscape(getValue().toString()));
+        } else {
+            json.put(VALUE_JSON_KEY, getValue());
+        }
 
         return json;
     }
@@ -94,7 +100,12 @@ public class DatabaseTableColumnData<T> {
         if( getColumn().getColumnType().getJavaType().equals(Timestamp.class) )
             return (T) Timestamp.valueOf(getValue().toString());
 
-        return (T) getColumn().getColumnType().getJavaType().cast(getValue());
+        try {
+            return (T) getColumn().getColumnType().getJavaType().cast(getValue());
+        } catch( Exception e ) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public String getFullName() {

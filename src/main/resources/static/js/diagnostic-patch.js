@@ -117,7 +117,13 @@ function downloadZipFile() {
             Accept: "application/json"
         },
         success: function(resultData) { alert("Download completed"); }
-    });
+    }).always(function(responseJson) {
+                  if(responseJson.success) {
+                      alert("Files created successfully.");
+                  } else {
+                      alert("ERROR creating the files: \n\t - " + responseJson.error);
+                  }
+              });
 
 }
 

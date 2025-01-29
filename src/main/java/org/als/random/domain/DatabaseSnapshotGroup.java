@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.als.random.helper.FileDirHelper;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,5 +49,13 @@ public class DatabaseSnapshotGroup {
 
     public String getSimpleDirectoryName(){
         return FileDirHelper.getSimpleDirectoryName(getDatabaseGroupDir());
+    }
+
+    public JSONArray getSnapshotJsonArray() {
+        JSONArray jsonArray = new JSONArray();
+        for( DatabaseSnapshot snapshot : getSnapshotList() ) {
+            jsonArray.put(snapshot.toJson());
+        }
+        return jsonArray;
     }
 }

@@ -34,16 +34,8 @@ public class DiagnosticPatchPackerController {
     private final static Logger LOGGER = LoggerFactory.getLogger(DiagnosticPatchPackerController.class);
 
     @GetMapping({"", "/", "/process"})
-    public ModelAndView getDiagnosticPatchHome(@RequestParam String optionKey){
-        if(Objects.isNull(optionKey)) {
-            RandomController homeController = new RandomController();
-            return homeController.getHome();
-        }
-
-        ModelAndView mv = new ModelAndView("diagnostic-patch");
-        mv.addObject("option", randomConfiguration.findOptionByKey(optionKey));
-
-        return mv;
+    public ModelAndView getDiagnosticPatchHome(){
+        return new ModelAndView("diagnostic-patch");
     }
 
     @PostMapping("/download-zip-file")
@@ -78,7 +70,8 @@ public class DiagnosticPatchPackerController {
                                                   @RequestParam("project-dir") String projectDirectory,
                                                   @RequestParam("branch-name") String branchName,
                                                   @RequestParam("add-file") List<String> fileList,
-                                                  @RequestParam("jar-files-directory") String jarFilesDirectory)
+                                                  @RequestParam("jar-files-directory") String jarFilesDirectory,
+                                                  @RequestParam("option-key") String optionKey)
             throws IOException, InterruptedException {
         boolean isValidRequest = true;
         File projDirFile = new File(projectDirectory);
@@ -121,6 +114,7 @@ public class DiagnosticPatchPackerController {
         LOGGER.info(String.format("{ ticketNumber: %s, tceNumber: %s, projectDirectory: %s, branchName: %s, fileList: %s }", ticketNumber, tceNumber, projectDirectory, branchName, fileList));
 
         ModelAndView mv = new ModelAndView("diagnostic-patch");
+        mv.addObject("option", randomConfiguration.findOptionByKey(optionKey));
         if( isValidRequest ){
             mv.addObject("patchInfo", processDiagnosticPatchInfo( jarFilesDirectory, ticketNumber, tceNumber, branchName, fileList, classFileList));
         }

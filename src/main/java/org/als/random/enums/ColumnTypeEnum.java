@@ -15,7 +15,7 @@ public enum ColumnTypeEnum {
     TINYINT(2, "tinyint", JDBCType.TINYINT, Byte.class),
     DOUBLE(3, "double", JDBCType.DOUBLE, Double.class),
     REAL(4, "float", JDBCType.REAL, Float.class),
-    INTEGER(5, "int", JDBCType.INTEGER, Integer.class),
+    INTEGER(5, "int", JDBCType.INTEGER, Long.class),
     BIGINT(6, "bigint", JDBCType.BIGINT, Long.class),
     SMALLINT(7, "smallint", JDBCType.SMALLINT, Short.class),
     DECIMAL(8, "decimal", JDBCType.DECIMAL, BigInteger.class),

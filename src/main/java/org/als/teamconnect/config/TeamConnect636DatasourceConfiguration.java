@@ -2,13 +2,13 @@ package org.als.teamconnect.config;
 
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -19,8 +19,9 @@ import javax.sql.DataSource;
 @EnableJpaRepositories(
         entityManagerFactoryRef = "teamconnect636EntityManagerFactory",
         transactionManagerRef = "teamconnect636TransactionManager",
-        basePackages = {"org.als.teamconnect.entity", "org.als.teamconnect.repo"}
+        basePackages = "org.als.teamconnect.repo"
 )
+@EntityScan("org.als.teamconnect.entity")
 public class TeamConnect636DatasourceConfiguration {
 
     @Bean
@@ -36,13 +37,6 @@ public class TeamConnect636DatasourceConfiguration {
                 .build();
     }
 
-    /*
-    @Bean
-    public JdbcTemplate topicsJdbcTemplate(@Qualifier("teamconnect636DataSource") DataSource dataSource) {
-        return new JdbcTemplate(dataSource);
-    }
-    */
-
     @Bean
     public PlatformTransactionManager teamconnect636TransactionManager(
             @Qualifier("teamconnect636EntityManagerFactory") EntityManagerFactory entityManagerFactory) {
@@ -55,7 +49,7 @@ public class TeamConnect636DatasourceConfiguration {
             (EntityManagerFactoryBuilder builder, @Qualifier("teamconnect636Datasource") DataSource dataSource){
 
         return builder.dataSource(dataSource)
-                .packages("org.als.teamconnect.entity")
+                .packages("org.als.teamconnect.entity", "org.als.teamconnect.repo")
                 .persistenceUnit("teamconnect636").build();
     }
 }

@@ -55,6 +55,7 @@ function loadDbSnapshotDetails(snapshotElement) {
     $(snapshotElement).parent().addClass('active');
 
     let path = $(snapshotElement).data('path');
+    let spinner = showRandomSpinning();
     $.ajax({
         url: '/snapshots/load-snapshot-details',
         type: 'GET',
@@ -91,6 +92,7 @@ function loadDbSnapshotDetails(snapshotElement) {
             $('#snap-db-records-count').text(recordsCount);
 
             loadDbSnapshotTablesDetails(tables);
+            spinner.remove();
         }
     });
 }
@@ -98,6 +100,8 @@ function loadDbSnapshotDetails(snapshotElement) {
 function loadDbSnapshotTablesDetails(tableArray) {
     let tableListElem = $('#database-table-list');
     let dbTable = Object.create(DatabaseTable);
+
+    tableListElem.html('');
     tableArray.forEach(function(tableJson){
         let table = tableJson.table;
 
@@ -105,23 +109,27 @@ function loadDbSnapshotTablesDetails(tableArray) {
         let lastKey = table.lastPrimaryKey;
         let records = table.numberOfRecords;
 
-        let nameElem = $(`<div>${name}</div>`);
+        let nameElem = $(`<div><b>${name}</b></div>`);
         let badgeElem = $(`<div>[ Last Key: ${lastKey}, Records: ${records} ]</div>`);
         let listElem = $(`<div class="list-group-item database-table"></div>`);
 
         listElem.append(nameElem);
         listElem.append(badgeElem);
 
-        listElem.on('click', function(){showTableDetails(dbTable, table, listElem);});
+        listElem.on('click', function(){let spinner = showRandomSpinning();showJavaEntityClassCode(table.entityTableDefinition);showTableDetails(dbTable, table, listElem);spinner.remove();});
 
         tableListElem.append(listElem);
     });
 }
 
+function showJavaEntityClassCode( javaEntityCode ) {
+    $("#jpa-entity-java-code").html(javaEntityCode);
+}
+
 function showTableDetails(dbTable, table, listElem) {
     dbTable.destroyJQueryTable();
     let divElem = $('#database-table-details');
-    let tableElement = $(`<table class="table caption-top"></table>`);
+    let tableElement = $(`<table class="table caption-top" style="overflow-x: auto;"></table>`);
     let tableCaptionElem = $(`<caption id="database-table-caption"></caption>`);
     let tableHeaderlem = $(`<thead id="database-table-header" class="table-dark" style="font-size: small;">`);
     let tableBodyElem = $(`<tbody id="database-table-body" style="font-size: x-small;">`);
@@ -150,22 +158,35 @@ function showTableDetails(dbTable, table, listElem) {
         trHead.append(columnHeader);
     });
 
-    let rowArray = table.data.rows;
-    tableBodyElem.html('');
-    rowArray.forEach(function(row){
-        let rowElem = $(`<tr></tr>`);
-        let columnArray = row.columns;
+    if(table.data){
+        let rowArray = table.data.rows;
+        tableBodyElem.html('');
+        rowArray.forEach(function(row){
+            let rowElem = $(`<tr></tr>`);
+            let columnArray = row.columns;
 
-        columns.forEach(function(columnJson) {
-            let columnDataJson = findColumnJsonByName(columnArray, columnJson.column.name);
-            let columnValue = columnDataJson.value;
+            columns.forEach(function(columnJson) {
+                let columnDataJson = findColumnJsonByName(columnArray, columnJson.column.name);
+                let columnValue = columnDataJson.value;
+                if( columnValue && isNaN(columnValue) && columnValue.startsWith("<?") ){
+                    columnValue = new XMLSerializer().serializeToString((new DOMParser()).parseFromString(columnValue, "text/xml"));
+                } else if ( columnValue && isNaN(columnValue ) ) {
+                    if( columnValue.length > 150 ) {
+                        columnValue = columnValue.substring(0,150) + " ...";
+                    }
+                }
 
-            let columnElem = $(`<td>${columnValue}</td>`);
+                let columnElem = $(`<td>${columnValue}</td>`);
 
-            rowElem.append(columnElem);
+
+                rowElem.append(columnElem);
+            });
+            rowElem.data('row-data', columnArray);
+            rowElem.data('table-name', table.name);
+            rowElem.on('click', function() {printRowObject(this);});
+            tableBodyElem.append(rowElem);
         });
-        tableBodyElem.append(rowElem);
-    });
+    }
 
 
     tableHeaderlem.html(trHead);
@@ -175,6 +196,35 @@ function showTableDetails(dbTable, table, listElem) {
     tableElement.append(tableBodyElem);
     divElem.html(tableElement);
     dbTable.initJQueryTable(tableElement);
+}
+
+function printRowObject(element) {
+    let columnArray = $(element).data('row-data');
+    let tableName = $(element).data('table-name');
+    let capitalTableName = capitalize(snakeToCamel(tableName));
+    let objectName = snakeToCamel(tableName);
+
+    console.log(tableName);
+    console.table(columnArray);
+
+    let setterArray = [];
+
+    columnArray.forEach( function(columnJson) {
+        let value = getFormattedValue(columnJson.value);
+        setterArray.push( `${objectName}.${getSetter(columnJson.name)}${value});` );
+    } );
+
+    console.log(setterArray);
+    navigator.clipboard.writeText(`${capitalTableName} ${objectName} = new ${capitalTableName}();\r\n${setterArray.join("\r\n")}`);
+    alert('Row data copied as Entity object of ' + capitalTableName + ' into the clipboard.');
+}
+
+function getFormattedValue( value ) {
+    if(isNaN(value)){
+        return `"${decodeHtmlEntities(value)}"`;
+    } else {
+        return value;
+    }
 }
 
 function findColumnJsonByName(columnArray, name) {
@@ -195,6 +245,7 @@ function findColumnJsonByName(columnArray, name) {
 function retrieveOptionContent(buttonElem) {
     let jsonData = $(buttonElem).data('option');
     let optionContent = $('#db-util-option-content');
+    let spinner = showRandomSpinning();
 
     $.ajax({
         url: jsonData.path,
@@ -202,6 +253,7 @@ function retrieveOptionContent(buttonElem) {
         dataType: "html",
         success: function(resultData) {
             optionContent.html(resultData);
+            spinner.remove();
         }
     });
 
@@ -227,6 +279,8 @@ function takeDBSnapshot() {
         'port': dbPort
     };
 
+    let spinner = showRandomSpinning();
+
     $.ajax({
         url: "/snapshots/create",
         type: 'POST',
@@ -238,7 +292,8 @@ function takeDBSnapshot() {
             Accept: "application/json"
         },
         success: function(resultData) {
-            alert("Download completed");
+            alert("Snapshot created successfully!");
+            spinner.remove();
         }
     });
 }
@@ -263,4 +318,38 @@ function deleteSnapshot(elem) {
             }
         });
     }
+}
+
+function copyJpaEntityCodeToClipboard() {
+    let text = $('#jpa-entity-java-code').html().replace(/<br>/g, '\n');
+    try {
+      navigator.clipboard.writeText(text);
+      console.log('Content copied to clipboard');
+      alert( 'JPA Entity java code copied to clipboard!' );
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+      alert( 'Failed to copy the JPA Entity java code to clipboard :(!' );
+    }
+}
+
+const snakeToCamel = str =>
+  str.toLowerCase().replace(/([-_][a-z])/g, group =>
+    group
+      .toUpperCase()
+      .replace('-', '')
+      .replace('_', '')
+  );
+
+function getSetter( columnName ){
+    return `set${capitalize(snakeToCamel(columnName))}(`;
+}
+
+function capitalize(s) {
+    return s && String(s[0]).toUpperCase() + String(s).slice(1);
+}
+
+function decodeHtmlEntities(str) {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = str;
+    return textarea.value;
 }

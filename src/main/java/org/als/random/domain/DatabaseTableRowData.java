@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -28,7 +29,7 @@ public class DatabaseTableRowData {
         return tableRowData;
     }
 
-    public static DatabaseTableRowData parseFromJson(DatabaseTableData tableData, JSONObject json) {
+    public static DatabaseTableRowData parseFromJson(DatabaseTableData tableData, JSONObject json) throws UnsupportedEncodingException {
         JSONArray jsonData = json.getJSONArray(COLUMNS_JSON_KEY);
         DatabaseTableRowData tableRowData = new DatabaseTableRowData(tableData);
         for( int i = 0 ; i < jsonData.length() ; i++ ) {

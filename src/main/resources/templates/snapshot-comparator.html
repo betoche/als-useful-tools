@@ -3,6 +3,8 @@
         <head>
             <meta charset="UTF-8">
             <title>Snapshot Comparator</title>
+            <link rel="icon" type="image/x-icon" th:href="@{/images/snapshot-comparer-favicon.ico}">
+            <script th:src="@{/js/snapshot-comparator.js}" defer></script>
         </head>
         <body>
             <div class="container">
@@ -13,34 +15,42 @@
                 <div class="form-group row">
                     <label for="database-1" class="col-sm-2 text-end">Database 1:</label>
                     <div class="col-sm-3">
-                        <select id="database-1" name="database-1" class="form-control">
-                            <option th:each="group, idx : ${snapshotGroupList}" th:value="${group.getSimpleDirectoryName()}" th:text="${group.getSimpleDirectoryName()}"></option>
+                        <select id="database-1" name="database-1" class="form-control" onchange="javascript:showSnapshotList(this);">
+                            <option></option>
+                            <option th:each="group, idx : ${snapshotGroupList}" th:attr="data-snapshots=${group.getSnapshotJsonArray()}"
+                                    th:value="${group.getSimpleDirectoryName()}" th:text="${group.getSimpleDirectoryName()}"></option>
                         </select>
                     </div>
                     <label for="database-2" class="col-sm-2 text-end">Database 2:</label>
                     <div class="col-sm-3">
-                        <select id="database-2" name="database-2" class="form-control custom-select">
-                            <option th:each="group, idx : ${snapshotGroupList}" th:value="${group.getSimpleDirectoryName()}" th:text="${group.getSimpleDirectoryName()}"></option>
+                        <select id="database-2" name="database-2" class="form-control" onchange="javascript:showSnapshotList(this);">
+                            <option></option>
+                            <option th:each="group, idx : ${snapshotGroupList}" th:attr="data-snapshots=${group.getSnapshotJsonArray()}"
+                                    th:value="${group.getSimpleDirectoryName()}" th:text="${group.getSimpleDirectoryName()}"></option>
                         </select>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="snapshot-1" class="col-sm-2 text-end">Snapshot 1:</label>
+                    <label for="snapshot-database-1" class="col-sm-2 text-end">Snapshot 1:</label>
                     <div class="col-sm-3">
-                        <select id="snapshot-1" class="form-control">
+                        <select id="snapshot-database-1" class="form-control">
                             <option ></option>
-                            <option>2025011121341</option>
                         </select>
                     </div>
-                    <label for="snapshot-2" class="col-sm-2 text-end">Snapshot 2:</label>
+                    <label for="snapshot-database-2" class="col-sm-2 text-end">Snapshot 2:</label>
                     <div class="col-sm-3">
-                        <select id="snapshot-2" class="form-control custom-select">
+                        <select id="snapshot-database-2" class="form-control custom-select">
                             <option ></option>
-                            <option>2025011121341</option>
                         </select>
                     </div>
                 </div>
+                <div class="form-group row">
+                    <button type="button" id="comparator-btn" class="btn btn-primary btn-sm">Compare Snapshots!</button>
+                </div>
                 <hr>
+                <div class="row">
+                    <div id="comparator-results" class="col-12"></div>
+                </div>
             </div>
         </body>
     </html>
