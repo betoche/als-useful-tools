@@ -13,7 +13,7 @@
     </head>
     <body>
         <div class="vertical-container">
-            <div class="vertical fs-2 font-weight-bold" th:text="${option.getTitle()}"></div>
+            <div class="vertical fs-2 font-weight-bold">Diagnostic Patch Packer</div>
         </div>
         <div class="container" style="max-width: calc(100% - 60px);">
             <div class="row">
@@ -53,7 +53,6 @@
                         <div class="row">
                             <div class="col-12">
                                 <form action="/diagnostic-patch/process" method="post" id="diagnostic-patch-form" >
-                                    <input type="hidden" name="option-key" th:value="${option.getKey()}">
                                     <h5>Add the details of the diagnostic patch.</h5>
                                     <hr>
                                     <div class="form-group row">

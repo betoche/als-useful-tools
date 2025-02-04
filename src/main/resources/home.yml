@@ -47,12 +47,12 @@ genericOptions:
     title: Global String Search in Directory
     description: Search by multiple values inside a specific directory, this search allows you to define specific file types.
     path: /global-text-search
-specificOptions:
   -
     key: diagnostic-patch
     title: Diagnostic Patch Tool
     description: With this tool you can easily create zip Diagnostic Patches which include the class files and the Instruction text file.
     path: /diagnostic-patch
+specificOptions:
   -
     key: lookup-table
     title: Lookup Table Import Tool

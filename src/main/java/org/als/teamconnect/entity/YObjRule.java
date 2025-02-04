@@ -2,13 +2,22 @@ package org.als.teamconnect.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Data;
 import org.als.random.helper.DateHelper;
+import org.als.random.helper.StringHelper;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.util.*;
 
 @Entity
+@Table(name="Y_OBJ_RULE")
 @Data
 public class YObjRule {
     @Column(name="PRIMARY_KEY")
@@ -103,13 +112,101 @@ public class YObjRule {
     private Long version;
     @Column(name="CREATED_ON")
     private Timestamp createdOn;
+
+    public static YObjRule parseFromString(String zfRuleStr) throws IllegalAccessException {
+        Map<String, Object> keyValuesMap = StringHelper.getRuleKeyValue(zfRuleStr, true);
+        YObjRule objRule = new YObjRule();
+
+        assert keyValuesMap != null;
+
+        for( Map.Entry<String, Object> entry : keyValuesMap.entrySet() ) {
+            for( Field field : objRule.getClass().getDeclaredFields() ) {
+                field.setAccessible(true);
+                if( entry.getKey().toLowerCase().contains(field.getName().toLowerCase()) ) {
+                    Object value = entry.getValue();
+                    if( value.toString().equalsIgnoreCase("false") ) {
+                        value = 0L;
+                    } else if( value.toString().equalsIgnoreCase("true") ) {
+                        value = 1L;
+                    }
+
+                    try {
+                        switch (field.getType().getSimpleName()) {
+                            case "Long" -> field.set(objRule, Long.valueOf(value.toString()));
+                            case "String" -> field.set(objRule, entry.getValue().toString());
+                            case "Boolean" -> field.set(objRule, value.toString().equalsIgnoreCase("true"));
+                            case "Integer" -> field.set(objRule, Integer.valueOf(value.toString()));
+                            case "Timestamp" -> {
+                                Timestamp timestamp = null;
+                                Date date = DateHelper.parseDateWithTimeZone(value.toString());
+                                if(Objects.nonNull(date) ){
+                                    timestamp = new Timestamp(date.getTime());
+                                }
+
+                                field.set(objRule, timestamp);
+                            }
+                        }
+                    }catch( Exception e ){
+                        e.printStackTrace();
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        return objRule;
+    }
+
+    public static List<YObjRule> parseYObjRuleListFromFile(String filePath) throws IOException, IllegalAccessException {
+        if( !(new File(filePath)).exists() )
+            return new ArrayList<>();
+
+        List<YObjRule> objRuleList = new ArrayList<>();
+        List<String> lineList = Files.readAllLines(Path.of(filePath));
+        for( String line : lineList ) {
+            List<String> zfRuleChunkList = getZfRuleChunkList(line);
+            for( String zfRuleStr : zfRuleChunkList ) {
+                objRuleList.add(YObjRule.parseFromString(zfRuleStr));
+            }
+        }
+
+        return objRuleList;
+    }
+
+    public static List<String> getZfRuleChunkList( String line ) {
+        String indexOfPattern = "ZFRule@";
+        List<String> resultList = new ArrayList<>();
+        int indexOfFrom = line.indexOf(indexOfPattern);
+        int indexOfTo = line.substring(indexOfFrom+indexOfPattern.length()).indexOf(indexOfPattern);
+
+        String zFRuleStr = "";
+        try {
+            if( indexOfTo <= 0 ){
+                indexOfTo = line.length() - indexOfFrom;
+            }
+            zFRuleStr = line.substring(indexOfFrom, indexOfFrom + indexOfTo);
+        } catch( Exception e ){
+            e.printStackTrace();
+        }
+        resultList.add(zFRuleStr);
+        if( line.substring((indexOfFrom + indexOfTo)).indexOf(indexOfPattern)>1 ) {
+            String restOfString = line.substring((indexOfFrom + indexOfTo));
+            resultList.addAll(getZfRuleChunkList(restOfString));
+        }
+
+        return resultList;
+    }
+
+
+
     public void setCreatedOn(String dateStr) throws ParseException {
-        this.createdOn = (Timestamp) DateHelper.parseDate(dateStr);
+        this.createdOn = new Timestamp( DateHelper.parseDateUS(dateStr).getTime() );
     }
     @Column(name="MODIFIED_ON")
     private Timestamp modifiedOn;
     public void setModifiedOn(String dateStr) throws ParseException {
-        this.modifiedOn = (Timestamp) DateHelper.parseDate(dateStr);
+        this.modifiedOn = new Timestamp( DateHelper.parseDateUS(dateStr).getTime() );
     }
     @Column(name="SHORT_DESCRIPTION")
     private String shortDescription;
@@ -183,4 +280,6 @@ public class YObjRule {
     private String message;
     @Column(name="XML_FORMAT")
     private String xmlFormat;
+
+    public static String Y_OBJ_RULE_SEQ_KEY = "Y_OBJ_RULE_SEQ";
 }

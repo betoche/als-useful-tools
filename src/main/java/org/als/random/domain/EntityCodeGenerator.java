@@ -22,7 +22,7 @@ public class EntityCodeGenerator {
 
     public String getClassName() {
         if( Objects.isNull(className) ) {
-            className = StringHelper.snakeToCamelCase(table.getName().toLowerCase());
+            className = StringHelper.capitalize( StringHelper.snakeToCamelCase(table.getName().toLowerCase()) );
         }
         return className;
     }

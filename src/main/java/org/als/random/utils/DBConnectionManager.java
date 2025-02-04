@@ -115,7 +115,6 @@ public class DBConnectionManager {
                     while( rs.next() ) {
                         table.addTableRowData(DatabaseTableRowData.parse(table.getTableData(), table.getColumnList(), rs));
                     }
-
                 }
             }
         } catch (SQLException e) {
@@ -164,7 +163,7 @@ public class DBConnectionManager {
     }
 
 
-    private static void closeConnectionObjects(Connection con, PreparedStatement ps, ResultSet rs) {
+    public static void closeConnectionObjects(Connection con, PreparedStatement ps, ResultSet rs) {
         if( Objects.nonNull(rs) ){
             try {
                 rs.close();
@@ -188,6 +187,25 @@ public class DBConnectionManager {
             } catch (SQLException e) {
                 LOGGER.error(e.getMessage(), e);
             }
+        }
+    }
+
+    public static void updateSequence(String tableKey, Long currentVal, String database, String username, String password) {
+        String sqlQuery = String.format("UPDATE [SEQUENCE] SET SEQ_COUNT = ? WHERE SEQ_NAME = '%s'", tableKey );
+        Connection con = null;
+        PreparedStatement ps = null;
+        long nextVal = currentVal + 500L;
+
+        try {
+            con = DBConnectionManager.getDatabaseConnection(DatabaseTypeEnum.SQL_SERVER, database, username, password, null, null);
+            ps = con.prepareStatement(sqlQuery);
+            ps.setLong(1, nextVal);
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnectionManager.closeConnectionObjects(con, ps, null);
         }
     }
 }

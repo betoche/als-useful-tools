@@ -211,7 +211,14 @@ function printRowObject(element) {
 
     columnArray.forEach( function(columnJson) {
         let value = getFormattedValue(columnJson.value);
-        setterArray.push( `${objectName}.${getSetter(columnJson.name)}${value});` );
+        let sentenceComment = '';
+        if( columnJson.name && !columnJson.name.startsWith('IS_') && Number.isInteger(value) ) {
+            value = `${value}L`;
+        } else if( !value ) {
+            value = 'null';
+            sentenceComment = '//';
+        }
+        setterArray.push( `${sentenceComment}${objectName}.${getSetter(columnJson.name)}${value});` );
     } );
 
     console.log(setterArray);
@@ -220,7 +227,9 @@ function printRowObject(element) {
 }
 
 function getFormattedValue( value ) {
-    if(isNaN(value)){
+    if( !value ){
+        return value;
+    } else if(isNaN(value)){
         return `"${decodeHtmlEntities(value)}"`;
     } else {
         return value;
@@ -321,7 +330,9 @@ function deleteSnapshot(elem) {
 }
 
 function copyJpaEntityCodeToClipboard() {
-    let text = $('#jpa-entity-java-code').html().replace(/<br>/g, '\n');
+    var tab = RegExp("\\t", "g");
+    let text = $('#jpa-entity-java-code').html().replace(/<br>/g, '\n').replaceAll(String.fromCharCode(8195),'    ');
+
     try {
       navigator.clipboard.writeText(text);
       console.log('Content copied to clipboard');

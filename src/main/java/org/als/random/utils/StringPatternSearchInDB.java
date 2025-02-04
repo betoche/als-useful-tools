@@ -321,7 +321,7 @@ public class StringPatternSearchInDB {
         String host = "localhost";
         int port = 1433;
         String databaseName = "teamconnect_710_custom";
-        String[] searchPattern = new String[]{ "YYYY" };
+        String[] searchPattern = new String[]{ "batch_size", "atchSize", "InlineBatchAdjustBatchSize" };
 
         StringPatternSearchInDB spsidb = new StringPatternSearchInDB( username, password, host, port, databaseName, searchPattern );
         spsidb.printTablesWithPattern();

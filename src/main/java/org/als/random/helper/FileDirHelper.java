@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.Objects;
 
 public class FileDirHelper {
-
-
     public static boolean containsSubDirectoriesOrSubFiles( File directory ) {
         return isValidDirectory(directory) && Objects.nonNull(directory.listFiles());
     }
@@ -26,7 +24,6 @@ public class FileDirHelper {
 
         return filePath.substring(lastIndexOf+1);
     }
-
     public static String getSimpleDirectoryName(File directory) {
         if( Objects.isNull(directory) )
             return "";

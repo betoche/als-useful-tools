@@ -166,12 +166,11 @@ public class StringPatternSearch {
     }
 
     public static void main( String[] args ) {
-
         //String directory = "C:\\Users\\betoc\\repositories\\TCE7.1.0\\teamconnectenterprise";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\teamconnectenterprise";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE7.0.0\\teamconnectenterprise";
-        //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.6\\teamconnectenterprise";
-        String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.7\\teamconnectenterprise";
+        String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.6\\teamconnectenterprise";
+        //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.7\\teamconnectenterprise";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\eclipse";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\maven-3.6.3";
         //String directory = "C:\\Users\\betoc\\repositories\\datawarehouse";
@@ -204,12 +203,17 @@ public class StringPatternSearch {
         //String[] patterns = new String[]{"ContextLoader.getCurrentWebApplicationContext()"};
         //String[] patterns = new String[]{"DynamicMessageSource"};
         //String[] patterns = new String[]{"TCSupportedLocales"};
-        String[] patterns = new String[]{"500"};
+        //String[] patterns = new String[]{"500"};
+        //String[] patterns = new String[]{"INLINE_BATCH_ADJUST_BATCH_SIZE"};
+        //String[] patterns = new String[]{" ValueHolderInterface"};
+        //String[] patterns = new String[]{"res-ref-name"};
+        //String[] patterns = new String[]{"not instantiated"};
+        String[] patterns = new String[]{"UnitOfWorkQueryValueHolder"};
 
-        String[] fileExtensions = new String[]{ ".xml", ".properties" };
+        //String[] fileExtensions = new String[]{ ".xml", ".properties" };
         //String[] fileExtensions = new String[]{ ".jsp" };
         //String[] fileExtensions = new String[]{ ".js", ".jsp" };
-        //String[] fileExtensions = new String[]{ ".java" };
+        String[] fileExtensions = new String[]{ ".java" };
         //String[] fileExtensions = new String[]{ ".java", ".jsp" };
         //String[] fileExtensions = new String[]{ ".java", ".xml", ".properties" };
         //String[] fileExtensions = new String[]{ ".xml", ".ini", ".prefs" };

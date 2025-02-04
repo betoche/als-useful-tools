@@ -1,4 +1,4 @@
-package org.als.teamconnect.service;
+package org.als.random.service;
 
 import org.als.teamconnect.entity.DiagnosticPatchInfo;
 import org.apache.logging.log4j.util.Strings;

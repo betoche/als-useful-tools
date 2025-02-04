@@ -1,12 +1,10 @@
-package org.als.teamconnect.controller;
+package org.als.random.controller;
 
-import org.als.random.controller.RandomController;
 import org.als.random.domain.RandomConfiguration;
 import org.als.random.utils.MavenProjectFileSystemFinder;
 import org.als.teamconnect.entity.DiagnosticPatchInfo;
 import org.als.teamconnect.entity.DownloadDiagnosticPatchRequest;
-import org.als.teamconnect.service.DiagnosticPatchService;
-import org.apache.logging.log4j.util.Strings;
+import org.als.random.service.DiagnosticPatchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +27,10 @@ import java.util.zip.ZipFile;
 public class DiagnosticPatchPackerController {
     @Autowired
     private DiagnosticPatchService diagnosticPatchService;
-    @Autowired
-    private RandomConfiguration randomConfiguration;
     private final static Logger LOGGER = LoggerFactory.getLogger(DiagnosticPatchPackerController.class);
 
     @GetMapping({"", "/", "/process"})
-    public ModelAndView getDiagnosticPatchHome(){
+    public ModelAndView getDiagnosticPatchHome() {
         return new ModelAndView("diagnostic-patch");
     }
 
@@ -70,8 +66,7 @@ public class DiagnosticPatchPackerController {
                                                   @RequestParam("project-dir") String projectDirectory,
                                                   @RequestParam("branch-name") String branchName,
                                                   @RequestParam("add-file") List<String> fileList,
-                                                  @RequestParam("jar-files-directory") String jarFilesDirectory,
-                                                  @RequestParam("option-key") String optionKey)
+                                                  @RequestParam("jar-files-directory") String jarFilesDirectory)
             throws IOException, InterruptedException {
         boolean isValidRequest = true;
         File projDirFile = new File(projectDirectory);
@@ -114,7 +109,6 @@ public class DiagnosticPatchPackerController {
         LOGGER.info(String.format("{ ticketNumber: %s, tceNumber: %s, projectDirectory: %s, branchName: %s, fileList: %s }", ticketNumber, tceNumber, projectDirectory, branchName, fileList));
 
         ModelAndView mv = new ModelAndView("diagnostic-patch");
-        mv.addObject("option", randomConfiguration.findOptionByKey(optionKey));
         if( isValidRequest ){
             mv.addObject("patchInfo", processDiagnosticPatchInfo( jarFilesDirectory, ticketNumber, tceNumber, branchName, fileList, classFileList));
         }

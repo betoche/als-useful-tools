@@ -2,9 +2,11 @@ package org.als.teamconnect.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
+@Table(name="J_APPR_CONDITION")
 @Data
 public class JApprCondition {
     @Column(name="PRIMARY_KEY")
@@ -43,4 +45,6 @@ public class JApprCondition {
     private String conditionValue;
     @Column(name="OLD_VALUE")
     private String oldValue;
+
+    public static String J_APPR_CONDITION_SEQ_KEY = "J_APPR_CONDITION_SEQ";
 }

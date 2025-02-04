@@ -53,8 +53,8 @@ public class DatabaseTableColumn {
             case BIT -> rs.getBoolean(getName());
             case TINYINT -> rs.getByte(getName());
             case DOUBLE -> rs.getDouble(getName());
-            case REAL -> rs.getInt(getName());
-            case INTEGER -> rs.getInt(getName());
+            case REAL -> getIntegerFromResultSet(rs);
+            case INTEGER -> getIntegerFromResultSet(rs);
             case BIGINT -> rs.getLong(getName());
             case SMALLINT -> rs.getShort(getName());
             case DECIMAL -> rs.getBigDecimal(getName());
@@ -73,5 +73,16 @@ public class DatabaseTableColumn {
             case IMAGE -> DatatypeConverter.printBase64Binary(rs.getBytes(getName()));
         };
         return value;
+    }
+
+    public Integer getIntegerFromResultSet( ResultSet rs ) throws SQLException {
+        Integer result = null;
+        int intVal = rs.getInt(getName());
+        if( !rs.wasNull() ){
+            result = intVal;
+        }
+
+
+        return result;
     }
 }
