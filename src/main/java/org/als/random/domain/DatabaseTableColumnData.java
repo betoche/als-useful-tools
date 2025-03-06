@@ -142,10 +142,21 @@ public class DatabaseTableColumnData<T> {
                     getColumn().getColumnType(), tableColumnData2.getFullName(),
                     tableColumnData2.getColumn().getColumnType() ));
 
-        if(Objects.nonNull(getValue()/*getCastedValue()*/) && Objects.nonNull(tableColumnData2.getValue()/*.getCastedValue()*/)) {
+        if(Objects.nonNull(getValue()) && Objects.nonNull(tableColumnData2.getValue())) {
             if (!getValue()/*getCastedValue()*/.equals(tableColumnData2.getValue()/*getCastedValue()*/))
                 reasonMessageList.add(String.format("[Data change]:<br> %s: [%s]<br> %s: [%s]", getTableNameWithSnapshotName(), getValue(),
                         tableColumnData2.getTableNameWithSnapshotName(), tableColumnData2.getValue()));
+        } else if(Objects.nonNull(getValue()) || Objects.nonNull(tableColumnData2.getValue())) {
+            if( Objects.isNull(getValue()) ) {
+                reasonMessageList.add(String.format("[Data change]:<br> %s: [%s]<br> %s: [%s]",
+                        getTableNameWithSnapshotName(), getValue(),
+                        tableColumnData2.getTableNameWithSnapshotName(), tableColumnData2.getValue()));
+            }
+            if( Objects.isNull(tableColumnData2.getValue()) ){
+                reasonMessageList.add(String.format("[Data change]:<br> %s: [%s]<br> %s: [%s]",
+                        getTableNameWithSnapshotName(), getValue(),
+                        tableColumnData2.getTableNameWithSnapshotName(), tableColumnData2.getValue()));
+            }
         }
 
         return reasonMessageList;

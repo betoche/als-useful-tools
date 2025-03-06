@@ -151,11 +151,11 @@ public class DatabaseComparatorResults {
             DatabaseTableData data2 = table2.getTableData();
 
             List<String> differenceList = data1.getDataDifferenceList(data2);
-            List<String> inverseDifferenceList = data1.getDataDifferenceList(data2);
+            //List<String> inverseDifferenceList = data2.getDataDifferenceList(data1);
 
             Set<String> differenceSet = new HashSet<>();
             differenceSet.addAll(differenceList);
-            differenceSet.addAll(inverseDifferenceList);
+            //differenceSet.addAll(inverseDifferenceList);
 
             return differenceSet.stream().toList();
         }
