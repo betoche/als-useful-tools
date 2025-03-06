@@ -28,6 +28,8 @@ public class DBSnapshot {
     private final String databaseName;
     private final String databaseUserName;
     private final String databasePassword;
+    private final String databaseHost;
+    private final int databasePort;
     private final DatabaseTypeEnum databaseType;
     @Getter
     private final boolean retrieveData;
@@ -38,18 +40,20 @@ public class DBSnapshot {
     private final static Logger LOGGER = LoggerFactory.getLogger(DBSnapshot.class);
 
     public DBSnapshot( DatabaseTypeEnum databaseTypeEnum, String databaseName, String databaseUserName,
-                       String databasePassword, boolean retrieveData ) {
+                       String databasePassword, String host, int port, boolean retrieveData ) {
         this.databaseType = databaseTypeEnum;
         this.databaseName = databaseName;
         this.databaseUserName = databaseUserName;
         this.databasePassword = databasePassword;
         this.retrieveData = retrieveData;
+        this.databaseHost = host;
+        this.databasePort = port;
     }
 
     public Connection getDbConnection() throws SQLException {
         if(Objects.isNull(dbConn) || dbConn.isClosed() ) {
             dbConn = null;
-            dbConn = DBConnectionManager.getDatabaseConnection(databaseType, databaseName, databaseUserName, databasePassword, null, null);
+            dbConn = DBConnectionManager.getDatabaseConnection(databaseType, databaseName, databaseUserName, databasePassword, databaseHost, databasePort);
         }
         return dbConn;
     }
@@ -104,8 +108,10 @@ public class DBSnapshot {
         String databaseName = "teamconnect_637";
         String databaseUserName = "teamconnect";
         String databasePassword = "password";
+        String databaseHost = "localhost";
+        int databasePort = 1433;
         DBSnapshot dbSnapshot = new DBSnapshot(databaseTypeEnum, databaseName, databaseUserName, databasePassword,
-                true);
+                databaseHost, databasePort, true);
 
         try {
             dbSnapshot.createDatabaseSnapshot();

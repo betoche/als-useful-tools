@@ -13,7 +13,7 @@ spring:
       username: graffos
       password: graffosPassword2024
     teamconnect636:
-      url: jdbc:sqlserver://localhost:1433;databaseName=teamconnect_636;Encrypt=true;TrustServerCertificate=true
+      url: jdbc:sqlserver://192.168.1.34:1433;databaseName=teamconnect_636;Encrypt=true;TrustServerCertificate=true
       username: teamconnect
       password: password
       driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver

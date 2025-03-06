@@ -86,11 +86,15 @@ public class DBSnapshotService {
         String databaseName = request.getName();
         String databaseUserName = request.getUsername();
         String databasePassword = request.getPassword();
+        String databaseHost = request.getHost();
+        int databasePort = request.getPort();
+
         boolean retrieveData = request.isRetrieveData();
         DatabaseSnapshot.DatabaseSnapshotBuilder builder = DatabaseSnapshot.builder();
         DatabaseSnapshot databaseSnapshot;
 
-        DBSnapshot dbSnapshot = new DBSnapshot(DatabaseTypeEnum.SQL_SERVER, databaseName, databaseUserName, databasePassword, retrieveData);
+        DBSnapshot dbSnapshot = new DBSnapshot(DatabaseTypeEnum.SQL_SERVER, databaseName, databaseUserName, databasePassword,
+                databaseHost, databasePort, retrieveData);
         Database database = dbSnapshot.getDatabase();
         database.setDbHost(request.getHost());
         database.setDbPort(request.getPort());
