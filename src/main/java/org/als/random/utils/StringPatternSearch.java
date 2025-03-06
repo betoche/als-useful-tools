@@ -1,12 +1,16 @@
 package org.als.random.utils;
 
 import org.als.random.RandomLogger;
+import org.als.random.entity.DirectoryFile;
+import org.als.random.entity.FileStats;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class StringPatternSearch {
@@ -16,7 +20,7 @@ public class StringPatternSearch {
     private String[] exclusions;
     private List<String> filesPathList;
     private Map<String, List<String>> linesWithPatternMap;
-    private RandomLogger logger = new RandomLogger(StringPatternSearch.class);
+    private static RandomLogger logger = new RandomLogger(StringPatternSearch.class);
 
     public StringPatternSearch( String directory, String[] patterns, String[] fileTypes, String[] exclusions ) {
         this.directory = directory;
@@ -101,16 +105,17 @@ public class StringPatternSearch {
         return false;
     }
 
-    private void showResults() {
+    private void showResults() throws IOException {
+        List<String> msgList = new ArrayList<>();
         String pattern = String.join(", ", patterns);
         String types = Objects.nonNull(fileTypes)?String.join(", ", fileTypes):"*";
 
-        logger.info("=========================================================");
-        logger.info(String.format("Searching for \"%s\" into [ %s ] file types...", pattern, types));
-        logger.info("=========================================================");
+        msgList.add("=========================================================");
+        msgList.add(String.format("Searching for \"%s\" into [ %s ] file types...", pattern, types));
+        msgList.add("=========================================================");
         getLinesWithPatternMap();
-        logger.info("  - Results:");
-        logger.info("  ========");
+        msgList.add("  - Results:");
+        msgList.add("  ========");
 
         List<String> openWithCode = new ArrayList<>();
         List<String> results = new ArrayList<>();
@@ -123,23 +128,37 @@ public class StringPatternSearch {
                 String line = l.substring(0, l.lastIndexOf(":"));
                 String lineNumber = l.replace(String.format("%s:", line), "");
 
-                results.add(String.format("- %s:%s -> %s%s", filePath, lineNumber, line.trim(), "\n"));
-                openWithCode.add(String.format("%scode --goto \"%s:%s\"", "\n", filePath, lineNumber));
+                results.add(String.format("- %s:%s -> %s", filePath, lineNumber, line.trim()));
+                openWithCode.add(String.format("code --goto \"%s:%s\"", filePath, lineNumber));
             }
         }
-        logger.info( String.join("",results));
-        logger.info("  - Summary:");
-        logger.info("  ==========");
-        logger.info(String.format("Directory       : %s", directory));
-        logger.info(String.format("Patterns        : %s", pattern));
-        logger.info(String.format("File Extensions : %s", types));
-        logger.info(String.format("Scanned Files   : %s", getFilePathList().size()));
-        logger.info(String.format("Matches         : %s", getLinesWithPatternMap().size()));
-        logger.info("=========================================================");
-        logger.info("  - Open files with code:");
-        logger.info("  =======================");
-        logger.info( String.join("",openWithCode));
-        logger.info("=========================================================");
+        msgList.addAll(results);
+        msgList.add("  - Summary:");
+        msgList.add("  ==========");
+        msgList.add(String.format("Directory       : %s", directory));
+        msgList.add(String.format("Patterns        : %s", pattern));
+        msgList.add(String.format("File Extensions : %s", types));
+        msgList.add(String.format("Scanned Files   : %s", getFilePathList().size()));
+        msgList.add(String.format("Matches         : %s", getLinesWithPatternMap().size()));
+        msgList.add("=========================================================");
+        msgList.add("  - Open files with code:");
+        msgList.add("  =======================");
+        msgList.addAll(openWithCode);
+        msgList.add("=========================================================");
+
+        logger.info(String.format("%s%s", System.lineSeparator(), String.join(System.lineSeparator(), msgList)));
+
+        saveResultsToFile(msgList);
+    }
+
+    public void saveResultsToFile(List<String> outputLines) throws IOException {
+        if( !(new File("output")).exists() ) {
+            Files.createDirectory(Path.of("output"));
+        }
+        if( !(new File("output/logs")).exists() ) {
+            Files.createDirectory(Path.of("output/logs"));
+        }
+        Files.write(Paths.get("output/logs/StringPatternSearch.log"), outputLines, StandardCharsets.UTF_8);
     }
 
     public void sumOddNumbers(){
@@ -168,8 +187,10 @@ public class StringPatternSearch {
     public static void main( String[] args ) {
         //String directory = "C:\\Users\\betoc\\repositories\\TCE7.1.0\\teamconnectenterprise";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\teamconnectenterprise";
-        //String directory = "C:\\Users\\betoc\\repositories\\TCE7.0.0\\teamconnectenterprise";
-        String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.6\\teamconnectenterprise";
+        String directory = "C:\\Users\\betoc\\repositories\\TCE7.0.0\\teamconnectenterprise";
+        //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.3\\teamconnectenterprise";
+        //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.6\\teamconnectenterprise";
+        //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.6\\teamconnectenterprise";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.7\\teamconnectenterprise";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\eclipse";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\maven-3.6.3";
@@ -208,22 +229,35 @@ public class StringPatternSearch {
         //String[] patterns = new String[]{" ValueHolderInterface"};
         //String[] patterns = new String[]{"res-ref-name"};
         //String[] patterns = new String[]{"not instantiated"};
-        String[] patterns = new String[]{"UnitOfWorkQueryValueHolder"};
+        //String[] patterns = new String[]{"UnitOfWorkQueryValueHolder"};
+        //String[] patterns = new String[]{"getEnterpriseObjectQ()"};
+        //String[] patterns = new String[]{"UnitOfWorkQueryValueHolder"};
+        //String[] patterns = new String[]{ "\"objects\"", "UnitOfWorkProperty.OBJECTS" };
+        String[] patterns = new String[]{"\"[INFO-"};
 
         //String[] fileExtensions = new String[]{ ".xml", ".properties" };
-        //String[] fileExtensions = new String[]{ ".jsp" };
-        //String[] fileExtensions = new String[]{ ".js", ".jsp" };
         String[] fileExtensions = new String[]{ ".java" };
+        //String[] fileExtensions = new String[]{ ".java", ".xml", ".properties", ".class", ".jar" };
+        //String[] fileExtensions = new String[]{ ".js", ".jsp" };
+        //String[] fileExtensions = new String[]{ ".java", ".class" };
         //String[] fileExtensions = new String[]{ ".java", ".jsp" };
         //String[] fileExtensions = new String[]{ ".java", ".xml", ".properties" };
         //String[] fileExtensions = new String[]{ ".xml", ".ini", ".prefs" };
         //String[] fileExtensions = new String[]{ ".xml" };
         //String[] fileExtensions = new String[]{};
 
+        //directory = "C:\\Users\\betoc\\apps\\tomcat\\9.0.99\\webapps\\TC71_TEST_SQL_PB8";
+        //directory = "C:\\Users\\betoc\\apps\\tomcat\\9.0.99\\webapps\\teamconnect-7.1.0.0001";
+        patterns = new String[]{"No value for key"};
+
         StringPatternSearch sps = new StringPatternSearch(directory, patterns, fileExtensions, new String[]{".class", ".png", ".css", ".jar", ".log"});
         //sps.sumOddNumbers();
         //sps.createLadder(6);
-        sps.showResults();
+        try {
+            sps.showResults();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 }

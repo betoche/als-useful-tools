@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+    <html lang="en" xmlns:th="http://www.thymeleaf.org">
+        <head>
+            <meta charset="UTF-8">
+            <title>Database Search Tool</title>
+
+            <link th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" rel="stylesheet" />
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css">
+            <link rel="stylesheet" href="https://cdn.datatables.net/2.2.0/css/dataTables.dataTables.css" />
+            <link th:href="@{/css/random.css}" rel="stylesheet" />
+
+            <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+            <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}" defer></script>
+            <script src="https://cdn.datatables.net/2.2.0/js/dataTables.js"></script>
+            <script th:src="@{/js/random.js}" defer></script>
+        </head>
+        <body>
+            <div class="container">
+                <div class="row text-center">
+                    <h3>Database Search Tool</h3>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-2">
+                        <button type="button" class="btn btn-primary">New DB Search</button>
+                    </div>
+                    <div class="col-10">
+                        <div class="container text-start">
+                            <h4>Search Details</h4>
+                            <div class="form-group row">
+                                <label for="databaseName" class="col-sm-2 col-form-label text-end">DB Name:</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="databaseName">
+                                </div>
+                                <label for="databaseType" class="col-sm-1 col-form-label text-end">Type:</label>
+                                <div class="col-sm-3">
+                                    <select class="form-select" aria-label="Default select example" id="databaseType">
+                                        <option value="1">Oracle</option>
+                                        <option value="2">SQLServer</option>
+                                    </select>
+                                </div>
+                                <label for="host" class="col-sm-1 col-form-label text-end">Host:</label>
+                                <div class="col-sm-2">
+                                    <input type="text" class="form-control" id="host">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="userName" class="col-sm-2 col-form-label text-end">User Name:</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" id="userName">
+                                </div>
+                                <label for="password" class="col-sm-1 col-form-label text-end">Password:</label>
+                                <div class="col-sm-3">
+                                    <input type="password" class="form-control" id="password">
+                                </div>
+                                <label for="password" class="col-sm-1 col-form-label text-end">Port:</label>
+                                <div class="col-sm-1">
+                                    <input type="number" class="form-control" id="port">
+                                </div>
+                            </div>
+                            <div class="row" id="db-search-results" style="border-top: 1px solid gray;">
+                                <h4>Results</h4>
+                                <div class="container" style="border-left:1px solid gray;">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span class="table-name-cloud">E_CONT_INT</span>
+                                            <span class="table-name-cloud">E_CONT_DETAIL</span>
+                                            <span class="table-name-cloud">T_PROJECT</span>
+                                            <span class="table-name-cloud">T_CONTACT</span>
+                                            <span class="table-name-cloud">Y_CUSTOM_LOOKUP_TABLE</span>
+                                            <span class="table-name-cloud">Y_CUSTOM_LOOKUP_ITEM</span>
+                                            <span class="table-name-cloud">T_SETTINGS</span>
+                                            <span class="table-name-cloud">T_HISTORY</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </body>
+    </html>

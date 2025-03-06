@@ -41,7 +41,7 @@ genericOptions:
       - key: db-global-search
         title: Database Search
         description: Search by multiple values in all the available tables inside a specific database.
-        path: /db-utils/database-search
+        path: /database-search
   -
     key: files-search
     title: Global String Search in Directory

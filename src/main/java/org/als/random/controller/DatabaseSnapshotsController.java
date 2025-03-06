@@ -32,11 +32,12 @@ public class DatabaseSnapshotsController {
 
     @GetMapping("/load-snapshot-details")
     public ResponseEntity<String> getSnapshotDetailsByFilePath(@RequestParam String filePath) throws IOException {
-        return  ResponseEntity.ok(DBSnapshotService.getSnapshotDetailsByFilePath(filePath).toJson().toString());
+        return  ResponseEntity.ok(DBSnapshotService.getSnapshotDetailsByFilePath(filePath, true).toJson().toString());
     }
 
     @GetMapping("/snapshot-comparator")
     public ModelAndView getSnapshotComparatorView() {
+        // TODO: implement parameter for sending the list without data
         ModelAndView mv = new ModelAndView("snapshot-comparator");
         mv.addObject("snapshotGroupList", snapshotService.getDatabaseSnapshotGroupList());
 

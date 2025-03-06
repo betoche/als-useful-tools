@@ -1,12 +1,7 @@
 package org.als.random.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Entity
 @Data
@@ -18,10 +13,12 @@ public class DirectoryFile implements FileStats {
     private Integer filesCount;
     private Long linesCount;
 
-    /*
     @ManyToOne( fetch = FetchType.LAZY )
-    @JdbcTypeCode(SqlTypes.INTEGER)
+    @JoinColumn(name = "directory_file_type_id")
+    private DirectoryFileType directoryFileType;
+
+    @ManyToOne( fetch = FetchType.LAZY )
     @JoinColumn(name = "directory_id")
+    //@JdbcTypeCode(SqlTypes.INTEGER)
     private Directory directory;
-    */
 }

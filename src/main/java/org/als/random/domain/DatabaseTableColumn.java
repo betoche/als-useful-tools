@@ -1,6 +1,7 @@
 package org.als.random.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.als.random.enums.ColumnTypeEnum;
@@ -12,12 +13,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
 
-@Getter
-@Setter
 @AllArgsConstructor
 public class DatabaseTableColumn {
+    @Getter @Setter
     private String name;
+    @Getter @Setter
     private ColumnTypeEnum columnType;
+    @Getter @Setter
     private DatabaseTable table;
 
     public static final String NAME_JSON_KEY = "name";

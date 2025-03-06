@@ -6,6 +6,7 @@ import org.als.random.enums.RandomConstants;
 import org.als.random.helper.DateHelper;
 import org.als.random.helper.FileDirHelper;
 import org.als.random.utils.DBSnapshot;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,8 @@ import java.util.*;
 public class DBSnapshotService {
     private final static Logger LOGGER = LoggerFactory.getLogger(DBSnapshotService.class);
 
-    public static DatabaseSnapshot getSnapshotDetailsByFilePath(String filePath) throws IOException {
-        return DatabaseSnapshot.loadFromJsonFile(filePath);
+    public static DatabaseSnapshot getSnapshotDetailsByFilePath(String filePath, boolean withData) throws IOException {
+        return DatabaseSnapshot.loadFromJsonFile(filePath, withData);
     }
 
     public List<DatabaseSnapshotGroup> getDatabaseSnapshotGroupList() {
@@ -34,9 +35,12 @@ public class DBSnapshotService {
             for( File snapshotsDir : Objects.requireNonNull(storageDir.listFiles())) {
                 if( FileDirHelper.isValidDirectory(snapshotsDir) ) {
                     try {
-                        databaseSnapshotGroups.add(DatabaseSnapshotGroup.parse(snapshotsDir));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        databaseSnapshotGroups.add(DatabaseSnapshotGroup.parse(snapshotsDir, false));
+                    } catch (JSONException e ) {
+                        LOGGER.error(String.format("Error parsing snapshot file: %s", snapshotsDir.getAbsolutePath()));
+                        LOGGER.error(String.format("%s: %s", e.toString(), e.getMessage()), e);
+                    } catch( IOException e) {
+                        LOGGER.error(String.format("%s: %s", e.toString(), e.getMessage()), e);
                     }
                 }
             }
@@ -82,10 +86,11 @@ public class DBSnapshotService {
         String databaseName = request.getName();
         String databaseUserName = request.getUsername();
         String databasePassword = request.getPassword();
+        boolean retrieveData = request.isRetrieveData();
         DatabaseSnapshot.DatabaseSnapshotBuilder builder = DatabaseSnapshot.builder();
         DatabaseSnapshot databaseSnapshot;
 
-        DBSnapshot dbSnapshot = new DBSnapshot(DatabaseTypeEnum.SQL_SERVER, databaseName, databaseUserName, databasePassword, true);
+        DBSnapshot dbSnapshot = new DBSnapshot(DatabaseTypeEnum.SQL_SERVER, databaseName, databaseUserName, databasePassword, retrieveData);
         Database database = dbSnapshot.getDatabase();
         database.setDbHost(request.getHost());
         database.setDbPort(request.getPort());
@@ -96,6 +101,7 @@ public class DBSnapshotService {
 
         builder.database(database);
         builder.snapshotFileName(generateSnapshotFileName(database));
+        builder.hasData(dbSnapshot.isRetrieveData());
         databaseSnapshot = builder.build();
         try {
             storeSnapshot(databaseSnapshot);

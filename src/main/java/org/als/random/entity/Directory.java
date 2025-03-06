@@ -7,7 +7,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.util.List;
 
-//@Entity
+@Entity
 @Data
 public class Directory implements FileStats, FileTypeStats, DirectoryStats  {
     @Id
@@ -42,15 +42,13 @@ public class Directory implements FileStats, FileTypeStats, DirectoryStats  {
         return getDirectoryFiles().size();
     }
 
-    /*
-    private void addDirectoryFile( DirectoryFile directoryFile ) {
+    public void addDirectoryFile( DirectoryFile directoryFile ) {
         directoryFiles.add(directoryFile);
         directoryFile.setDirectory(this);
     }
 
-    private void removeDirectoryFile( DirectoryFile directoryFile ) {
+    public void removeDirectoryFile( DirectoryFile directoryFile ) {
         directoryFiles.remove(directoryFile);
         directoryFile.setDirectory(null);
     }
-    */
 }

@@ -20,7 +20,7 @@ public class DatabaseTableRowData {
     }
 
 
-    public static DatabaseTableRowData parse(DatabaseTableData tableData, List<DatabaseTableColumn> columnList, ResultSet rs) throws SQLException {
+    public static DatabaseTableRowData parse(DatabaseTableData tableData, Collection<DatabaseTableColumn> columnList, ResultSet rs) throws SQLException {
         DatabaseTableRowData tableRowData = new DatabaseTableRowData(tableData);
         for( DatabaseTableColumn column : columnList ){
             tableRowData.addDatabaseTableDatum(DatabaseTableColumnData.parse(tableRowData, column, rs));
@@ -74,7 +74,7 @@ public class DatabaseTableRowData {
             if( Objects.nonNull(tableColumnData2) ) {
                 reasonMessageList.addAll(tableColumnData1.getDataDifferenceList(tableColumnData2));
             } else {
-                reasonMessageList.add(String.format("[Missing Column]: { %s: %s, %s.%s: N/A }", tableColumnData1.getFullName(), columnName1, tableRowData2.getFullName(), tableColumnData1.getColumnName() ));
+                reasonMessageList.add(String.format("[Missing Column]: { %s: %s, %s.%s: N/A }", tableColumnData1.getTableColumnName(), columnName1, tableRowData2.getFullName(), tableColumnData1.getColumnName() ));
             }
         });
 
@@ -82,6 +82,7 @@ public class DatabaseTableRowData {
     }
 
     public String getFullName() {
-        return String.format("%s.%s", getTableData().getTable().getFullName() );
+        //return String.format("%s.%s", getTableData().getTable().getFullName() );
+        return getTableData().getTable().getSnapshotTableName();
     }
 }

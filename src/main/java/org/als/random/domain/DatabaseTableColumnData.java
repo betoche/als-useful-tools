@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.xml.bind.DatatypeConverter;
@@ -22,6 +24,8 @@ public class DatabaseTableColumnData<T> {
 
     private static final String NAME_JSON_KEY = "name";
     private static final String VALUE_JSON_KEY = "value";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseTableColumnData.class);
 
     public static DatabaseTableColumnData parse(DatabaseTableRowData tableRowData, DatabaseTableColumn column, ResultSet rs) throws SQLException {
         return new DatabaseTableColumnData(column, column.getValueFromResultSet(rs), tableRowData);
@@ -97,19 +101,34 @@ public class DatabaseTableColumnData<T> {
         if(Objects.isNull(getValue()))
             return null;
 
-        if( getColumn().getColumnType().getJavaType().equals(Timestamp.class) )
-            return (T) Timestamp.valueOf(getValue().toString());
-
         try {
+            if( getColumn().getColumnType().getJavaType().equals(Timestamp.class) )
+                return (T) Timestamp.valueOf(getValue().toString());
+
+            if( getColumn().getColumnType().getJavaType().equals(Long.class) )
+                return (T) Long.valueOf(getValue().toString());
+
             return (T) getColumn().getColumnType().getJavaType().cast(getValue());
         } catch( Exception e ) {
-            e.printStackTrace();
+            LOGGER.error(String.format("%s: %s", e.toString(), e.getMessage()), e);
         }
         return null;
     }
 
+    public String getTableColumnName() {
+        return String.format("%s.%s", getTableRowData().getTableData().getTable().getName(), getColumn().getName());
+    }
+
     public String getFullName() {
         return String.format("%s.%s", getTableRowData().getTableData().getTable().getFullName(), getColumn().getName());
+    }
+
+    public String getTableNameWithSnapshotName(){
+        String snapshotName = getTableRowData().getTableData().getTable().getSnapshotTableName();
+        String lastIndexOfStr = "snapshot-";
+        int lastIndexOf = snapshotName.lastIndexOf(lastIndexOfStr);
+        String snapshotDate = snapshotName.substring(lastIndexOf+lastIndexOfStr.length());
+        return String.format("%s.%s", snapshotDate.replace(".snap", ""), getColumn().getName());
     }
 
     public String getColumnName() {
@@ -123,10 +142,10 @@ public class DatabaseTableColumnData<T> {
                     getColumn().getColumnType(), tableColumnData2.getFullName(),
                     tableColumnData2.getColumn().getColumnType() ));
 
-        if(Objects.nonNull(getCastedValue()) && Objects.nonNull(tableColumnData2.getCastedValue())) {
-            if (!getCastedValue().equals(tableColumnData2.getCastedValue()))
-                reasonMessageList.add(String.format("[Data change]: { %s: %s, %s: %s }", getFullName(), getValue(),
-                        tableColumnData2.getFullName(), tableColumnData2.getValue()));
+        if(Objects.nonNull(getValue()/*getCastedValue()*/) && Objects.nonNull(tableColumnData2.getValue()/*.getCastedValue()*/)) {
+            if (!getValue()/*getCastedValue()*/.equals(tableColumnData2.getValue()/*getCastedValue()*/))
+                reasonMessageList.add(String.format("[Data change]:<br> %s: [%s]<br> %s: [%s]", getTableNameWithSnapshotName(), getValue(),
+                        tableColumnData2.getTableNameWithSnapshotName(), tableColumnData2.getValue()));
         }
 
         return reasonMessageList;

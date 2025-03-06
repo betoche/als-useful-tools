@@ -16,21 +16,15 @@ import java.util.List;
 import java.util.Objects;
 
 public class DBConnectionManager {
+    public static final int TABLE_LIST_QUERY = 0;
+    public static final int TABLE_COLUMN_LIST_QUERY = 1;
+    public static final String PRIMARY_KEY_TABLE_NAME = "PRIMARY_KEY";
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DBConnectionManager.class);
 
-    public static Connection getDatabaseConnection(DatabaseTypeEnum databaseType, String databaseName, String userName,
-                                                   String password, @Nullable String host, @Nullable Integer port) {
-        return switch (databaseType) {
-            case DatabaseTypeEnum.SQL_SERVER -> getSQLServerConnection(databaseName, userName, password, host, port);
-            case DatabaseTypeEnum.ORACLE -> getOracleDBConnection(databaseName, userName, password, host, port);
-        };
-
-    }
-
     public static List<DatabaseTable> getDatabaseTables(DatabaseTypeEnum databaseTypeEnum, Connection con, String databaseName) {
         List<DatabaseTable> tableList = new ArrayList<>();
-        List<String> sqlIgnoredTables = Arrays.asList("QRTZ_CALENDARS","SEQUENCE","QRTZ_CRON_TRIGGERS",
+        List<String> sqlIgnoredTables = Arrays.asList("QRTZ_CALENDARS", /*"SEQUENCE",*/"QRTZ_CRON_TRIGGERS",
                 "QRTZ_FIRED_TRIGGERS", "QRTZ_PAUSED_TRIGGER_GRPS", "QRTZ_SCHEDULER_STATE", "QRTZ_LOCKS",
                 "QRTZ_JOB_DETAILS", "QRTZ_SIMPLE_TRIGGERS", "QRTZ_SIMPROP_TRIGGERS", "QRTZ_BLOB_TRIGGERS",
                 "QRTZ_TRIGGERS");
@@ -62,6 +56,35 @@ public class DBConnectionManager {
         return tableList;
     }
 
+    public static String getSQLQueryTablesString( DatabaseTypeEnum databaseType, String databaseName ) {
+        return getSQLQueryString(TABLE_LIST_QUERY, databaseType, databaseName,null);
+    }
+
+    public static String getSQLQueryTableColumnsString( DatabaseTypeEnum databaseType, String databaseName, String tableName ) {
+        return getSQLQueryString(TABLE_LIST_QUERY, databaseType, databaseName, tableName);
+    }
+
+    public static String getSQLQueryString( int query, DatabaseTypeEnum databaseType, @Nullable String databaseName, @Nullable String tableName ) {
+        if( query==TABLE_COLUMN_LIST_QUERY && Objects.isNull(tableName) ) {
+            return "";
+        }
+
+        String sqlQuery = switch (databaseType) {
+            case SQL_SERVER -> switch (query) {
+                case TABLE_LIST_QUERY -> String.format("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_CATALOG='%s'", databaseName);
+                case TABLE_COLUMN_LIST_QUERY -> String.format("SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'%s';", tableName);
+                default -> "";
+            };
+            case ORACLE -> switch(query) {
+                case TABLE_LIST_QUERY -> "";
+                case TABLE_COLUMN_LIST_QUERY -> "";
+                default -> "";
+            };
+        };
+
+        return sqlQuery;
+    }
+
     public static void retrieveColumnListDetails(DatabaseTypeEnum databaseTypeEnum, Connection con,
                                                  List<DatabaseTable> tableList, boolean retriveData) {
         PreparedStatement ps = null;
@@ -87,17 +110,20 @@ public class DBConnectionManager {
                     table.addColumn(new DatabaseTableColumn(columnName, dataType, table));
                 }
 
-                try {
-                    String maxPrimaryKeyValueQuery = String.format("SELECT MAX (PRIMARY_KEY) FROM %s", table.getName());
-                    ps = con.prepareStatement(maxPrimaryKeyValueQuery);
-                    rs = ps.executeQuery();
-                    if (rs.next()) {
-                        int maxPrimaryKey = rs.getInt(1);
-                        table.setLastPrimaryKey(maxPrimaryKey);
+                if( table.getColumnList().stream().map(DatabaseTableColumn::getName).toList().contains(PRIMARY_KEY_TABLE_NAME) ) {
+                    try {
+                        String maxPrimaryKeyValueQuery = String.format("SELECT MAX (PRIMARY_KEY) FROM %s", table.getName());
+                        ps = con.prepareStatement(maxPrimaryKeyValueQuery);
+                        rs = ps.executeQuery();
+                        if (rs.next()) {
+                            int maxPrimaryKey = rs.getInt(1);
+                            table.setLastPrimaryKey(maxPrimaryKey);
+                        }
+                    } catch (Exception e) {
+                        LOGGER.error(String.format("Error querying the table \"%s\"", table.getName()), e);
                     }
-                } catch(Exception e) {
-                    LOGGER.info(String.format("Error querying the table \"%s\"", table.getName()));
-                }
+                } else
+                    table.setLastPrimaryKey(0d);
 
                 String recordsCountQuery = String.format("SELECT COUNT(*) FROM %s", table.getName());
                 ps = con.prepareStatement(recordsCountQuery);
@@ -146,6 +172,14 @@ public class DBConnectionManager {
             throw new RuntimeException(e);
         }
         return connection;
+    }
+
+    public static Connection getDatabaseConnection(DatabaseTypeEnum databaseType, String databaseName, String userName,
+                                                   String password, @Nullable String host, @Nullable Integer port) {
+        return switch (databaseType) {
+            case DatabaseTypeEnum.SQL_SERVER -> getSQLServerConnection(databaseName, userName, password, host, port);
+            case DatabaseTypeEnum.ORACLE -> getOracleDBConnection(databaseName, userName, password, host, port);
+        };
     }
 
     private static Connection getOracleDBConnection( String databaseName, String userName, String password,

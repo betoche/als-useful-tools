@@ -49,28 +49,43 @@ public class DatabaseComparatorResults {
             Database db1 = getDatabaseList().get(i);
             for( int j = 0 ; j < getDatabaseList().size() ; j++ ) {
                 Database db2 = getDatabaseList().get(j);
-                if(!dbSet.contains(String.format("%s_%s", db1.toString(), db2.toString()))) {
+                if( !db1.equals(db2) && !dbSet.contains(String.format("%s_%s", db1.toString(), db2.toString()))) {
                     findDatabaseDifferences(databaseDifferenceMap, db1, db2);
+                    dbSet.add(String.format("%s_%s", db1.toString(), db2.toString()));
+                    dbSet.add(String.format("%s_%s", db2.toString(), db1.toString()));
                 }
-                dbSet.add(String.format("%s_%s", db1.toString(), db2.toString()));
-                dbSet.add(String.format("%s_%s", db2.toString(), db1.toString()));
             }
         }
     }
 
     private void findDatabaseDifferences( Map<String, DatabaseDifference> databaseDifferenceMap, Database db1, Database db2 ) {
+        Set<String> processControl = new HashSet<>();
         for( DatabaseTable table1 : db1.getTableList() ) {
+            String table1Str = table1.getFullPath();
             boolean existTable = false;
             for( DatabaseTable table2 : db2.getTableList() ) {
-                if (table1.getName().equalsIgnoreCase(table2.getName())) {
-                    existTable = true;
+                String table2Str = table2.getFullPath();
+                String processKey = String.format("%s_%s", table1Str, table2Str);
+                if( !processControl.contains(processKey) ) {
+                    if (table1.getName().equalsIgnoreCase(table2.getName())) {
+                        existTable = true;
 
-                    if (!table1.equals(table2)) {
-                        findTableDifferences(databaseDifferenceMap, table1, table2);
+                        DatabaseTableDifferenceReason differenceReason = DatabaseTableDifferenceReason.parse(table1, table2);
+                        // TODO: Finish DatabaseTableDifferenceReason implementation
+                        //differenceReason.get
+
+                        if (!table1.equals(table2)) {
+                            findTableDifferences(databaseDifferenceMap, table1, table2);
+                        }
+                        findDifferencesByTableData(databaseDifferenceMap, table2, table1);
+
+                        break;
                     }
-
-                    break;
                 }
+                String inverseProcessKey = String.format("%s_%s", table2Str, table1Str);
+                processControl.add(processKey);
+                processControl.add(inverseProcessKey);
+
             }
 
             if( !existTable ) {
@@ -85,8 +100,15 @@ public class DatabaseComparatorResults {
                 }
             }
 
+        }
+    }
 
-
+    private void findDifferencesByTableData(Map<String, DatabaseDifference> databaseDifferenceMap, DatabaseTable table2, DatabaseTable table1) {
+        List<String> reasonMessageList = findDifferencesByTableData(table2, table1);
+        if( databaseDifferenceMap.containsKey(table1.getName()) ) {
+            databaseDifferenceMap.get(table1.getName()).addReasonMessage(reasonMessageList);
+        } else {
+            databaseDifferenceMap.put(table1.getName(), new DatabaseDifference(table1, table2, reasonMessageList));
         }
     }
 
@@ -115,12 +137,10 @@ public class DatabaseComparatorResults {
                         table2.getNumberOfRecords()));
             }
 
-            reasonMessageList.addAll(findDifferencesByTableData(table2, table1));
-
             if( databaseDifferenceMap.containsKey(table1.getName()) ) {
                 databaseDifferenceMap.get(table1.getName()).addReasonMessage(reasonMessageList);
             } else {
-                databaseDifferenceMap.put(table1.getName(), new DatabaseDifference(table1, reasonMessageList));
+                databaseDifferenceMap.put(table1.getName(), new DatabaseDifference(table1, table2, reasonMessageList));
             }
         }
     }
@@ -131,8 +151,13 @@ public class DatabaseComparatorResults {
             DatabaseTableData data2 = table2.getTableData();
 
             List<String> differenceList = data1.getDataDifferenceList(data2);
-            differenceList.addAll(data2.getDataDifferenceList(data1));
-            return differenceList;
+            List<String> inverseDifferenceList = data1.getDataDifferenceList(data2);
+
+            Set<String> differenceSet = new HashSet<>();
+            differenceSet.addAll(differenceList);
+            differenceSet.addAll(inverseDifferenceList);
+
+            return differenceSet.stream().toList();
         }
         return new ArrayList<>();
     }

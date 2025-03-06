@@ -1,9 +1,9 @@
 package org.als.random.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.collections4.list.TreeList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,11 +12,10 @@ import java.util.*;
 
 
 @Builder
+@AllArgsConstructor
 public class DatabaseTable {
     @Getter @Setter
     private String name;
-    @Getter @Setter
-    private List<DatabaseTableColumn> columnList;
     @Getter @Setter
     private int numberOfRecords;
     @Getter @Setter
@@ -24,6 +23,8 @@ public class DatabaseTable {
     private DatabaseTableData data;
     @Getter @Setter
     private Database database;
+    @Getter @Setter
+    private Set<DatabaseTableColumn> columnList;
 
     public static final String NAME_JSON_KEY = "name";
     public static final String NUMBER_OF_RECORDS_JSON_KEY = "numberOfRecords";
@@ -33,6 +34,9 @@ public class DatabaseTable {
     public static final String TABLE_JSON_KEY = "table";
     public static final String ENTITY_CLASS_DEFINITION_JSON_KEY = "entityTableDefinition";
 
+    public DatabaseTable(String name) {
+        this.name = name;
+    }
     public static DatabaseTable parseFromJson(JSONObject json, Database db) {
         DatabaseTableBuilder builder = DatabaseTable.builder();
         JSONObject tableJson = json.getJSONObject(TABLE_JSON_KEY);
@@ -43,7 +47,7 @@ public class DatabaseTable {
         DatabaseTable table = builder.build();
 
         JSONArray jsonArray = tableJson.getJSONArray(COLUMNS_JSON_KEY);
-        List<DatabaseTableColumn> columns = new ArrayList<>();
+        Set<DatabaseTableColumn> columns = new HashSet<>();
         for( int i = 0 ; i < jsonArray.length() ; i++ ) {
             JSONObject columnJson = jsonArray.getJSONObject(i);
             columns.add(DatabaseTableColumn.parseFromJson(columnJson, table));
@@ -78,7 +82,7 @@ public class DatabaseTable {
 
     public void addColumn( DatabaseTableColumn column ) {
         if( Objects.isNull(this.columnList) )
-            this.columnList = new TreeList<>();
+            this.columnList = new HashSet<>();
 
         this.columnList.add(column);
     }
@@ -93,7 +97,7 @@ public class DatabaseTable {
                 && o.getLastPrimaryKey() == getLastPrimaryKey();
     }
 
-    private boolean compareColumns( List<DatabaseTableColumn> oList ){
+    private boolean compareColumns( Set<DatabaseTableColumn> oList ){
         if( Objects.isNull(getColumnList()) && Objects.isNull(oList) )
             return true;
 
@@ -153,6 +157,13 @@ public class DatabaseTable {
 
     public String getFullName() {
         return String.format("%s.%s", getDatabase().getSnapshotFileName(), getName());
+    }
+    public String getSnapshotTableName(){
+        int indexOf = getDatabase().getSnapshotFileName().lastIndexOf("/") + 1;
+        return String.format("%s.%s", getDatabase().getSnapshotFileName().substring(indexOf), getName());
+    }
+    public String getFullPath(){
+        return String.format("%s.%s.%s", getSnapshotTableName(), getDatabase().getName(), getName());
     }
 
     public DatabaseTableColumn getDatabaseTableColumnByName(String columnName) {

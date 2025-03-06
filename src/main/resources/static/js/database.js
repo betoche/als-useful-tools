@@ -70,6 +70,7 @@ function loadDbSnapshotDetails(snapshotElement) {
             let password = databaseJson.password;
             let host = databaseJson.host;
             let port = databaseJson.port;
+            let hasData = snapshotJson.hasData;
 
             let databaseName = databaseJson.name;
             let fileName = snapshotJson.snapshotFileName;
@@ -84,6 +85,7 @@ function loadDbSnapshotDetails(snapshotElement) {
             $('#port').val(port);
             $('#username').val(username);
             $('#password').val(password);
+            $('#retrieveData').prop('checked', hasData);
 
             $('#snap-db-name').text(databaseName);
             $('#snap-db-file-name').text(fileName);
@@ -139,7 +141,7 @@ function showTableDetails(dbTable, table, listElem) {
     tableHeaderlem.html('');
     tableBodyElem.html('');
 
-    tableCaptionElem.text(`${table.name}: [total records: ${table.numberOfRecords}, last primary key: ${table.lastPrimaryKey}]`);
+    tableCaptionElem.text(`${table.name}: [columns: ${table.columns.length}, records: ${table.numberOfRecords}, last primary key: ${table.lastPrimaryKey}]`);
     $('.database-table').each(function(idx, item) {
         $(item).removeClass('active');
     });
@@ -279,13 +281,15 @@ function takeDBSnapshot() {
     let dbPassword = $('#password').val();
     let dbHost = $('#host').val();
     let dbPort = $('#port').val();
+    let retrieveData = $('#retrieveData').is(":checked");
 
     let formData = {
         'name': dbName,
         'username': dbUsername,
         'password': dbPassword,
         'host': dbHost,
-        'port': dbPort
+        'port': dbPort,
+        'retrieveData': retrieveData
     };
 
     let spinner = showRandomSpinning();

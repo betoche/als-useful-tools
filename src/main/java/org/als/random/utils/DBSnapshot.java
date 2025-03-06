@@ -1,5 +1,6 @@
 package org.als.random.utils;
 
+import lombok.Getter;
 import org.als.random.domain.Database;
 import org.als.random.domain.DatabaseTable;
 import org.als.random.enums.DatabaseTypeEnum;
@@ -28,6 +29,7 @@ public class DBSnapshot {
     private final String databaseUserName;
     private final String databasePassword;
     private final DatabaseTypeEnum databaseType;
+    @Getter
     private final boolean retrieveData;
 
     private Database database;

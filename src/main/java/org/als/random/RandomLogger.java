@@ -39,6 +39,9 @@ public class RandomLogger {
     public void error(IOException e) {
         log.error(e.getMessage(), e);
     }
+    public void error(Exception e) {
+        log.error(e.getMessage(), e);
+    }
 
     public void error(String format) {
         log.error(format);

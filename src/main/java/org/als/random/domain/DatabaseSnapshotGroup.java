@@ -1,10 +1,12 @@
 package org.als.random.domain;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.als.random.helper.FileDirHelper;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -19,7 +21,7 @@ public class DatabaseSnapshotGroup {
     private File databaseGroupDir;
     private List<DatabaseSnapshot> snapshotList;
 
-    public static DatabaseSnapshotGroup parse(File snapshotsDir) throws IOException {
+    public static DatabaseSnapshotGroup parse(File snapshotsDir, boolean withData) throws IOException {
         List<DatabaseSnapshot> snapshotList1 = new ArrayList<>();
         DatabaseSnapshotGroup.DatabaseSnapshotGroupBuilder builder = DatabaseSnapshotGroup.builder();
         builder.databaseGroupDir(snapshotsDir);
@@ -27,8 +29,9 @@ public class DatabaseSnapshotGroup {
         if( FileDirHelper.containsSubDirectoriesOrSubFiles(snapshotsDir) ) {
             for( File snapshotFile : Objects.requireNonNull(snapshotsDir.listFiles())) {
                 if( FileDirHelper.isValidFile( snapshotFile ) ) {
-                    DatabaseSnapshot snapshot = DatabaseSnapshot.parseFromJsonFile( snapshotFile );
-                    if(Objects.nonNull(snapshot) )
+                    DatabaseSnapshot snapshot = DatabaseSnapshot.parseFromJsonFile(snapshotFile, withData);
+
+                    if (Objects.nonNull(snapshot))
                         snapshotList1.add(snapshot);
                 }
             }

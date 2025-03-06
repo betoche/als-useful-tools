@@ -173,7 +173,6 @@ public class StringReplacer {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -226,6 +225,7 @@ public class StringReplacer {
     public static void main( String[] args ) {
         //String filePathStr = "C:\\Users\\betoc\\Downloads\\Ilago Logs - After patch - Copy.txt";
         String filePathStr = "C:\\Users\\betoc\\repositories\\personal\\java\\random\\output\\Ilago-Logs-After-patch-20250117133927.txt";
+
         List<FindReplaceSearch> findReplaceSearchList = new ArrayList<>();
         String textToFind1 = "\tat com.mitratech.teamconnect.base.BQDetailFieldValues.lambda$1(BQDetailFieldValues.java:92)\n" +
                 "\tat com.mitratech.teamconnect.base.BQDetailFieldValues.getStringValue(BQDetailFieldValues.java:102)\n" +
@@ -247,6 +247,12 @@ public class StringReplacer {
         //findReplaceStringList.add(new FindReplaceString(textToFind1, ""));
         //findReplaceStringList.add(new FindReplaceString(textToFind2, ""));
         findReplaceSearchList.add(new FindReplaceSearch(textToFind3, ""));
+
+        filePathStr = "C:\\Users\\betoc\\Documents\\tickets\\SOH-4877-Cannot-Add-Deactivate-Delete-Lookup-Table-Entries\\workshop\\logs\\ilago_delete_failure.log";
+        findReplaceSearchList.add(new FindReplaceSearch("LegacyEclipseLinkTransactionManager", ""));
+        findReplaceSearchList.add(new FindReplaceSearch("AbstractSessionFactory", ""));
+
+
         StringReplacer strReplacer = new StringReplacer(filePathStr, findReplaceSearchList);
 
         strReplacer.createProcessedFile();
