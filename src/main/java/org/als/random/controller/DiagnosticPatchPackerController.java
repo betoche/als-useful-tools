@@ -41,20 +41,20 @@ public class DiagnosticPatchPackerController {
             outputDir = Files.createDirectory(Path.of("output")).toFile();
         }
 
-        String zipDirPathStr = String.format("%s\\%s", outputDir.getAbsolutePath(), request.getZipFileName().replace(".zip",""));
+        String zipDirPathStr = String.format("%s/%s", outputDir.getAbsolutePath(), request.getZipFileName().replace(".zip",""));
         File tmpZipDirectory = new File(zipDirPathStr);
         if( !tmpZipDirectory.exists() ) {
             Files.createDirectory(Path.of(zipDirPathStr));
         }
 
-        File patchInstructionsFile = new File(String.format("%s\\%s", zipDirPathStr,"patch-instructions.txt"));
+        File patchInstructionsFile = new File(String.format("%s/%s", zipDirPathStr,"patch-instructions.txt"));
         Path path = Paths.get(patchInstructionsFile.getAbsolutePath());
         byte[] strToBytes = request.getPatchInstructions().getBytes();
         Files.write(path, strToBytes);
 
         for( String filePath : request.getClassFileList() ) {
             File tmpFile = new File(filePath);
-            Files.copy(Path.of(filePath), Path.of(String.format("%s\\%s", zipDirPathStr,tmpFile.getName())), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(Path.of(filePath), Path.of(String.format("%s/%s", zipDirPathStr,tmpFile.getName())), StandardCopyOption.REPLACE_EXISTING);
         }
 
         return ResponseEntity.ok("empty");
