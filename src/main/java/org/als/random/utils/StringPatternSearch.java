@@ -236,7 +236,7 @@ public class StringPatternSearch {
         String[] patterns = new String[]{"\"[INFO-"};
 
         //String[] fileExtensions = new String[]{ ".xml", ".properties" };
-        String[] fileExtensions = new String[]{ ".java" };
+        String[] fileExtensions = new String[]{ ".js", ".java" };
         //String[] fileExtensions = new String[]{ ".java", ".xml", ".properties", ".class", ".jar" };
         //String[] fileExtensions = new String[]{ ".js", ".jsp" };
         //String[] fileExtensions = new String[]{ ".java", ".class" };
@@ -248,7 +248,7 @@ public class StringPatternSearch {
 
         //directory = "C:\\Users\\betoc\\apps\\tomcat\\9.0.99\\webapps\\TC71_TEST_SQL_PB8";
         //directory = "C:\\Users\\betoc\\apps\\tomcat\\9.0.99\\webapps\\teamconnect-7.1.0.0001";
-        patterns = new String[]{"No value for key"};
+        patterns = new String[]{"WorkflowList"};
 
         StringPatternSearch sps = new StringPatternSearch(directory, patterns, fileExtensions, new String[]{".class", ".png", ".css", ".jar", ".log"});
         //sps.sumOddNumbers();
