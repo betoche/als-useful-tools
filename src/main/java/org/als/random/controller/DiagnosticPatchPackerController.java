@@ -156,7 +156,12 @@ public class DiagnosticPatchPackerController {
         String jarName = "";
 
         for( String jarFileName : jarList ) {
-            String tmpClassPath = classPath.substring(classPath.lastIndexOf("target\\classes\\")+15);
+            int lastIndexOf = classPath.lastIndexOf("target\\classes\\");
+            if( lastIndexOf < 1 ){
+                lastIndexOf = classPath.lastIndexOf("target/classes/");
+            }
+
+            String tmpClassPath = classPath.substring(lastIndexOf + 15);
             ZipFile file = new ZipFile(jarFileName);
             if( isClassInJarFile(tmpClassPath, file) ) {
                 jarName = jarFileName;

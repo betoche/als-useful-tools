@@ -25,7 +25,7 @@ public class DiagnosticPatchService {
         }
         instructions.add("- Second copy the classes contained in the zip file in their respectives directories:");
         for( DiagnosticPatchInfo.FoundClass filePath : classFileList ){
-            instructions.add(String.format("    - %s -> %s%s\\%s", filePath.getClassName(), filePath.getJarLibPath(), filePath.getJarFileSimpleName(), filePath.getPackagePath()));
+            instructions.add(String.format("    - %s -> %s%s\\%s", filePath.getSimpleClassName(), filePath.getJarLibPath(), filePath.getJarFileSimpleName(), filePath.getPackagePath()));
         }
 
         return Strings.join(instructions, '\n');
