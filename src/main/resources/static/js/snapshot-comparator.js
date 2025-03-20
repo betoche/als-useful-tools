@@ -73,8 +73,13 @@ function showSnapshotList( selectDB ) {
     let snapshotListJson = database.data('snapshots');
 
     if(snapshotListJson){
-        snapshotListJson.forEach(function(snapshot){
-            snapshotSelect.append($(`<option value='${snapshot.snapshot.snapshotRelativePath}'>${snapshot.snapshot.creationDate}</option>`));
+        snapshotListJson.forEach(function(snapshot) {
+            let snapshotTitle = 'N/A';
+            if( snapshot.snapshot.snapshotTitle ) {
+                snapshotTitle = snapshot.snapshot.snapshotTitle;
+            }
+
+            snapshotSelect.append($(`<option value='${snapshot.snapshot.snapshotRelativePath}'>${snapshotTitle} - ${snapshot.snapshot.creationDate}</option>`));
         });
     }
 

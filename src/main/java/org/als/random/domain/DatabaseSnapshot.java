@@ -59,7 +59,10 @@ public class DatabaseSnapshot {
                 builder.hasData(json.getBoolean(SNAPSHOT_HAS_DATA_KEY_NAME));
             }catch(Exception ignored){}
             try{
-                builder.title(json.getString(SNAPSHOT_TITLE_JSON_KEY_NAME));
+                String snapshotTitle = json.getString(SNAPSHOT_TITLE_JSON_KEY_NAME);
+                if(snapshotTitle.isEmpty())
+                    snapshotTitle = "N/A";
+                builder.title(snapshotTitle);
             }catch(Exception ignored){}
 
             try {

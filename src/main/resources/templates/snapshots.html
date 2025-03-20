@@ -48,9 +48,10 @@
                        href="javascript:void(0);" class="list-group-item" data-toggle="collapse" style="height:36px;">
                       <!-- <span th:text="${databaseSnapshot.getSnapshotFileName()}"></span> -->
                       <span class="badge rounded-pill float-end bg-secondary db-snapshot-badge">
-                        <span th:attr="data-path=${databaseSnapshot.getRelativePath()}" class="db-snapshot" onclick="javascript:loadDbSnapshotDetails($(this));">
-                          [[${databaseSnapshot.getTitle()}]]
-                          [[${databaseSnapshot.getFormatedCreationDate()}]]
+                        <span th:attr="data-path=${databaseSnapshot.getRelativePath()}" class="db-snapshot text-start" onclick="javascript:loadDbSnapshotDetails($(this));">
+                          <span>[[${databaseSnapshot.getTitle()}]]</span>
+                          <br>
+                          <span style="font-size: xx-small;">[[${databaseSnapshot.getFormatedCreationDate()}]]</span>
                         </span>
                         <i class='bi bi-trash' th:attr="data-path=${databaseSnapshot.getRelativePath()}" style="cursor: pointer;" onclick="javascript:deleteSnapshot(this);"></i>
                       </span>
