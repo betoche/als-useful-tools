@@ -64,6 +64,7 @@ function loadDbSnapshotDetails(snapshotElement) {
         success: function(resultData) {
             let jsonData = JSON.parse(resultData);
             let snapshotJson = jsonData.snapshot;
+            let snapshotTitle = snapshotJson.snapshotTitle;
             let databaseJson = snapshotJson.database;
 
             let username = databaseJson.username;
@@ -85,6 +86,7 @@ function loadDbSnapshotDetails(snapshotElement) {
             $('#port').val(port);
             $('#username').val(username);
             $('#password').val(password);
+            $('#title').val(snapshotTitle);
             $('#retrieveData').prop('checked', hasData);
 
             $('#snap-db-name').text(databaseName);
@@ -281,6 +283,7 @@ function takeDBSnapshot() {
     let dbPassword = $('#password').val();
     let dbHost = $('#host').val();
     let dbPort = $('#port').val();
+    let title = $('#title').val();
     let retrieveData = $('#retrieveData').is(":checked");
 
     let formData = {
@@ -289,7 +292,8 @@ function takeDBSnapshot() {
         'password': dbPassword,
         'host': dbHost,
         'port': dbPort,
-        'retrieveData': retrieveData
+        'retrieveData': retrieveData,
+        'title': title
     };
 
     let spinner = showRandomSpinning();

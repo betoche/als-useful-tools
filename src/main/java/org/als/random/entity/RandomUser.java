@@ -30,4 +30,13 @@ public class RandomUser {
     private Set<Ticket> assignedTickets;
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
     private Set<Ticket> createdTickets;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<BankAccount> bankAccounts;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CreditCard> creditCards;
+
+    @OneToMany(mappedBy = "spender", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Expense> expenses;
 }

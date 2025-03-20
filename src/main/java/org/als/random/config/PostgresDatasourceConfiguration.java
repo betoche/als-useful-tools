@@ -17,6 +17,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
+/*
 @Configuration
 @EnableJpaRepositories(
         entityManagerFactoryRef = "randomEntityManagerFactory",
@@ -24,6 +25,7 @@ import javax.sql.DataSource;
         basePackages = "org.als.random.repository"
 )
 @EntityScan("org.als.random.entity")
+*/
 public class PostgresDatasourceConfiguration {
 
     @Bean

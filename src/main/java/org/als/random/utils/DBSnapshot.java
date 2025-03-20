@@ -30,6 +30,7 @@ public class DBSnapshot {
     private final String databasePassword;
     private final String databaseHost;
     private final int databasePort;
+    private final String title;
     private final DatabaseTypeEnum databaseType;
     @Getter
     private final boolean retrieveData;
@@ -40,7 +41,7 @@ public class DBSnapshot {
     private final static Logger LOGGER = LoggerFactory.getLogger(DBSnapshot.class);
 
     public DBSnapshot( DatabaseTypeEnum databaseTypeEnum, String databaseName, String databaseUserName,
-                       String databasePassword, String host, int port, boolean retrieveData ) {
+                       String databasePassword, String host, int port, boolean retrieveData, String title ) {
         this.databaseType = databaseTypeEnum;
         this.databaseName = databaseName;
         this.databaseUserName = databaseUserName;
@@ -48,6 +49,7 @@ public class DBSnapshot {
         this.retrieveData = retrieveData;
         this.databaseHost = host;
         this.databasePort = port;
+        this.title = title;
     }
 
     public Connection getDbConnection() throws SQLException {
@@ -111,7 +113,7 @@ public class DBSnapshot {
         String databaseHost = "localhost";
         int databasePort = 1433;
         DBSnapshot dbSnapshot = new DBSnapshot(databaseTypeEnum, databaseName, databaseUserName, databasePassword,
-                databaseHost, databasePort, true);
+                databaseHost, databasePort, true, "Test Snapshot from DBSnapshot.main method");
 
         try {
             dbSnapshot.createDatabaseSnapshot();

@@ -1,24 +1,24 @@
 spring:
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
   debug: true
   application:
     name: Random Utils
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://ep-flat-dawn-a5xftl28-pooler.us-east-2.aws.neon.tech/graffos?sslmode=require&createDatabaseIfNotExist=true
+    username: graffos_owner
+    password: npg_vh89HaOxmKeW
+#    teamconnect636:
+#      url: jdbc:sqlserver://192.168.1.34:1433;databaseName=teamconnect_636;Encrypt=true;TrustServerCertificate=true
+#      username: teamconnect
+#      password: password
+#      driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#      show-sql: true
+#      dialect: org.hibernate.dialect.SQLServer2012Dialect
   thymeleaf:
     cache: false
-  datasource:
-    random:
-      url: jdbc:postgresql://localhost:15432/graffos?createDatabaseIfNotExist=true
-      username: graffos
-      password: graffosPassword2024
-    teamconnect636:
-      url: jdbc:sqlserver://192.168.1.34:1433;databaseName=teamconnect_636;Encrypt=true;TrustServerCertificate=true
-      username: teamconnect
-      password: password
-      driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
-      show-sql: true
-      dialect: org.hibernate.dialect.SQLServer2012Dialect
   devtools:
     restart:
       poll-interval: 2s
@@ -26,3 +26,10 @@ spring:
 
 server:
   port : 3333
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+#postgresql://graffos_owner:npg_vh89HaOxmKeW@ep-flat-dawn-a5xftl28-pooler.us-east-2.aws.neon.tech/graffos?sslmode=require

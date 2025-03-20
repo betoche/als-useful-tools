@@ -48,13 +48,18 @@ genericOptions:
     description: Search by multiple values inside a specific directory, this search allows you to define specific file types.
     path: /global-text-search
   -
-    key: diagnostic-patch
-    title: Diagnostic Patch Tool
-    description: With this tool you can easily create zip Diagnostic Patches which include the class files and the Instruction text file.
-    path: /diagnostic-patch
+    key: expense-home
+    title: Expense Tracker
+    description: Access the Expenses Dashboard that will allows you to track down your expenses providing you an overall view of your behavior during an specified period of time.
+    path: /expense
 specificOptions:
   -
     key: lookup-table
     title: Lookup Table Import Tool
     description: Import Lookup Table data from Excel files
     path: /lookup-table/import
+  -
+    key: diagnostic-patch
+    title: Diagnostic Patch Tool
+    description: With this tool you can easily create zip Diagnostic Patches which include the class files and the Instruction text file.
+    path: /diagnostic-patch

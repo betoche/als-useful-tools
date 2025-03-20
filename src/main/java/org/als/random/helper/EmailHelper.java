@@ -13,7 +13,7 @@ public class EmailHelper {
         final String password = ""; // Mailcatcher doesn't require a password.
         final String to = "recipient@example.com";
         final String subject = "Test Email from Java";
-        final String body = "This is a test email sent using Java and Mailcatcher.";
+        final String body = "This is a test email sent using Java and Mailcatcher. tiki tiki tiki";
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "false"); // Mailcatcher doesn't require authentication

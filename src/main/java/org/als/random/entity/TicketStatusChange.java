@@ -1,9 +1,6 @@
 package org.als.random.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.als.random.enums.TicketStatusEnum;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -23,5 +20,6 @@ public class TicketStatusChange {
     private Date changeDate;
     private String comment;
     @JdbcTypeCode(SqlTypes.INTEGER)
+    @Column(name = "user_id")
     private RandomUser user;
 }

@@ -28,10 +28,12 @@ public class DatabaseSnapshot {
     private Date creationDate;
     private Database database;
     private Boolean hasData;
+    private String title;
 
     public static final String SNAPSHOT_KEY_NAME = "snapshot";
     public static final String SNAPSHOT_HAS_DATA_KEY_NAME = "hasData";
     public static final String SNAPSHOT_FILE_NAME_JSON_KEY_NAME = "snapshotFileName";
+    public static final String SNAPSHOT_TITLE_JSON_KEY_NAME = "snapshotTitle";
     public static final String SNAPSHOT_RELATIVE_PATH_JSON_KEY_NAME = "snapshotRelativePath";
     public static final String CREATION_DATE_JSON_KEY_NAME = "creationDate";
     public static final String DATABASE_JSON_KEY_NAME = "database";
@@ -55,6 +57,9 @@ public class DatabaseSnapshot {
             builder.hasData(false);
             try{
                 builder.hasData(json.getBoolean(SNAPSHOT_HAS_DATA_KEY_NAME));
+            }catch(Exception ignored){}
+            try{
+                builder.title(json.getString(SNAPSHOT_TITLE_JSON_KEY_NAME));
             }catch(Exception ignored){}
 
             try {
@@ -94,6 +99,7 @@ public class DatabaseSnapshot {
 
         json.put(SNAPSHOT_FILE_NAME_JSON_KEY_NAME, fileName);
         json.put(SNAPSHOT_HAS_DATA_KEY_NAME, getHasData());
+        json.put(SNAPSHOT_TITLE_JSON_KEY_NAME, getTitle());
         json.put(SNAPSHOT_RELATIVE_PATH_JSON_KEY_NAME, getRelativePath());
         json.put(CREATION_DATE_JSON_KEY_NAME, DateHelper.formatDate( getCreationDate() ));
         if(Objects.nonNull(getDatabase()) ) {

@@ -10,5 +10,6 @@ public class DatabaseSnapshotRequest {
     private String password;
     private String host;
     private int port;
+    private String title;
     private boolean retrieveData;
 }

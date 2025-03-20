@@ -17,7 +17,7 @@ public class RandomUtilsApplication {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(RandomUtilsApplication.class, args);
-		LOGGER.info(String.format("beans: %s", String.join(System.lineSeparator(), context.getBeanDefinitionNames())));
+		//LOGGER.info(String.format("beans: %s", String.join(System.lineSeparator(), context.getBeanDefinitionNames())));
 	}
 
 }

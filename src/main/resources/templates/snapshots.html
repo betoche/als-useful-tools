@@ -48,7 +48,10 @@
                        href="javascript:void(0);" class="list-group-item" data-toggle="collapse" style="height:36px;">
                       <!-- <span th:text="${databaseSnapshot.getSnapshotFileName()}"></span> -->
                       <span class="badge rounded-pill float-end bg-secondary db-snapshot-badge">
-                        <span th:attr="data-path=${databaseSnapshot.getRelativePath()}" class="db-snapshot" onclick="javascript:loadDbSnapshotDetails($(this));">[[${databaseSnapshot.getFormatedCreationDate()}]]</span>
+                        <span th:attr="data-path=${databaseSnapshot.getRelativePath()}" class="db-snapshot" onclick="javascript:loadDbSnapshotDetails($(this));">
+                          [[${databaseSnapshot.getTitle()}]]
+                          [[${databaseSnapshot.getFormatedCreationDate()}]]
+                        </span>
                         <i class='bi bi-trash' th:attr="data-path=${databaseSnapshot.getRelativePath()}" style="cursor: pointer;" onclick="javascript:deleteSnapshot(this);"></i>
                       </span>
                     </div>
@@ -90,6 +93,13 @@
                   With Data
                 </label>
               </div>
+            </div>
+            <div class="form-group row">
+              <label for="title" class="col-sm-3 col-form-label">Snapshot Title:</label>
+              <div class="col-sm-6">
+                <input type="text" class="form-control" id="title">
+              </div>
+              <div class="col-sm-3"></div>
             </div>
             <div class="form-group row">
               <button class="btn btn-primary" onclick="javascript:takeDBSnapshot();" type="button">Take DB Snapshot!</button>

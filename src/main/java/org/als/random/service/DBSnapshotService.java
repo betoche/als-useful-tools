@@ -87,6 +87,7 @@ public class DBSnapshotService {
         String databaseUserName = request.getUsername();
         String databasePassword = request.getPassword();
         String databaseHost = request.getHost();
+        String snapshotTitle = request.getTitle();
         int databasePort = request.getPort();
 
         boolean retrieveData = request.isRetrieveData();
@@ -94,10 +95,11 @@ public class DBSnapshotService {
         DatabaseSnapshot databaseSnapshot;
 
         DBSnapshot dbSnapshot = new DBSnapshot(DatabaseTypeEnum.SQL_SERVER, databaseName, databaseUserName, databasePassword,
-                databaseHost, databasePort, retrieveData);
+                databaseHost, databasePort, retrieveData, snapshotTitle);
+
         Database database = dbSnapshot.getDatabase();
-        database.setDbHost(request.getHost());
-        database.setDbPort(request.getPort());
+        database.setDbHost(databaseHost);
+        database.setDbPort(databasePort);
         List<DatabaseTable> tableList = database.getTableList();
         //tableList.sort(new DatabaseTable.TableSortByRecordsCount());
         //tableList.sort(new DatabaseTable.TableSortByTableName());
@@ -106,6 +108,7 @@ public class DBSnapshotService {
         builder.database(database);
         builder.snapshotFileName(generateSnapshotFileName(database));
         builder.hasData(dbSnapshot.isRetrieveData());
+        builder.title(snapshotTitle);
         databaseSnapshot = builder.build();
         try {
             storeSnapshot(databaseSnapshot);
