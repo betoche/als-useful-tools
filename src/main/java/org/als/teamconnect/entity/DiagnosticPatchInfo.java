@@ -21,10 +21,19 @@ public class DiagnosticPatchInfo {
         public static final String WEB_INF_DIR_NAME = "WEB-INF";
 
         public String getJarFileSimpleName() {
-            return jarFileName.substring(jarFileName.lastIndexOf("\\")+1);
+            int lastIndexOf = jarFileName.lastIndexOf("\\");
+            if( lastIndexOf < 1 ) {
+                lastIndexOf = jarFileName.lastIndexOf("/");
+            }
+
+            return jarFileName.substring(lastIndexOf+1);
         }
         public String getPackagePath() {
-            return classPath.substring(classPath.lastIndexOf("target\\classes\\")+15);
+            int lastIndexOf = classPath.lastIndexOf("target\\classes\\");
+            if( lastIndexOf < 1 ){
+                lastIndexOf = classPath.lastIndexOf("target/classes/");
+            }
+            return classPath.substring(lastIndexOf+15);
         }
         public String getJarLibPath() {
             int indexOf = jarFileName.indexOf(WEB_INF_DIR_NAME);
@@ -39,6 +48,15 @@ public class DiagnosticPatchInfo {
 
             return jarFileName.substring(indexOf, indexOfJar);
 
+        }
+
+        public Object getSimpleClassName() {
+            int lastIndexOf = className.lastIndexOf("\\");
+            if( lastIndexOf < 1 ){
+                lastIndexOf = className.lastIndexOf("/");
+            }
+
+            return className.substring(lastIndexOf+1);
         }
     }
 }

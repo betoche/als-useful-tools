@@ -18,7 +18,7 @@ public class EmailHelper {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "false"); // Mailcatcher doesn't require authentication
         props.put("mail.smtp.starttls.enable", "false"); // Mailcatcher doesn't use TLS
-        props.put("mail.smtp.host", "192.168.1.37"); // Mailcatcher's default host
+        props.put("mail.smtp.host", "localhost"); // Mailcatcher's default host
         props.put("mail.smtp.port", "1025"); // Mailcatcher's default SMTP port
         props.put("mail.smtp.ssl.trust", "*"); // Trust all certificates (not recommended for production).
 
