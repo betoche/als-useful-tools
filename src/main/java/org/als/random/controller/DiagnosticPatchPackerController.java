@@ -100,7 +100,10 @@ public class DiagnosticPatchPackerController {
                     break;
                 }
             }
-            if( !containsClass ){
+            if( !containsClass ) {
+                List<String> jarList = mvnProjFileSys.getFilePathList(jarFilesDirectory, new String[]{".jar"}, null);
+                String jarName = getJarNameForClass(className, jarList);
+                LOGGER.error(String.format("%s Not in project but found at %s", className, jarName));
                 errorList.add(String.format("The class \"%s\" was not found in the project.", className));
                 isValidRequest = false;
             }
@@ -156,12 +159,16 @@ public class DiagnosticPatchPackerController {
         String jarName = "";
 
         for( String jarFileName : jarList ) {
+            String tmpClassPath = classPath;
+
             int lastIndexOf = classPath.lastIndexOf("target\\classes\\");
             if( lastIndexOf < 1 ){
                 lastIndexOf = classPath.lastIndexOf("target/classes/");
             }
 
-            String tmpClassPath = classPath.substring(lastIndexOf + 15);
+            if(lastIndexOf >= 0) {
+                tmpClassPath = classPath.substring(lastIndexOf + 15);
+            }
             ZipFile file = new ZipFile(jarFileName);
             if( isClassInJarFile(tmpClassPath, file) ) {
                 jarName = jarFileName;
@@ -174,6 +181,9 @@ public class DiagnosticPatchPackerController {
 
     public boolean isClassInJarFile(String name, ZipFile file) throws IOException {
         String tmpName = name.replace("\\", "/");
+        if(!tmpName.endsWith(".class")){
+            tmpName = tmpName + ".class";
+        }
         for (ZipEntry e : Collections.list(file.entries())) {
             if (e.getName().endsWith(tmpName)) {
                 return true;
