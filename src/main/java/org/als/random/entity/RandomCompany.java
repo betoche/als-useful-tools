@@ -11,6 +11,10 @@ public class RandomCompany {
     private Long id;
 
     private String name;
+
     @OneToMany( mappedBy = "company", cascade = CascadeType.ALL )
     private Set<Ticket> tickets;
+
+    @OneToMany( mappedBy = "company", cascade = CascadeType.ALL )
+    private Set<RandomUser> users;
 }

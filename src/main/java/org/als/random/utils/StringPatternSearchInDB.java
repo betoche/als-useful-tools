@@ -43,7 +43,7 @@ public class StringPatternSearchInDB {
             this.searchResultsList = new ArrayList<>();
 
             for (String pattern : this.searchPatterns) {
-                this.searchResultsList.add(DataBaseSearchResult.createDataBaseSearchResult(DBConnectionManager.getDatabaseConnection(databaseTypeEnum, databaseName, userName, password, null, null), getTableList(), pattern));
+                this.searchResultsList.add(DataBaseSearchResult.createDataBaseSearchResult(DBConnectionManager.getDatabaseConnection(databaseTypeEnum, databaseName, userName, password, host, port), getTableList(), pattern));
             }
         }
         return this.searchResultsList;
@@ -51,9 +51,9 @@ public class StringPatternSearchInDB {
 
     public List<DatabaseTable> getTableList() throws SQLException {
         if( Objects.isNull(this.tableList) ) {
-            this.tableList = DBConnectionManager.getDatabaseTables(this.databaseTypeEnum, DBConnectionManager.getDatabaseConnection(databaseTypeEnum, databaseName, userName, password, null, null), databaseName);
+            this.tableList = DBConnectionManager.getDatabaseTables(this.databaseTypeEnum, DBConnectionManager.getDatabaseConnection(databaseTypeEnum, databaseName, userName, password, host, port), databaseName);
 
-            DBConnectionManager.retrieveColumnListDetails(databaseTypeEnum, DBConnectionManager.getDatabaseConnection(databaseTypeEnum, databaseName, userName, password, null, null),this.tableList, false);
+            DBConnectionManager.retrieveColumnListDetails(databaseTypeEnum, DBConnectionManager.getDatabaseConnection(databaseTypeEnum, databaseName, userName, password, host, port),this.tableList, false);
         }
         return this.tableList;
     }
@@ -100,13 +100,17 @@ public class StringPatternSearchInDB {
     public static void main( String[] args ){
         String password = "password";
         String username = "teamconnect";
-        String host = "localhost";
+        String host = "127.0.0.1";
         int port = 1433;
-        String databaseName = "teamconnect_636";
-        String[] searchPattern = new String[]{ "3102" };
+        String databaseName = "teamconnect_635_p25";
+        String[] searchPattern = new String[]{ "1006" };
 
 
         StringPatternSearchInDB spsidb = new StringPatternSearchInDB( DatabaseTypeEnum.SQL_SERVER, username, password, host, port, databaseName, searchPattern );
+
+        port = 1521;
+        databaseName = "xe";
+        spsidb = new StringPatternSearchInDB( DatabaseTypeEnum.ORACLE, username, password, host, port, databaseName, searchPattern );
         try {
             spsidb.printTablesWithPattern();
         } catch (SQLException e) {

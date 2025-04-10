@@ -1,11 +1,18 @@
-function showInfoCard( buttonElem, optionType ) {
+function showInfoCard( buttonElem, optionType) {
     let jsonData = $(buttonElem).data('option');
+    let backgroundClass = $(buttonElem).data('background-class');
+    let borderClass = $(buttonElem).data('border-class');
+    let textClass = $(buttonElem).data('text-class');
+
     let cardElement = $('#card-info');
     let cardOptionType = $('#card-info-option-type');
     let cardTitle = $('#card-info-title');
     let cardDescription = $('#card-info-description');
     let cardLink = $('#card-info-link');
     let cardElem = $('#card');
+
+    addCardRandomBootstrapClasses(backgroundClass, borderClass, textClass);
+
     cardElem.removeClass('d-none');
     cardElem.addClass('d-block');
 
@@ -19,6 +26,19 @@ function showInfoCard( buttonElem, optionType ) {
         $(elem).removeClass('active');
     });
     $(buttonElem).addClass('active');
+}
+
+function addCardRandomBootstrapClasses(backgroundClass, borderClass, textClass) {
+    let cardBody = $('#card-body');
+    cardBody.removeClass();
+    cardBody.addClass('card-body');
+    cardBody.addClass(textClass);
+
+    let card = $('#card-info');
+    card.removeClass();
+    card.addClass('card');
+    card.addClass(backgroundClass);
+    card.addClass(borderClass);
 }
 
 function showRandomSpinning() {

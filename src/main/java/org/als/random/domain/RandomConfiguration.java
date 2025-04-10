@@ -13,11 +13,26 @@ import java.util.List;
 public class RandomConfiguration {
     private String name;
     private List<String> spinnerClasses;
+    private List<String> bootstrapBackgroundClasses;
+    private List<String> bootstrapBorderClasses;
+    private List<String> bootstrapTextClasses;
     private List<Option> genericOptions;
     private List<Option> specificOptions;
 
     public String getRandomSpinnerClass() {
         return spinnerClasses.get( (int)(Math.random() * spinnerClasses.size()) );
+    }
+
+    public String getBootstrapBackgroundClass() {
+        return bootstrapBackgroundClasses.get( (int)(Math.random() * bootstrapBackgroundClasses.size()) );
+    }
+
+    public String getBootstrapBorderClass() {
+        return bootstrapBorderClasses.get( (int)(Math.random() * bootstrapBorderClasses.size()) );
+    }
+
+    public String getBootstrapTextClass() {
+        return bootstrapTextClasses.get( (int)(Math.random() * bootstrapTextClasses.size()) );
     }
 
     public String toString() {

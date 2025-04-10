@@ -21,7 +21,7 @@
                         <i th:if="${item.getChildrenSize()>0}" class="fa fa-chevron"></i>
                         <i th:unless="${item.getChildrenSize()>0}" class="fa fa-minus"></i>
                         <span th:text="|${iStat.index + 1}- ${item.name}[${item.primaryKey}] - {parent-id: ${item.parentId==null?'null':item.parentId}, ${item.getDbInfo()}}|"></span>
-                        <span th:class="|badge rounded-pill float-end ${item.isExistsInDB ? 'bg-warning' : 'bg-primary'}" th:text="${item.getChildrenSize()}"></span>
+                        <span th:class="|badge rounded-pill float-end ${item.isExistsInDB ? 'bg-warning' : 'bg-primary'}|" th:text="${item.getChildrenSize()}"></span>
                         <th:block th:if="${item.getChildren() != null}">
                             <div class="list-group collapse" style="padding-left:15px;">
                                 <th:block th:insert=":: renderLookupItemList(${item.getChildren()})"></th:block>

@@ -38,6 +38,10 @@ public class DatabaseTableColumn {
         return new DatabaseTableColumn(columnJson.getString(NAME_JSON_KEY), ColumnTypeEnum.findByTypeStringName(columnJson.getString(COLUMN_TYPE_JSON_KEY)), table);
     }
 
+    public String getScapedColumnName(){
+        return String.format("[%s]", getName());
+    }
+
     public JSONObject toJson() throws JSONException {
         JSONObject root = new JSONObject();
         JSONObject json = new JSONObject();
@@ -72,7 +76,11 @@ public class DatabaseTableColumn {
             case NTEXT -> rs.getString(getName());
             case DATETIME2 -> rs.getTimestamp(getName());
             case NCHAR -> rs.getString(getName());
+            case NUMBER -> rs.getInt(getName());
             case IMAGE -> DatatypeConverter.printBase64Binary(rs.getBytes(getName()));
+            case NVARCHAR2 -> rs.getString(getName());
+            case ROWID -> rs.getString(getName());
+            case VARCHAR2 -> rs.getString(getName());
         };
         return value;
     }

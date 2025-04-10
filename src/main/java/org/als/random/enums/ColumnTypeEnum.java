@@ -22,16 +22,20 @@ public enum ColumnTypeEnum {
     CHAR(9, "char", JDBCType.CHAR, Character.class),
     VARCHAR(10, "varchar", JDBCType.VARCHAR, String.class),
     CLOB(11, "clob", JDBCType.CLOB, String.class),
-    BLOB(13, "blob", JDBCType.BLOB, Serializable.class),
-    DATE(14, "date", JDBCType.DATE, Date.class),
-    TIMESTAMP(15, "timestamp", JDBCType.TIMESTAMP, Timestamp.class),
+    BLOB(12, "blob", JDBCType.BLOB, Serializable.class),
+    DATE(13, "date", JDBCType.DATE, Date.class),
+    TIMESTAMP(14, "timestamp", JDBCType.TIMESTAMP, Timestamp.class),
     DATE_ORACLE(15, "date", JDBCType.DATE, java.util.Date.class),
-    TIMESTAMP_ORACLE(15, "datetime", JDBCType.TIMESTAMP, java.util.Date.class),
-    NVARCHAR(16, "nvarchar", JDBCType.NVARCHAR, String.class),
-    NTEXT(17, "ntext", JDBCType.LONGNVARCHAR, String.class),
-    DATETIME2(18, "datetime2", JDBCType.TIMESTAMP, Timestamp.class),
-    NCHAR(19, "nchar", JDBCType.NCHAR, String.class),
-    IMAGE(18, "image", JDBCType.LONGVARBINARY, Byte[].class);
+    TIMESTAMP_ORACLE(16, "datetime", JDBCType.TIMESTAMP, java.util.Date.class),
+    NVARCHAR(17, "nvarchar", JDBCType.NVARCHAR, String.class),
+    NTEXT(18, "ntext", JDBCType.LONGNVARCHAR, String.class),
+    DATETIME2(19, "datetime2", JDBCType.TIMESTAMP, Timestamp.class),
+    NCHAR(120, "nchar", JDBCType.NCHAR, String.class),
+    IMAGE(21, "image", JDBCType.LONGVARBINARY, Byte[].class),
+    NUMBER(22, "number", JDBCType.INTEGER, Long.class),
+    NVARCHAR2(23, "nvarchar2", JDBCType.NVARCHAR, String.class),
+    VARCHAR2(24, "nvarchar2", JDBCType.VARCHAR, String.class),
+    ROWID(25, "rowid", JDBCType.ROWID, String.class);
 
     private final int idx;
     private final String strRepresentation;
@@ -53,6 +57,10 @@ public enum ColumnTypeEnum {
     }
 
     public static ColumnTypeEnum findByTypeStringName( String typeName ) {
+        if("VARCHAR2".equalsIgnoreCase(typeName)){
+            return VARCHAR2;
+        }
+
         for( ColumnTypeEnum type : ColumnTypeEnum.values() ) {
             if( type.getStrRepresentation().equalsIgnoreCase(typeName) ) {
                 return type;

@@ -18,6 +18,32 @@ spinnerClasses:
   - spinner-grow text-info
   - spinner-grow text-light
   - spinner-grow text-dark
+bootstrapBackgroundClasses:
+  - bg-primary
+  - bg-secondary
+  - bg-success
+  - bg-danger
+  - bg-warning
+  - bg-info
+  - bg-light
+  - bg-dark
+bootstrapBorderClasses:
+  - border-primary
+  - border-secondary
+  - border-success
+  - border-danger
+  - border-warning
+  - border-info
+  - border-light
+  - border-dark
+bootstrapTextClasses:
+  - text-dark
+  - text-info
+  - text-warning
+  - text-danger
+  - text-success
+  - text-secondary
+  - text-primary
 genericOptions:
   -
     key: file-search
@@ -52,6 +78,11 @@ genericOptions:
     title: Expense Tracker
     description: Access the Expenses Dashboard that will allows you to track down your expenses providing you an overall view of your behavior during an specified period of time.
     path: /expense
+  -
+    key: user-manager
+    title: System User Manager
+    description: Create, modify and remove users.
+    path: /random-user
 specificOptions:
   -
     key: lookup-table

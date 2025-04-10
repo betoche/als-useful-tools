@@ -185,9 +185,9 @@ public class StringPatternSearch {
     }
 
     public static void main( String[] args ) {
-        //String directory = "C:\\Users\\betoc\\repositories\\TCE7.1.0\\teamconnectenterprise";
+        String directory = "C:\\Users\\betoc\\repositories\\TCE7.1.0\\teamconnectenterprise";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\teamconnectenterprise";
-        String directory = "C:\\Users\\betoc\\repositories\\TCE7.0.0\\teamconnectenterprise";
+        //String directory = "C:\\Users\\betoc\\repositories\\TCE7.0.0\\teamconnectenterprise";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.3\\teamconnectenterprise";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.6\\teamconnectenterprise";
         //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.6\\teamconnectenterprise";
@@ -236,19 +236,19 @@ public class StringPatternSearch {
         String[] patterns = new String[]{"\"[INFO-"};
 
         //String[] fileExtensions = new String[]{ ".xml", ".properties" };
-        String[] fileExtensions = new String[]{ ".js", ".java" };
+        //String[] fileExtensions = new String[]{ ".js", ".java" };
         //String[] fileExtensions = new String[]{ ".java", ".xml", ".properties", ".class", ".jar" };
         //String[] fileExtensions = new String[]{ ".js", ".jsp" };
         //String[] fileExtensions = new String[]{ ".java", ".class" };
         //String[] fileExtensions = new String[]{ ".java", ".jsp" };
         //String[] fileExtensions = new String[]{ ".java", ".xml", ".properties" };
         //String[] fileExtensions = new String[]{ ".xml", ".ini", ".prefs" };
-        //String[] fileExtensions = new String[]{ ".xml" };
+        String[] fileExtensions = new String[]{ ".xml" };
         //String[] fileExtensions = new String[]{};
 
         //directory = "C:\\Users\\betoc\\apps\\tomcat\\9.0.99\\webapps\\TC71_TEST_SQL_PB8";
         //directory = "C:\\Users\\betoc\\apps\\tomcat\\9.0.99\\webapps\\teamconnect-7.1.0.0001";
-        patterns = new String[]{"WorkflowList"};
+        patterns = new String[]{"5.3.28", "checker"};
 
         StringPatternSearch sps = new StringPatternSearch(directory, patterns, fileExtensions, new String[]{".class", ".png", ".css", ".jar", ".log"});
         //sps.sumOddNumbers();

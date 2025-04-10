@@ -69,6 +69,10 @@ public class DatabaseTableColumnData<T> {
                 String base64EncodedString = tableColumnDataJson.getString(VALUE_JSON_KEY);
                 yield new String( Base64.getDecoder().decode(base64EncodedString), "UTF-8");
             }
+            case NUMBER -> tableColumnDataJson.getInt(VALUE_JSON_KEY);
+            case NVARCHAR2 -> tableColumnDataJson.getString(VALUE_JSON_KEY);
+            case ROWID -> tableColumnDataJson.getString(VALUE_JSON_KEY);
+            case VARCHAR2 -> tableColumnDataJson.getString(VALUE_JSON_KEY);
         };
 
         return (T)returnVal;

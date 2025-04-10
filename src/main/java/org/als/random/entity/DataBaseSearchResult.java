@@ -79,7 +79,11 @@ public class DataBaseSearchResult {
             for (DatabaseTable table : tableList) {
                 String queryStr = "";
                 try {
-                    queryStr = SqlHelper.getQueryString(table, pattern);
+                    try {
+                        queryStr = SqlHelper.getQueryString(table, pattern);
+                    } catch(Exception e){
+                        queryStr = SqlHelper.getQueryString(table, pattern);
+                    }
                     if( queryStr.isEmpty() ) {
                         continue;
                     }
@@ -89,7 +93,9 @@ public class DataBaseSearchResult {
                         for (DatabaseTableColumn col : table.getColumnList()) {
                             String colValue = switch (col.getColumnType()) {
                                 case INTEGER -> String.valueOf(rs.getInt(col.getName()));
+                                case NUMBER -> String.valueOf(rs.getInt(col.getName()));
                                 case NVARCHAR -> rs.getString(col.getName());
+                                case NVARCHAR2 -> rs.getString(col.getName());
                                 default -> "";
                             };
 

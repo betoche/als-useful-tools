@@ -23,7 +23,9 @@ public class RandomUser {
     private String email;
 
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JdbcTypeCode(SqlTypes.INTEGER)
+    @JoinColumn(name = "company_id")
     private RandomCompany company;
 
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)

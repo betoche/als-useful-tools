@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+  <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head>
+      <meta charset="UTF-8">
+      <title>Expense Creator</title>
+      <link rel="icon" type="image/x-icon" th:href="@{/images/random-user-favicon.ico}">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+      <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+      <link th:href="@{/css/getmdl-select.css}" rel="stylesheet" />
+
+      <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+      <script th:src="@{/js/getmdl-select.js}" defer></script>
+      <style>
+        .demo-card-wide.mdl-card {
+          width: 680px;
+          height: 300px;
+        }
+        .mdl-card__actions {
+          outline: skyblue solid 5px;
+          z-index: 4;
+        }
+        #name {
+          display:flex;
+        margin-top: 10px;
+          justify-content: left;
+        }
+        #contact{
+          diplay: flex;
+        }
+        .mdl-button {
+        // outline: red solid 5px;
+          margin-left: 10px ;
+        }
+        .demo-card-wide {
+          height: 200px;
+         // outline: limegreen 10px solid;
+        }
+        .demo-card-wide > .mdl-card__title {
+          color: #fff;
+          height: 64px;
+          background-color:indigo;
+        }
+        .mdl-card__title-text {
+          position: relative;
+          top: 6px;
+        }
+        .demo-card-wide > .mdl-card__menu {
+          color: #fff;
+        }
+        #mycard {
+          height: 600px;
+          width:100%;
+         display:flex;
+          flex-direction: row;
+          // outline: red solid 10px;
+          justify-content: center;
+          align-items: center;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--2-col"></div>
+        <div class="mdl-cell mdl-cell--8-col">
+          <span class = "mdl-layout-title">Random User Admin Site!</span>
+        </div>
+        <div class="mdl-cell mdl-cell--2-col"></div>
+      </div>
+      <div class="mdl-grid">
+        <div id ="mycard">
+          <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title">
+              <h2 class="mdl-card__title-text">Contact details</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+              First, tell us how to get in touch with you!
+              <form action="#">
+                <div id="name">
+                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="firstName">
+                    <label class="mdl-textfield__label" for="firstName">First Name</label>
+                  </div>
+                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="lastName">
+                    <label class="mdl-textfield__label" for="lastName">Last Name</label>
+                  </div>
+                </div>
+                <div id ="contact">
+                  <!--
+                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="username">
+                    <label class="mdl-textfield__label" for="username">Mobile Phone</label>
+                    <span class="mdl-textfield__error">Mobile must be a number!</span>
+                  </div>
+                  -->
+                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="username">
+                    <label class="mdl-textfield__label" for="username">Username</label>
+                  </div>
+                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+                    <input type="text" value="" class="mdl-textfield__input" id="sample4" readonly>
+                    <input type="hidden" value="" name="sample4">
+                    <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                    <label for="sample4" class="mdl-textfield__label">Country</label>
+                    <ul for="sample4" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                      <li class="mdl-menu__item" data-val="DEU">Germany</li>
+                      <li class="mdl-menu__item" data-val="BLR">Belarus</li>
+                      <li class="mdl-menu__item" data-val="RUS">Russia</li>
+                    </ul>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- FAB button with ripple -->
+          <div id="next">
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
+              <i class="material-icons">arrow_forward</i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="mdl-grid" style="text-align: center; display: block; vertical-align: middle; margin: 0;">
+        User List
+      </div>
+      <div class="mdl-grid">
+        <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp" style="margin: 0 auto;">
+          <thead class="mdl-data-table__header--sorted-ascending">
+          <tr>
+            <th class="mdl-data-table__cell--non-numeric">Name</th>
+            <th class="mdl-data-table__cell--non-numeric">Main Company</th>
+            <th class="mdl-data-table__cell--non-numeric">user name</th>
+            <th class="mdl-data-table__cell--non-numeric">Status</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric">Alberto Larios</td>
+            <td class="mdl-data-table__cell--non-numeric">alarios</td>
+            <td class="mdl-data-table__cell--non-numeric">Mitratech</td>
+            <td class="mdl-data-table__cell--non-numeric">Active</td>
+          </tr>
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric">Alberto Larios</td>
+            <td class="mdl-data-table__cell--non-numeric">alarios</td>
+            <td class="mdl-data-table__cell--non-numeric">Mitratech</td>
+            <td class="mdl-data-table__cell--non-numeric">Active</td>
+          </tr><tr>
+            <td class="mdl-data-table__cell--non-numeric">Alberto Larios</td>
+            <td class="mdl-data-table__cell--non-numeric">alarios</td>
+            <td class="mdl-data-table__cell--non-numeric">Mitratech</td>
+            <td class="mdl-data-table__cell--non-numeric">Active</td>
+          </tr><tr>
+            <td class="mdl-data-table__cell--non-numeric">Alberto Larios</td>
+            <td class="mdl-data-table__cell--non-numeric">alarios</td>
+            <td class="mdl-data-table__cell--non-numeric">Mitratech</td>
+            <td class="mdl-data-table__cell--non-numeric">Active</td>
+          </tr><tr>
+            <td class="mdl-data-table__cell--non-numeric">Alberto Larios</td>
+            <td class="mdl-data-table__cell--non-numeric">alarios</td>
+            <td class="mdl-data-table__cell--non-numeric">Mitratech</td>
+            <td class="mdl-data-table__cell--non-numeric">Active</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </body>
+  </html>

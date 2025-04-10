@@ -32,4 +32,4 @@ logging:
     org:
       hibernate:
         SQL: DEBUG
-#postgresql://graffos_owner:npg_vh89HaOxmKeW@ep-flat-dawn-a5xftl28-pooler.us-east-2.aws.neon.tech/graffos?sslmode=require
+        #postgresql://graffos_owner:npg_vh89HaOxmKeW@ep-flat-dawn-a5xftl28-pooler.us-east-2.aws.neon.tech/graffos?sslmode=require

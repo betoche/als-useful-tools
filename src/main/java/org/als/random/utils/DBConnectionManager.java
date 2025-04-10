@@ -36,9 +36,17 @@ public class DBConnectionManager {
 
         PreparedStatement ps = null;
         ResultSet rs = null;
+        String tmpDatabaseName = databaseName;
+        if(databaseTypeEnum==DatabaseTypeEnum.ORACLE){
+            try {
+                tmpDatabaseName = con.getMetaData().getUserName();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        String tablesQuery = getSQLQueryTablesString(databaseTypeEnum, tmpDatabaseName); //String.format("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_CATALOG='%s'", databaseName);
         try {
-            String tablesQuery = String.format("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES " +
-                    "WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_CATALOG='%s'", databaseName);
+
             ps = con.prepareStatement(tablesQuery);
             rs = ps.executeQuery();
 
@@ -61,7 +69,7 @@ public class DBConnectionManager {
     }
 
     public static String getSQLQueryTableColumnsString( DatabaseTypeEnum databaseType, String databaseName, String tableName ) {
-        return getSQLQueryString(TABLE_LIST_QUERY, databaseType, databaseName, tableName);
+        return getSQLQueryString(TABLE_COLUMN_LIST_QUERY, databaseType, databaseName, tableName);
     }
 
     public static String getSQLQueryString( int query, DatabaseTypeEnum databaseType, @Nullable String databaseName, @Nullable String tableName ) {
@@ -72,12 +80,12 @@ public class DBConnectionManager {
         String sqlQuery = switch (databaseType) {
             case SQL_SERVER -> switch (query) {
                 case TABLE_LIST_QUERY -> String.format("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_CATALOG='%s'", databaseName);
-                case TABLE_COLUMN_LIST_QUERY -> String.format("SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'%s';", tableName);
+                case TABLE_COLUMN_LIST_QUERY -> String.format("SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'%s'", tableName);
                 default -> "";
             };
             case ORACLE -> switch(query) {
-                case TABLE_LIST_QUERY -> "";
-                case TABLE_COLUMN_LIST_QUERY -> "";
+                case TABLE_LIST_QUERY -> String.format("SELECT TABLE_NAME FROM all_tables WHERE owner = '%s'", databaseName);
+                case TABLE_COLUMN_LIST_QUERY -> String.format("SELECT COLUMN_NAME, DATA_TYPE FROM ALL_tab_cols WHERE table_name = '%s' AND OWNER = '%s'", tableName, databaseName );
                 default -> "";
             };
         };
@@ -91,20 +99,30 @@ public class DBConnectionManager {
         ResultSet rs = null;
         try {
             for( DatabaseTable table : tableList ) {
-                String tablesQuery = switch(databaseTypeEnum) {
+                String tmpDatabaseName = "";
+                if( databaseTypeEnum == DatabaseTypeEnum.ORACLE ){
+                    tmpDatabaseName = con.getMetaData().getUserName();
+                }
+
+                String tablesQuery = getSQLQueryTableColumnsString(databaseTypeEnum, tmpDatabaseName, table.getName()); /* switch(databaseTypeEnum) {
                     case SQL_SERVER -> String.format("SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'%s';", table.getName());
-                    case ORACLE -> "";
+                    case ORACLE -> String.format("SELECT COLUMN_NAME, DATA_TYPE FROM ALL_tab_cols WHERE table_name = %s AND OWNER = %s;", table.getName(), table.getDatabase().getName() );
                 };
+                */
                 ps = con.prepareStatement(tablesQuery);
-                rs = ps.executeQuery();
+                try {
+                    rs = ps.executeQuery();
+                } catch(Exception e){
+                    e.printStackTrace();
+                    throw e;
+                }
 
                 while (rs.next()) {
                     String columnName = rs.getString("COLUMN_NAME");
                     String dataTypeStr = rs.getString("DATA_TYPE");
                     ColumnTypeEnum dataType = ColumnTypeEnum.findByTypeStringName(dataTypeStr);
                     if( Objects.isNull(dataType) ) {
-                        LOGGER.info(String.format("{table: %s, col: %s, type: %s}", table.getName(), columnName, dataTypeStr));
-
+                        LOGGER.info(String.format("%s {col: %s, type: %s} has unknown datatype", table.getName(), columnName, dataTypeStr));
                     }
 
                     table.addColumn(new DatabaseTableColumn(columnName, dataType, table));
@@ -134,11 +152,15 @@ public class DBConnectionManager {
                 }
 
                 if( retriveData ) {
-                    String dataQuery = String.format("SELECT %s FROM %s", String.join(", ", table.getColumnList().stream().map(DatabaseTableColumn::getName).toList()), table.getName());
+                    String dataQuery = String.format("SELECT %s FROM %s", String.join(", ", table.getColumnList().stream().map(DatabaseTableColumn::getScapedColumnName).toList()), table.getName());
 
                     ps = con.prepareStatement(dataQuery);
-                    rs = ps.executeQuery();
-                    while( rs.next() ) {
+                    try {
+                        rs = ps.executeQuery();
+                    } catch( Exception ex ){
+                        LOGGER.error(ex.getMessage(), ex);
+                    }
+                    while (rs.next()) {
                         table.addTableRowData(DatabaseTableRowData.parse(table.getTableData(), table.getColumnList(), rs));
                     }
                 }
@@ -150,6 +172,13 @@ public class DBConnectionManager {
         }
     }
 
+    public static Connection getDatabaseConnection(DatabaseTypeEnum databaseType, String databaseName, String userName,
+                                                   String password, @Nullable String host, @Nullable Integer port) {
+        return switch (databaseType) {
+            case DatabaseTypeEnum.SQL_SERVER -> getSQLServerConnection(databaseName, userName, password, host, port);
+            case DatabaseTypeEnum.ORACLE -> getOracleDBConnection(databaseName, userName, password, host, port);
+        };
+    }
     private static Connection getSQLServerConnection( String databaseName, String userName, String password,
                                                       String host, Integer port ) {
         Connection connection;
@@ -173,17 +202,9 @@ public class DBConnectionManager {
         }
         return connection;
     }
-
-    public static Connection getDatabaseConnection(DatabaseTypeEnum databaseType, String databaseName, String userName,
-                                                   String password, @Nullable String host, @Nullable Integer port) {
-        return switch (databaseType) {
-            case DatabaseTypeEnum.SQL_SERVER -> getSQLServerConnection(databaseName, userName, password, host, port);
-            case DatabaseTypeEnum.ORACLE -> getOracleDBConnection(databaseName, userName, password, host, port);
-        };
-    }
-
     private static Connection getOracleDBConnection( String databaseName, String userName, String password,
                                                       @Nullable String host, @Nullable Integer port ) {
+        Connection connection;
         String tmpHost = "localhost";
         int tmpPort = 1433;
 
@@ -193,7 +214,16 @@ public class DBConnectionManager {
         if(Objects.nonNull(port))
             tmpPort = port;
 
-        return null;
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+
+            String url = String.format("jdbc:oracle:thin:@%s:%s:%s", tmpHost, tmpPort, databaseName);
+
+            connection = DriverManager.getConnection(url, userName, password);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return connection;
     }
 
 

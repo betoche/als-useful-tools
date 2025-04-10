@@ -53,6 +53,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	implementation 'com.microsoft.sqlserver:mssql-jdbc:12.8.1.jre11'
+	implementation 'com.oracle.database.jdbc:ojdbc17:23.7.0.25.01'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
