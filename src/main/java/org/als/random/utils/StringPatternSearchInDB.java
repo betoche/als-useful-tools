@@ -8,8 +8,10 @@ import org.als.random.enums.DatabaseTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URISyntaxException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,7 +40,7 @@ public class StringPatternSearchInDB {
         this.searchPatterns = searchPatterns;
     }
 
-    public List<DataBaseSearchResult> getSearchResultsList() throws SQLException {
+    public List<DataBaseSearchResult> getSearchResultsList() throws SQLException, URISyntaxException {
         if( Objects.isNull(this.searchResultsList) ) {
             this.searchResultsList = new ArrayList<>();
 
@@ -49,7 +51,7 @@ public class StringPatternSearchInDB {
         return this.searchResultsList;
     }
 
-    public List<DatabaseTable> getTableList() throws SQLException {
+    public List<DatabaseTable> getTableList() throws SQLException, URISyntaxException {
         if( Objects.isNull(this.tableList) ) {
             this.tableList = DBConnectionManager.getDatabaseTables(this.databaseTypeEnum, DBConnectionManager.getDatabaseConnection(databaseTypeEnum, databaseName, userName, password, host, port), databaseName);
 
@@ -84,10 +86,12 @@ public class StringPatternSearchInDB {
         }
     }
 
-    public void printTablesWithPattern() throws SQLException {
+    public void printTablesWithPattern() throws SQLException, URISyntaxException {
         String nL = System.lineSeparator();
         String dividerLine = "________________________________________________________________________";
         int totalFound = 0;
+
+        LOGGER.info(String.format("Searching [%s] in %s.", String.join( " ", searchPatterns), databaseName) );
         for( DataBaseSearchResult result : getSearchResultsList() ) {
             LOGGER.info(String.format("%s%s%sResults for [%s]:%s%s", nL, dividerLine, nL, result.getPattern(), nL,
                     String.join(nL, result.getQueryStringList())
@@ -97,23 +101,27 @@ public class StringPatternSearchInDB {
         LOGGER.info(String.format("   >>> Total tables found: %s <<<", totalFound));
     }
 
-    public static void main( String[] args ){
+    public static void main( String[] args ) {
         String password = "password";
         String username = "teamconnect";
         String host = "127.0.0.1";
         int port = 1433;
-        String databaseName = "teamconnect_635_p25";
-        String[] searchPattern = new String[]{ "1006" };
+        String databaseName = "tc_710_soh_5156";
+        String[] searchPattern = new String[]{ "12" };
 
 
         StringPatternSearchInDB spsidb = new StringPatternSearchInDB( DatabaseTypeEnum.SQL_SERVER, username, password, host, port, databaseName, searchPattern );
 
+        //username = "soh_5212";
         port = 1521;
         databaseName = "xe";
+
         spsidb = new StringPatternSearchInDB( DatabaseTypeEnum.ORACLE, username, password, host, port, databaseName, searchPattern );
+
+
         try {
             spsidb.printTablesWithPattern();
-        } catch (SQLException e) {
+        } catch (SQLException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }

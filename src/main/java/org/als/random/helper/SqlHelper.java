@@ -3,6 +3,7 @@ package org.als.random.helper;
 import org.als.random.domain.DatabaseTable;
 import org.als.random.domain.DatabaseTableColumn;
 import org.als.random.enums.ColumnTypeEnum;
+import org.als.random.enums.DatabaseTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,6 +79,16 @@ public class SqlHelper {
             return "";
         }
 
-        return String.join(", ", columns.stream().map(DatabaseTableColumn::getName).toList());
+        boolean isOracle = false;
+        try {
+            isOracle = ((DatabaseTableColumn) columns.toArray()[0]).getTable().getDatabase().getDatabaseTypeEnum()== DatabaseTypeEnum.ORACLE;
+        } catch( Exception e ){
+            LOGGER.error(String.format("%s: %s", e.toString(), e.getMessage()), e);
+        }
+        if( !isOracle ) {
+            return String.join(", ", columns.stream().map(DatabaseTableColumn::getScapedColumnName).toList());
+        } else {
+            return String.join(", ", columns.stream().map(DatabaseTableColumn::getName).toList());
+        }
     }
 }

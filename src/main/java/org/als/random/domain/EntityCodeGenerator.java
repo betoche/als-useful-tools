@@ -31,8 +31,12 @@ public class EntityCodeGenerator {
         if(Objects.isNull(attributeDetailList) ) {
             attributeDetailList = new ArrayList<>();
 
-            for( DatabaseTableColumn column : table.getColumnList() ) {
-                attributeDetailList.add(new EntityAttributeDetails(column));
+            try {
+                for (DatabaseTableColumn column : table.getColumnList()) {
+                    attributeDetailList.add(new EntityAttributeDetails(column));
+                }
+            }catch( Exception e ){
+                throw e;
             }
         }
         return attributeDetailList;

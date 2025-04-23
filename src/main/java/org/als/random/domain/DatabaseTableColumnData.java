@@ -73,6 +73,7 @@ public class DatabaseTableColumnData<T> {
             case NVARCHAR2 -> tableColumnDataJson.getString(VALUE_JSON_KEY);
             case ROWID -> tableColumnDataJson.getString(VALUE_JSON_KEY);
             case VARCHAR2 -> tableColumnDataJson.getString(VALUE_JSON_KEY);
+            case NUMERIC -> tableColumnDataJson.getBigDecimal(VALUE_JSON_KEY);
         };
 
         return (T)returnVal;

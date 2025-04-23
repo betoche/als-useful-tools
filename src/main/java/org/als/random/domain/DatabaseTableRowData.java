@@ -1,6 +1,7 @@
 package org.als.random.domain;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -12,16 +13,20 @@ import java.util.*;
 public class DatabaseTableRowData {
     private Map<String, DatabaseTableColumnData> tableDataMap;
     public static final String COLUMNS_JSON_KEY = "columns";
+    public static final String HASH_CODE_JSON_KEY = "hashCode";
     @Getter
     public DatabaseTableData tableData;
+    @Getter @Setter
+    private int resultSetHashCode;
 
-    public DatabaseTableRowData( DatabaseTableData tableData ) {
+    public DatabaseTableRowData( DatabaseTableData tableData, int resultSetHashCode ) {
         this.tableData = tableData;
+        this.resultSetHashCode = resultSetHashCode;
     }
 
 
-    public static DatabaseTableRowData parse(DatabaseTableData tableData, Collection<DatabaseTableColumn> columnList, ResultSet rs) throws SQLException {
-        DatabaseTableRowData tableRowData = new DatabaseTableRowData(tableData);
+    public static DatabaseTableRowData parse(DatabaseTableData tableData, Collection<DatabaseTableColumn> columnList, ResultSet rs, int hashCode) throws SQLException {
+        DatabaseTableRowData tableRowData = new DatabaseTableRowData(tableData, hashCode);
         for( DatabaseTableColumn column : columnList ){
             tableRowData.addDatabaseTableDatum(DatabaseTableColumnData.parse(tableRowData, column, rs));
         }
@@ -31,7 +36,8 @@ public class DatabaseTableRowData {
 
     public static DatabaseTableRowData parseFromJson(DatabaseTableData tableData, JSONObject json) throws UnsupportedEncodingException {
         JSONArray jsonData = json.getJSONArray(COLUMNS_JSON_KEY);
-        DatabaseTableRowData tableRowData = new DatabaseTableRowData(tableData);
+        int hashCode = json.getInt(HASH_CODE_JSON_KEY);
+        DatabaseTableRowData tableRowData = new DatabaseTableRowData(tableData, hashCode);
         for( int i = 0 ; i < jsonData.length() ; i++ ) {
             JSONObject tableColumnDataJson = jsonData.getJSONObject(i);
             tableRowData.addDatabaseTableDatum(DatabaseTableColumnData.parseFromJson(tableRowData, tableColumnDataJson));
@@ -63,6 +69,7 @@ public class DatabaseTableRowData {
             columnArray.put(value.toJson());
         });
         json.put(COLUMNS_JSON_KEY, columnArray);
+        json.put(HASH_CODE_JSON_KEY, getResultSetHashCode());
         return json;
     }
 

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public class DatabaseSnapshotsController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createDatabaseSnapshot(@RequestBody DatabaseSnapshotRequest request) {
+    public ResponseEntity<String> createDatabaseSnapshot(@RequestBody DatabaseSnapshotRequest request) throws URISyntaxException {
         return ResponseEntity.ok(snapshotService.createDatabaseSnapshot(request).toJson().toString());
     }
 

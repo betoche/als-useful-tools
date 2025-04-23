@@ -1,7 +1,6 @@
 package org.als.random.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.als.random.enums.ColumnTypeEnum;
@@ -38,7 +37,7 @@ public class DatabaseTableColumn {
         return new DatabaseTableColumn(columnJson.getString(NAME_JSON_KEY), ColumnTypeEnum.findByTypeStringName(columnJson.getString(COLUMN_TYPE_JSON_KEY)), table);
     }
 
-    public String getScapedColumnName(){
+    public String getScapedColumnName() {
         return String.format("[%s]", getName());
     }
 
@@ -67,7 +66,7 @@ public class DatabaseTableColumn {
             case CHAR -> rs.getString(getName());
             case VARCHAR -> rs.getString(getName());
             case CLOB -> rs.getString(getName());
-            case BLOB -> rs.getString(getName());
+            case BLOB -> rs.getBlob(getName());
             case DATE -> rs.getDate(getName());
             case TIMESTAMP -> rs.getTimestamp(getName());
             case DATE_ORACLE -> rs.getDate(getName());
@@ -76,11 +75,12 @@ public class DatabaseTableColumn {
             case NTEXT -> rs.getString(getName());
             case DATETIME2 -> rs.getTimestamp(getName());
             case NCHAR -> rs.getString(getName());
-            case NUMBER -> rs.getInt(getName());
+            case NUMBER -> rs.getLong(getName());
             case IMAGE -> DatatypeConverter.printBase64Binary(rs.getBytes(getName()));
             case NVARCHAR2 -> rs.getString(getName());
             case ROWID -> rs.getString(getName());
             case VARCHAR2 -> rs.getString(getName());
+            case NUMERIC -> rs.getBigDecimal(getName());
         };
         return value;
     }

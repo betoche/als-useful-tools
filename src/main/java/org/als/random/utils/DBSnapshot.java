@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -60,7 +61,7 @@ public class DBSnapshot {
         return dbConn;
     }
 
-    public Database getDatabase() {
+    public Database getDatabase() throws URISyntaxException {
         if(Objects.isNull(this.database)) {
             this.database = Database.builder().name(databaseName).build();
             this.database.setUsername(this.databaseUserName);
@@ -78,7 +79,7 @@ public class DBSnapshot {
         return database;
     }
 
-    public void createDatabaseSnapshot() throws JSONException, IOException {
+    public void createDatabaseSnapshot() throws JSONException, IOException, URISyntaxException {
         File snapshotsDir = new File(RandomConstants.SNAPSHOT_STORAGE_DIRECTORY);
         if( !snapshotsDir.exists() )
             Files.createDirectory(Path.of(snapshotsDir.getAbsolutePath()));
@@ -118,7 +119,7 @@ public class DBSnapshot {
         try {
             dbSnapshot.createDatabaseSnapshot();
             //dbSnapshot.compareSnapshots("teamconnect_637-snapshot-2025-01-03-00-05.snap", "teamconnect_637-snapshot-2025-01-03-00-10.snap");
-        } catch (JSONException | IOException e) {
+        } catch (JSONException | IOException | URISyntaxException e) {
             LOGGER.error(e.getMessage(), e);
         }
     }

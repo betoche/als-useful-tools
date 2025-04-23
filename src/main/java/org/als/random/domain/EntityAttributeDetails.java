@@ -32,11 +32,15 @@ public class EntityAttributeDetails {
     }
 
     public List<String> getEntityAttributeDeclarationString() {
-        String simpleType = getColumnTypeEnum().getJavaType().getSimpleName();
-        if( column.getName().startsWith("IS_") ) {
-            simpleType = "Integer";
+        try {
+            String simpleType = getColumnTypeEnum().getJavaType().getSimpleName();
+            if (column.getName().startsWith("IS_")) {
+                simpleType = "Integer";
+            }
+            return List.of(String.format("@Column(name=\"%s\")", column.getName()), String.format("private %s %s;", simpleType, getName()));
+        }catch( Exception e ){
+            throw e;
         }
-        return List.of( String.format("@Column(name=\"%s\")", column.getName()), String.format("private %s %s;", simpleType, getName()));
     }
 
 

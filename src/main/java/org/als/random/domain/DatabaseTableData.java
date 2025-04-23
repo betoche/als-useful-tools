@@ -1,16 +1,19 @@
 package org.als.random.domain;
 
+import jakarta.annotation.Nullable;
 import lombok.Getter;
+import org.als.random.utils.DBConnectionManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.util.*;
 
 public class DatabaseTableData {
     private static final String ROWS_JSON_KEY = "rows";
     private static final String PRIMARY_KEY_COLUMN_NAME = "PRIMARY_KEY";
-    private Map<Integer, DatabaseTableRowData> rowDataMap;
+    private Map<Long, DatabaseTableRowData> rowDataMap;
     @Getter
     private DatabaseTable table;
 
@@ -23,14 +26,15 @@ public class DatabaseTableData {
         DatabaseTableData tableData = new DatabaseTableData(table);
         for( int i = 0 ; i < jsonArray.length() ; i++ ) {
             JSONObject tableRowData = jsonArray.getJSONObject(i);
-            tableData.addTableDataRow(DatabaseTableRowData.parseFromJson(tableData, tableRowData));
+            int hashCode = tableRowData.getInt(DatabaseTableRowData.HASH_CODE_JSON_KEY);
+            tableData.addTableDataRow(DatabaseTableRowData.parseFromJson(tableData, tableRowData), hashCode);
         }
 
         return tableData;
     }
 
 
-    public Map<Integer, DatabaseTableRowData> getTableRowDataMap() {
+    public Map<Long, DatabaseTableRowData> getTableRowDataMap() {
         if( Objects.isNull(rowDataMap) ) {
             rowDataMap = new TreeMap<>();
         }
@@ -38,12 +42,14 @@ public class DatabaseTableData {
         return rowDataMap;
     }
 
-    public void addTableDataRow( DatabaseTableRowData tableRowData ) {
+    public void addTableDataRow( DatabaseTableRowData tableRowData, @Nullable Integer resultSetHashCode ) {
         DatabaseTableColumnData datum = tableRowData.getTableColumnDataByColumnName(PRIMARY_KEY_COLUMN_NAME);
-        Integer primaryKey = 0;
+        Long primaryKey = 0l;
         if( Objects.nonNull(datum) ) {
             if( Objects.nonNull(datum.getValue()) )
-                primaryKey = (Integer)datum.getValue();
+                primaryKey = Long.parseLong(datum.getValue().toString());
+        } else if( Objects.nonNull(resultSetHashCode) ) {
+            primaryKey = Long.parseLong(resultSetHashCode.toString());
         }
         try {
             getTableRowDataMap().put(primaryKey, tableRowData);
@@ -52,7 +58,7 @@ public class DatabaseTableData {
         }
     }
 
-    public DatabaseTableRowData getTableRowDataByPrimaryKey(Integer primaryKey ) {
+    public DatabaseTableRowData getTableRowDataByPrimaryKey(Long primaryKey ) {
         return getTableRowDataMap().get(primaryKey);
     }
 
@@ -76,7 +82,14 @@ public class DatabaseTableData {
     public List<String> getDataDifferenceList(DatabaseTableData tableData2) {
         List<String> reasonMessageList = new ArrayList<>();
         getTableRowDataMap().forEach((primaryKey1, tableRowData1) -> {
-            DatabaseTableRowData tableRowData2 = tableData2.getTableRowDataByPrimaryKey(primaryKey1);
+            boolean hasPrimaryKeyColumn = getTable().getColumnList().stream().map(DatabaseTableColumn::getName).toList().contains(DBConnectionManager.PRIMARY_KEY_TABLE_NAME);
+
+            DatabaseTableRowData tableRowData2;
+            if(hasPrimaryKeyColumn) {
+                tableRowData2 = tableData2.getTableRowDataByPrimaryKey(primaryKey1);
+            } else {
+                tableRowData2 = tableData2.getTableRowDataByPrimaryKey(primaryKey1);
+            }
             if( Objects.nonNull(tableRowData2) ) {
                 reasonMessageList.addAll(tableRowData1.getDataDifferenceList(tableRowData2));
             } else {

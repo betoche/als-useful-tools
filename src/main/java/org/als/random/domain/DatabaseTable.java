@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.als.random.utils.DBConnectionManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,8 +26,10 @@ public class DatabaseTable {
     private Database database;
     @Getter @Setter
     private Set<DatabaseTableColumn> columnList;
+    private Boolean containsPrimaryKeyColumn;
 
     public static final String NAME_JSON_KEY = "name";
+    public static final String CONTAINS_PRIMARY_KEY_COLUMN = "hasPrimaryKeyColumn";
     public static final String NUMBER_OF_RECORDS_JSON_KEY = "numberOfRecords";
     public static final String LAST_PRIMARY_KEY_JSON_KEY = "lastPrimaryKey";
     public static final String DATA_JSON_KEY = "data";
@@ -41,6 +44,8 @@ public class DatabaseTable {
         DatabaseTableBuilder builder = DatabaseTable.builder();
         JSONObject tableJson = json.getJSONObject(TABLE_JSON_KEY);
         builder.name(tableJson.getString(NAME_JSON_KEY));
+        builder.containsPrimaryKeyColumn(tableJson.getBoolean(CONTAINS_PRIMARY_KEY_COLUMN));
+
         builder.lastPrimaryKey(tableJson.getInt(LAST_PRIMARY_KEY_JSON_KEY));
         builder.numberOfRecords(tableJson.getInt(NUMBER_OF_RECORDS_JSON_KEY));
         builder.database(db);
@@ -66,6 +71,17 @@ public class DatabaseTable {
         return table;
     }
 
+    public boolean doesContainPrimaryKeyColumn() {
+        if( Objects.isNull( containsPrimaryKeyColumn ) ) {
+            if( getColumnList().stream().map(DatabaseTableColumn::getName).toList().contains(DBConnectionManager.PRIMARY_KEY_TABLE_NAME) ) {
+                containsPrimaryKeyColumn = Boolean.TRUE;
+            } else {
+                containsPrimaryKeyColumn = Boolean.FALSE;
+            }
+        }
+        return containsPrimaryKeyColumn.booleanValue();
+    }
+
     public DatabaseTableData getTableData() {
         if( Objects.isNull(data) ){
             data = new DatabaseTableData(this);
@@ -76,8 +92,8 @@ public class DatabaseTable {
     public void setTableData( DatabaseTableData data ) {
         this.data = data;
     }
-    public void addTableRowData( DatabaseTableRowData dataRow  ) {
-        getTableData().addTableDataRow(dataRow);
+    public void addTableRowData( DatabaseTableRowData dataRow, int resultSetHashCode  ) {
+        getTableData().addTableDataRow(dataRow, resultSetHashCode);
     }
 
     public void addColumn( DatabaseTableColumn column ) {
@@ -134,6 +150,7 @@ public class DatabaseTable {
         JSONObject json = new JSONObject();
         JSONArray columnArray = new JSONArray();
 
+        json.put(CONTAINS_PRIMARY_KEY_COLUMN, doesContainPrimaryKeyColumn() );
         json.put(NAME_JSON_KEY, getName());
         json.put(NUMBER_OF_RECORDS_JSON_KEY, getNumberOfRecords());
         json.put(LAST_PRIMARY_KEY_JSON_KEY, getLastPrimaryKey());

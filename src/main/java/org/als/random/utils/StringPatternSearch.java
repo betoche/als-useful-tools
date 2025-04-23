@@ -243,12 +243,12 @@ public class StringPatternSearch {
         //String[] fileExtensions = new String[]{ ".java", ".jsp" };
         //String[] fileExtensions = new String[]{ ".java", ".xml", ".properties" };
         //String[] fileExtensions = new String[]{ ".xml", ".ini", ".prefs" };
-        String[] fileExtensions = new String[]{ ".xml" };
+        String[] fileExtensions = new String[]{ ".java", ".xml", ".properties" };
         //String[] fileExtensions = new String[]{};
 
         //directory = "C:\\Users\\betoc\\apps\\tomcat\\9.0.99\\webapps\\TC71_TEST_SQL_PB8";
         //directory = "C:\\Users\\betoc\\apps\\tomcat\\9.0.99\\webapps\\teamconnect-7.1.0.0001";
-        patterns = new String[]{"5.3.28", "checker"};
+        patterns = new String[]{"W_OBJD_RESOURCE_MESSAGE", "WObjdResourceMessage"};
 
         StringPatternSearch sps = new StringPatternSearch(directory, patterns, fileExtensions, new String[]{".class", ".png", ".css", ".jar", ".log"});
         //sps.sumOddNumbers();

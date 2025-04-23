@@ -3,6 +3,7 @@ package org.als.random.enums;
 import lombok.Getter;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.JDBCType;
@@ -18,7 +19,7 @@ public enum ColumnTypeEnum {
     INTEGER(5, "int", JDBCType.INTEGER, Long.class),
     BIGINT(6, "bigint", JDBCType.BIGINT, Long.class),
     SMALLINT(7, "smallint", JDBCType.SMALLINT, Short.class),
-    DECIMAL(8, "decimal", JDBCType.DECIMAL, BigInteger.class),
+    DECIMAL(8, "decimal", JDBCType.DECIMAL, BigDecimal.class),
     CHAR(9, "char", JDBCType.CHAR, Character.class),
     VARCHAR(10, "varchar", JDBCType.VARCHAR, String.class),
     CLOB(11, "clob", JDBCType.CLOB, String.class),
@@ -35,7 +36,8 @@ public enum ColumnTypeEnum {
     NUMBER(22, "number", JDBCType.INTEGER, Long.class),
     NVARCHAR2(23, "nvarchar2", JDBCType.NVARCHAR, String.class),
     VARCHAR2(24, "nvarchar2", JDBCType.VARCHAR, String.class),
-    ROWID(25, "rowid", JDBCType.ROWID, String.class);
+    ROWID(25, "rowid", JDBCType.ROWID, String.class),
+    NUMERIC(26, "numeric", JDBCType.NUMERIC, BigDecimal.class);
 
     private final int idx;
     private final String strRepresentation;

@@ -3,6 +3,7 @@ package org.als.random.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.als.random.enums.DatabaseTypeEnum;
 import org.als.random.enums.RandomConstants;
 import org.als.random.helper.FileDirHelper;
 import org.als.random.utils.DBSnapshot;
@@ -30,6 +31,7 @@ public class Database {
     private int totalRecordsCount;
     private List<DatabaseTable> tableList;
     private String snapshotFileName;
+    private DatabaseTypeEnum databaseTypeEnum;
 
     public static final String USERNAME_JSON_KEY = "username";
     public static final String PASSWORD_JSON_KEY = "password";
@@ -87,7 +89,7 @@ public class Database {
         if(Objects.isNull(o))
             return false;
 
-        return getName().compareTo(o.getName())==0 && o.compareTables(getTableList());
+        return getName().compareTo(o.getName())==0 && o.compareTables(getTableList()) && getRecordsCount()==o.getRecordsCount();
     }
 
     private boolean compareTables( List<DatabaseTable> oTables ) {

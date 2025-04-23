@@ -1,6 +1,7 @@
 package org.als.random.utils;
 
 import jakarta.annotation.Nullable;
+import org.als.random.domain.Database;
 import org.als.random.domain.DatabaseTable;
 import org.als.random.domain.DatabaseTableColumn;
 import org.als.random.domain.DatabaseTableRowData;
@@ -9,6 +10,8 @@ import org.als.random.enums.DatabaseTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,21 +25,18 @@ public class DBConnectionManager {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DBConnectionManager.class);
 
-    public static List<DatabaseTable> getDatabaseTables(DatabaseTypeEnum databaseTypeEnum, Connection con, String databaseName) {
+    public static List<DatabaseTable> getDatabaseTables(DatabaseTypeEnum databaseTypeEnum, Connection con, String databaseName) throws SQLException, URISyntaxException {
         List<DatabaseTable> tableList = new ArrayList<>();
         List<String> sqlIgnoredTables = Arrays.asList("QRTZ_CALENDARS", /*"SEQUENCE",*/"QRTZ_CRON_TRIGGERS",
                 "QRTZ_FIRED_TRIGGERS", "QRTZ_PAUSED_TRIGGER_GRPS", "QRTZ_SCHEDULER_STATE", "QRTZ_LOCKS",
                 "QRTZ_JOB_DETAILS", "QRTZ_SIMPLE_TRIGGERS", "QRTZ_SIMPROP_TRIGGERS", "QRTZ_BLOB_TRIGGERS",
                 "QRTZ_TRIGGERS");
-
-        String sqlQuery = switch (databaseTypeEnum) {
-            case SQL_SERVER -> "";
-            case ORACLE ->  "";
-        };
+        sqlIgnoredTables = new ArrayList<>();
 
         PreparedStatement ps = null;
         ResultSet rs = null;
         String tmpDatabaseName = databaseName;
+        Database database = Database.builder().name(databaseName).username(con.getMetaData().getUserName()).databaseTypeEnum(databaseTypeEnum).build();
         if(databaseTypeEnum==DatabaseTypeEnum.ORACLE){
             try {
                 tmpDatabaseName = con.getMetaData().getUserName();
@@ -52,8 +52,11 @@ public class DBConnectionManager {
 
             while( rs.next() ) {
                 String tableName = rs.getString("TABLE_NAME");
-                if(!sqlIgnoredTables.contains(tableName.toUpperCase()))
-                    tableList.add(DatabaseTable.builder().name(tableName).build());
+                if(!sqlIgnoredTables.contains(tableName.toUpperCase())) {
+                    DatabaseTable.DatabaseTableBuilder builder = DatabaseTable.builder().name(tableName);
+                    builder.database(database);
+                    tableList.add( builder.build() );
+                }
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
@@ -152,7 +155,7 @@ public class DBConnectionManager {
                 }
 
                 if( retriveData ) {
-                    String dataQuery = String.format("SELECT %s FROM %s", String.join(", ", table.getColumnList().stream().map(DatabaseTableColumn::getScapedColumnName).toList()), table.getName());
+                    String dataQuery = String.format("SELECT %s FROM %s", String.join(", ", table.getColumnList().stream().map(DatabaseTableColumn::getName).toList()), table.getName());
 
                     ps = con.prepareStatement(dataQuery);
                     try {
@@ -160,8 +163,11 @@ public class DBConnectionManager {
                     } catch( Exception ex ){
                         LOGGER.error(ex.getMessage(), ex);
                     }
+
+                    int idx = 0;
                     while (rs.next()) {
-                        table.addTableRowData(DatabaseTableRowData.parse(table.getTableData(), table.getColumnList(), rs));
+                        int hashCode = rs.hashCode() + idx++;
+                        table.addTableRowData(DatabaseTableRowData.parse(table.getTableData(), table.getColumnList(), rs, hashCode), hashCode);
                     }
                 }
             }

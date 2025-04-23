@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -82,7 +83,7 @@ public class DBSnapshotService {
         return snapshotGroupDir;
     }
 
-    public DatabaseSnapshot createDatabaseSnapshot(DatabaseSnapshotRequest request) {
+    public DatabaseSnapshot createDatabaseSnapshot(DatabaseSnapshotRequest request) throws URISyntaxException {
         String databaseName = request.getName();
         String databaseUserName = request.getUsername();
         String databasePassword = request.getPassword();
@@ -94,7 +95,7 @@ public class DBSnapshotService {
         DatabaseSnapshot.DatabaseSnapshotBuilder builder = DatabaseSnapshot.builder();
         DatabaseSnapshot databaseSnapshot;
 
-        DBSnapshot dbSnapshot = new DBSnapshot(DatabaseTypeEnum.SQL_SERVER, databaseName, databaseUserName, databasePassword,
+        DBSnapshot dbSnapshot = new DBSnapshot(DatabaseTypeEnum.ORACLE, databaseName, databaseUserName, databasePassword,
                 databaseHost, databasePort, retrieveData, snapshotTitle);
 
         Database database = dbSnapshot.getDatabase();

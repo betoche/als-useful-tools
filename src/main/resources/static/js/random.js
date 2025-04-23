@@ -51,7 +51,7 @@ function showRandomSpinning() {
         success: function(resultData) {
             spinner = $(resultData);
             $('body').append(spinner);
-            setTimeout(() => {console.log('removing spinner after 10 seconds!');spinner.remove();}, 10000);
+            setTimeout(() => {console.log('removing spinner after 10 seconds!');spinner.remove();}, 20000);
         }
     });
 
