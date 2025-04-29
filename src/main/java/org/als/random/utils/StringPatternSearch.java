@@ -127,8 +127,9 @@ public class StringPatternSearch {
             for( String l : lines ) {
                 String line = l.substring(0, l.lastIndexOf(":"));
                 String lineNumber = l.replace(String.format("%s:", line), "");
+                String relativeFilePath = filePath.replace(directory, "");
 
-                results.add(String.format("- %s:%s -> %s", filePath, lineNumber, line.trim()));
+                results.add(String.format("- %s:%s -> %s", relativeFilePath, lineNumber, line.trim()));
                 openWithCode.add(String.format("code --goto \"%s:%s\"", filePath, lineNumber));
             }
         }
@@ -240,15 +241,24 @@ public class StringPatternSearch {
         //String[] fileExtensions = new String[]{ ".java", ".xml", ".properties", ".class", ".jar" };
         //String[] fileExtensions = new String[]{ ".js", ".jsp" };
         //String[] fileExtensions = new String[]{ ".java", ".class" };
-        //String[] fileExtensions = new String[]{ ".java", ".jsp" };
+        String[] fileExtensions = new String[]{ ".java" };
         //String[] fileExtensions = new String[]{ ".java", ".xml", ".properties" };
         //String[] fileExtensions = new String[]{ ".xml", ".ini", ".prefs" };
+<<<<<<< Updated upstream
         String[] fileExtensions = new String[]{ ".java" };
         //String[] fileExtensions = new String[]{};
 
         //directory = "C:\\Users\\betoc\\apps\\tomcat\\9.0.99\\webapps\\TC71_TEST_SQL_PB8";
         //directory = "C:\\Users\\betoc\\apps\\tomcat\\9.0.99\\webapps\\teamconnect-7.1.0.0001";
         patterns = new String[]{"getDefaultEmail"};
+=======
+        //String[] fileExtensions = new String[]{ ".xml" };
+        //String[] fileExtensions = new String[]{};
+
+        //directory = "C:\\Users\\betoc\\apps\\tomcat\\9.0.99\\webapps\\TC71_TEST_SQL_PB8";
+        directory = "/mnt/f5725273-d707-49da-a7b3-59582854f1d5/mitratech/repos/TCE7.1.0/teamconnectenterprise";
+        patterns = new String[]{"SimpleScheduleBuilder"};
+>>>>>>> Stashed changes
 
         StringPatternSearch sps = new StringPatternSearch(directory, patterns, fileExtensions, new String[]{".class", ".png", ".css", ".jar", ".log"});
         //sps.sumOddNumbers();
