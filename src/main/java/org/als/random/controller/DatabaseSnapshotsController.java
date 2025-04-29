@@ -48,6 +48,8 @@ public class DatabaseSnapshotsController {
     @PostMapping("/compare")
     public ResponseEntity<String> getSnapshotDifference(@RequestBody CompareSnapshotsRequest compareSnapshotsRequest) throws IOException {
         DatabaseComparatorResults results = new DatabaseComparatorResults(compareSnapshotsRequest.getSnapshotList());
+        //results.printNewRowsByTable();
+        results.printUpdatedRowsByTable();
         return ResponseEntity.ok(results.getDatabaseDifferenceListToJson().toString());
     }
 

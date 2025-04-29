@@ -150,4 +150,14 @@ public class Database {
 
         return json;
     }
+
+    public DatabaseTable getDatabaseTableByName(String tableName) {
+        for( DatabaseTable table : getTableList() ){
+            if( table.getName().equalsIgnoreCase(tableName) ) {
+                return table;
+            }
+        }
+
+        return null;
+    }
 }

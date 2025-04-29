@@ -131,7 +131,7 @@ public class DBConnectionManager {
                     table.addColumn(new DatabaseTableColumn(columnName, dataType, table));
                 }
 
-                if( table.getColumnList().stream().map(DatabaseTableColumn::getName).toList().contains(PRIMARY_KEY_TABLE_NAME) ) {
+                if( table.doesContainPrimaryKeyColumn() ) {
                     try {
                         String maxPrimaryKeyValueQuery = String.format("SELECT MAX (PRIMARY_KEY) FROM %s", table.getName());
                         ps = con.prepareStatement(maxPrimaryKeyValueQuery);

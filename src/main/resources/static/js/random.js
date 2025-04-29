@@ -49,9 +49,10 @@ function showRandomSpinning() {
         dataType: "html",
         async: false,
         success: function(resultData) {
+            let waitTime = 20000;
             spinner = $(resultData);
             $('body').append(spinner);
-            setTimeout(() => {console.log('removing spinner after 10 seconds!');spinner.remove();}, 20000);
+            setTimeout( () => {console.log(`removing spinner after ${waitTime} milli seconds!`);spinner.remove();}, 20000 );
         }
     });
 

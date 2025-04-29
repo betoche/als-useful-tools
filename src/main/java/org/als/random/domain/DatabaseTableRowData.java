@@ -88,6 +88,23 @@ public class DatabaseTableRowData {
         return reasonMessageList;
     }
 
+    public boolean equals( DatabaseTableRowData o ){
+        if( Objects.isNull(o) ){
+            return false;
+        }
+
+        for(  Map.Entry<String, DatabaseTableColumnData> entry : getTableColumnData().entrySet() ){
+            DatabaseTableColumnData dtcd1 = entry.getValue();
+            DatabaseTableColumnData dtcd2 = o.getTableColumnDataByColumnName(dtcd1.getColumnName());
+
+            if( !dtcd1.equals(dtcd2) ){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public String getFullName() {
         //return String.format("%s.%s", getTableData().getTable().getFullName() );
         return getTableData().getTable().getSnapshotTableName();

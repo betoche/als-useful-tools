@@ -1,7 +1,14 @@
 package org.als.random.helper;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class FileDirHelper {
     public static boolean containsSubDirectoriesOrSubFiles( File directory ) {
@@ -36,5 +43,20 @@ public class FileDirHelper {
             lastIndexOf = filePath.lastIndexOf("\\");
 
         return filePath.substring(lastIndexOf+1);
+    }
+
+    public static void saveListContentToFile( String fileName, List<String> formattedTableData ) throws IOException {
+        UUID uuid = UUID.randomUUID();
+
+        String uuidStr = uuid.toString();
+        String fName = String.format("%s-%s.log", fileName, uuidStr.substring(uuidStr.length()-5));
+
+        String outputStr = "output";
+        File outputDir = new File(outputStr);
+        if( !outputDir.exists() ){
+            outputDir = Files.createDirectory(Path.of(outputStr)).toFile();
+        }
+
+        Files.write(Paths.get(String.format("%s/%s", outputStr, fName)), formattedTableData, StandardCharsets.UTF_8);
     }
 }

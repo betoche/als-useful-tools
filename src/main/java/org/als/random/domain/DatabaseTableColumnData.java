@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -99,7 +101,19 @@ public class DatabaseTableColumnData<T> {
         if(!getColumn().equals(o.getColumn()))
             return false;
 
-        return getCastedValue().equals(o.getCastedValue());
+        try {
+            Object value1 = getCastedValue();
+            Object value2 = o.getCastedValue();
+
+            if( Objects.isNull(value1) && Objects.isNull(value2) ) {
+                return true;
+            }
+
+            return value1.equals(value2);
+        } catch( Exception e ) {
+            LOGGER.error("%s: %s".formatted(e.toString(), e.getMessage()));
+        }
+        return false;
     }
 
     public T getCastedValue(){
@@ -113,8 +127,18 @@ public class DatabaseTableColumnData<T> {
             if( getColumn().getColumnType().getJavaType().equals(Long.class) )
                 return (T) Long.valueOf(getValue().toString());
 
+            if( getColumn().getColumnType().getJavaType().equals(Date.class) )
+                return (T) String.valueOf(getValue());
+
+            if( getColumn().getColumnType().getJavaType().equals(Character.class) )
+                return (T) String.valueOf(getValue());
+
+            if( getColumn().getColumnType().getJavaType().equals(Serializable.class) )
+                return (T) "No file content value available, let's use oracle.sql.BLOB@ representation";
+
             return (T) getColumn().getColumnType().getJavaType().cast(getValue());
         } catch( Exception e ) {
+            LOGGER.error("[RANDOM-ERROR] - DatabaseTableColumnData: { name: %s, javaType: %s, value: %s }".formatted(getColumn().getName(), getColumn().getColumnType(), getValue()));
             LOGGER.error(String.format("%s: %s", e.toString(), e.getMessage()), e);
         }
         return null;

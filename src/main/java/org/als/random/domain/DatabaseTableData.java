@@ -5,6 +5,8 @@ import lombok.Getter;
 import org.als.random.utils.DBConnectionManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -16,6 +18,7 @@ public class DatabaseTableData {
     private Map<Long, DatabaseTableRowData> rowDataMap;
     @Getter
     private DatabaseTable table;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseTableData.class);
 
     public DatabaseTableData( DatabaseTable table ) {
         this.table = table;
@@ -82,13 +85,19 @@ public class DatabaseTableData {
     public List<String> getDataDifferenceList(DatabaseTableData tableData2) {
         List<String> reasonMessageList = new ArrayList<>();
         getTableRowDataMap().forEach((primaryKey1, tableRowData1) -> {
-            boolean hasPrimaryKeyColumn = getTable().getColumnList().stream().map(DatabaseTableColumn::getName).toList().contains(DBConnectionManager.PRIMARY_KEY_TABLE_NAME);
+            boolean hasPrimaryKeyColumn = getTable().doesContainPrimaryKeyColumn();
 
             DatabaseTableRowData tableRowData2;
             if(hasPrimaryKeyColumn) {
                 tableRowData2 = tableData2.getTableRowDataByPrimaryKey(primaryKey1);
             } else {
-                tableRowData2 = tableData2.getTableRowDataByPrimaryKey(primaryKey1);
+                tableRowData2 = tableData2.getTableRowDataByOtherFields( tableRowData1 );
+
+                if(Objects.isNull( tableRowData2 ) ){
+                    if( !tableData2.getTable().getName().contains("INTERMEDIA14") ) {
+                        LOGGER.debug("Record from %s not found: %s".formatted(tableData2.getTable().getName(), tableData2.toJson().toString()));
+                    }
+                }
             }
             if( Objects.nonNull(tableRowData2) ) {
                 reasonMessageList.addAll(tableRowData1.getDataDifferenceList(tableRowData2));
@@ -98,5 +107,16 @@ public class DatabaseTableData {
         });
 
         return reasonMessageList;
+    }
+
+    public DatabaseTableRowData getTableRowDataByOtherFields(DatabaseTableRowData tableRowData1) {
+        for( Map.Entry<Long, DatabaseTableRowData> tableRowD : getTableRowDataMap().entrySet() ) {
+            DatabaseTableRowData tableRowData = tableRowD.getValue();
+            if( tableRowData.equals(tableRowData1) ) {
+                return tableRowData;
+            }
+        }
+
+        return null;
     }
 }
