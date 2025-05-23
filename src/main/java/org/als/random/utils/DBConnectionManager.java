@@ -278,4 +278,41 @@ public class DBConnectionManager {
             DBConnectionManager.closeConnectionObjects(con, ps, null);
         }
     }
+
+    public static Long getLastPrimaryKeyOf( String tableName, String databaseName, String username, String password, DatabaseTypeEnum databaseTypeEnum, String dbHost, int dbPort ) throws SQLException {
+        Long lastPrimaryKey = 0l;
+        String sqlQuery = "SELECT TOP(1) PRIMARY_KEY FROM %s ORDER BY PRIMARY_KEY DESC FETCH FIRST 1 ROWS ONLY".formatted(tableName);
+        if( databaseTypeEnum == DatabaseTypeEnum.ORACLE ) {
+            sqlQuery = "SELECT PRIMARY_KEY FROM %s ORDER BY PRIMARY_KEY DESC FETCH FIRST 1 ROWS ONLY".formatted(tableName);
+        }
+        try(
+                Connection con = DBConnectionManager.getDatabaseConnection(databaseTypeEnum, databaseName, username, password, dbHost, dbPort);
+                PreparedStatement ps = con.prepareStatement(sqlQuery);
+                ResultSet rs = ps.executeQuery()
+        ) {
+            if( rs.next() ) {
+                lastPrimaryKey = rs.getLong(1);
+            }
+        }
+
+        return lastPrimaryKey;
+    }
+    public static ResultSet getResultsOfQueryWithoutParameters( String sqlQuery, String databaseName, String username, String password, DatabaseTypeEnum databaseTypeEnum, String dbHost, int dbPort ) throws SQLException {
+        try(
+                Connection con = DBConnectionManager.getDatabaseConnection(databaseTypeEnum, databaseName, username, password, dbHost, dbPort);
+                PreparedStatement ps = con.prepareStatement(sqlQuery)
+        ) {
+            return ps.executeQuery();
+        }
+    }
+
+    public static int executeRecordInsert(String insertQuery, Connection con) {
+        try( PreparedStatement ps = con.prepareStatement(insertQuery) ){
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.error("%s: %s".formatted(e.toString(), e.getMessage()), e);
+        }
+
+        return 0;
+    }
 }

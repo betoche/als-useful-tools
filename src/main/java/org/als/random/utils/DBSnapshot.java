@@ -67,6 +67,7 @@ public class DBSnapshot {
             this.database.setUsername(this.databaseUserName);
             this.database.setPassword(this.databasePassword);
             this.database.setName(this.databaseName);
+            this.database.setDatabaseTypeEnum(databaseType);
             try {
                 List<DatabaseTable> tableList = DBConnectionManager.getDatabaseTables(databaseType, getDbConnection(), this.databaseName);
                 DBConnectionManager.retrieveColumnListDetails(databaseType, getDbConnection(), tableList, retrieveData);

@@ -1,8 +1,6 @@
 package org.als.random.utils;
 
 import org.als.random.domain.DatabaseTable;
-import org.als.random.domain.DatabaseTableColumn;
-import org.als.random.enums.ColumnTypeEnum;
 import org.als.random.entity.DataBaseSearchResult;
 import org.als.random.enums.DatabaseTypeEnum;
 import org.slf4j.Logger;
@@ -11,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import java.net.URISyntaxException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -106,17 +103,17 @@ public class StringPatternSearchInDB {
         String username = "teamconnect";
         String host = "127.0.0.1";
         int port = 1433;
-        String databaseName = "tc_710_soh_5156";
-        String[] searchPattern = new String[]{ "12" };
+        String databaseName = "teamconnect_635_p25";
+        String[] searchPattern = new String[]{ "TEST_SOH_4985_Person", "2658" };
 
 
         StringPatternSearchInDB spsidb = new StringPatternSearchInDB( DatabaseTypeEnum.SQL_SERVER, username, password, host, port, databaseName, searchPattern );
 
         //username = "soh_5212";
-        port = 1521;
-        databaseName = "xe";
+        //port = 1521;
+        //databaseName = "xe";
 
-        spsidb = new StringPatternSearchInDB( DatabaseTypeEnum.ORACLE, username, password, host, port, databaseName, searchPattern );
+        //spsidb = new StringPatternSearchInDB( DatabaseTypeEnum.ORACLE, username, password, host, port, databaseName, searchPattern );
 
 
         try {

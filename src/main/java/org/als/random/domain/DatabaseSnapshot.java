@@ -44,6 +44,7 @@ public class DatabaseSnapshot {
         if(!FileDirHelper.isValidFile(snapshotFile))
             return  null;
 
+        long startTime = System.nanoTime();
         String jsonStr = new String(Files.readAllBytes(Paths.get(snapshotFile.getPath())));
         DatabaseSnapshot snapshot = null;
 
@@ -81,6 +82,8 @@ public class DatabaseSnapshot {
             LOGGER.error(String.format("ERROR parsing the snapshot file: %s", snapshotFile.getAbsolutePath()));
             LOGGER.error(String.format("%s: %s", e.toString(), e.getMessage()), e);
         }
+        double duration = (double)(System.nanoTime() - startTime)/1_000_000.0;
+        LOGGER.info("DatabaseSnapshot.parseFromJsonFile process duration: %s seconds".formatted(duration/1000));
 
         return snapshot;
     }

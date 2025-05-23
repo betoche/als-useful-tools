@@ -187,78 +187,12 @@ public class StringPatternSearch {
 
     public static void main( String[] args ) {
         String directory = "C:\\Users\\betoc\\repositories\\TCE7.1.0\\teamconnectenterprise";
-        //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\teamconnectenterprise";
-        //String directory = "C:\\Users\\betoc\\repositories\\TCE7.0.0\\teamconnectenterprise";
-        //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.3\\teamconnectenterprise";
-        //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.6\\teamconnectenterprise";
-        //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.6\\teamconnectenterprise";
-        //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.7\\teamconnectenterprise";
-        //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\eclipse";
-        //String directory = "C:\\Users\\betoc\\repositories\\TCE6.3.5_P25\\maven-3.6.3";
-        //String directory = "C:\\Users\\betoc\\repositories\\datawarehouse";
-        //String[] patterns = new String[]{ "submitFormWithEntityCode" };
-        //String[] patterns = new String[]{ "Parent Object" };
-        //String[] patterns = new String[]{ "m2/repository" };
-        //String[] patterns = new String[]{ "java.home" };
-        //String[] patterns = new String[]{ ">org.openjfk<" };
-        //String[] patterns = new String[]{ "design-pomgen-maven-plugin" };
-        //String[] patterns = new String[]{ "varchar2" };
-        //String[] patterns = new String[]{".submitForm(", " submitForm(" };
-        //String[] patterns = new String[]{"FORMAT_DATE_INPUT" };
-        //String[] patterns = new String[]{"for=\"locale\""};
-        //String[] patterns = new String[]{"I18nUtil.getUserLocale()"};
-        //String[] patterns = new String[]{"I18nUtil.getMessageForKey"};
-        //String[] patterns = new String[]{"updateCountryList"};
-        //String[] patterns = new String[]{"toolLocaleManager.htm"};
-        //String[] patterns = new String[]{"SupportedLocales.getLocalesForLanguage"};
-        //String[] patterns = new String[]{"supportedLocaleMap"};
-        //String[] patterns = new String[]{"new Locale"};
-        //String[] patterns = new String[]{"YNLocaleImpl"};
-        //String[] patterns = new String[]{"TCMessageLocalizer.getMessageForKey"};
-        //String[] patterns = new String[]{"tool.system.LocaleManager.registration.header"};
-        //String[] patterns = new String[]{"implements MessageSource"};
-        //String[] patterns = new String[]{"ClientDataHolder", "ClientDataHolderValue"};
-        //String[] patterns = new String[]{"LocalizedMessage"};
-        //String[] patterns = new String[]{"HNEntityName.Y_LOCALE"};
-        //String[] patterns = new String[]{"classForEntityName(HNEntityName.Y_LOCALIZED_MESSAGE"};
-        //String[] patterns = new String[]{"classForEntityName(HNEntityName.Y_LOCALE"};
-        //String[] patterns = new String[]{"ContextLoader.getCurrentWebApplicationContext()"};
-        //String[] patterns = new String[]{"DynamicMessageSource"};
-        //String[] patterns = new String[]{"TCSupportedLocales"};
-        //String[] patterns = new String[]{"500"};
-        //String[] patterns = new String[]{"INLINE_BATCH_ADJUST_BATCH_SIZE"};
-        //String[] patterns = new String[]{" ValueHolderInterface"};
-        //String[] patterns = new String[]{"res-ref-name"};
-        //String[] patterns = new String[]{"not instantiated"};
-        //String[] patterns = new String[]{"UnitOfWorkQueryValueHolder"};
-        //String[] patterns = new String[]{"getEnterpriseObjectQ()"};
-        //String[] patterns = new String[]{"UnitOfWorkQueryValueHolder"};
-        //String[] patterns = new String[]{ "\"objects\"", "UnitOfWorkProperty.OBJECTS" };
         String[] patterns = new String[]{"\"[INFO-"};
 
-        //String[] fileExtensions = new String[]{ ".xml", ".properties" };
-        //String[] fileExtensions = new String[]{ ".js", ".java" };
-        //String[] fileExtensions = new String[]{ ".java", ".xml", ".properties", ".class", ".jar" };
-        //String[] fileExtensions = new String[]{ ".js", ".jsp" };
-        //String[] fileExtensions = new String[]{ ".java", ".class" };
-        String[] fileExtensions = new String[]{ ".java" };
-        //String[] fileExtensions = new String[]{ ".java", ".xml", ".properties" };
-        //String[] fileExtensions = new String[]{ ".xml", ".ini", ".prefs" };
-<<<<<<< Updated upstream
-        String[] fileExtensions = new String[]{ ".java" };
-        //String[] fileExtensions = new String[]{};
+        String[] fileExtensions = new String[]{ ".js", ".jsp", ".html" };
 
-        //directory = "C:\\Users\\betoc\\apps\\tomcat\\9.0.99\\webapps\\TC71_TEST_SQL_PB8";
-        //directory = "C:\\Users\\betoc\\apps\\tomcat\\9.0.99\\webapps\\teamconnect-7.1.0.0001";
-        patterns = new String[]{"getDefaultEmail"};
-=======
-        //String[] fileExtensions = new String[]{ ".xml" };
-        //String[] fileExtensions = new String[]{};
-
-        //directory = "C:\\Users\\betoc\\apps\\tomcat\\9.0.99\\webapps\\TC71_TEST_SQL_PB8";
-        directory = "/mnt/f5725273-d707-49da-a7b3-59582854f1d5/mitratech/repos/TCE7.1.0/teamconnectenterprise";
-        patterns = new String[]{"SimpleScheduleBuilder"};
->>>>>>> Stashed changes
+        patterns = new String[]{"pagingIndex"};
+        //directory = "/mnt/f5725273-d707-49da-a7b3-59582854f1d5/mitratech/repos/TCE7.1.0/teamconnectenterprise";
 
         StringPatternSearch sps = new StringPatternSearch(directory, patterns, fileExtensions, new String[]{".class", ".png", ".css", ".jar", ".log"});
         //sps.sumOddNumbers();

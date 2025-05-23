@@ -8,6 +8,8 @@ import org.als.random.utils.DBConnectionManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -37,6 +39,8 @@ public class DatabaseTable {
     public static final String TABLE_JSON_KEY = "table";
     public static final String ENTITY_CLASS_DEFINITION_JSON_KEY = "entityTableDefinition";
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(DatabaseTable.class);
+
     public DatabaseTable(String name) {
         this.name = name;
     }
@@ -44,7 +48,11 @@ public class DatabaseTable {
         DatabaseTableBuilder builder = DatabaseTable.builder();
         JSONObject tableJson = json.getJSONObject(TABLE_JSON_KEY);
         builder.name(tableJson.getString(NAME_JSON_KEY));
-        builder.containsPrimaryKeyColumn(tableJson.getBoolean(CONTAINS_PRIMARY_KEY_COLUMN));
+        try {
+            builder.containsPrimaryKeyColumn(tableJson.getBoolean(CONTAINS_PRIMARY_KEY_COLUMN));
+        } catch( Exception e ) {
+            LOGGER.error( "%s: %s".formatted(e.toString(), e.getMessage()), e );
+        }
 
         builder.lastPrimaryKey(tableJson.getInt(LAST_PRIMARY_KEY_JSON_KEY));
         builder.numberOfRecords(tableJson.getInt(NUMBER_OF_RECORDS_JSON_KEY));

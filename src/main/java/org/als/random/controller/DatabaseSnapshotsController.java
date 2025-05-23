@@ -2,10 +2,12 @@ package org.als.random.controller;
 
 import org.als.random.domain.CompareSnapshotsRequest;
 import org.als.random.domain.DatabaseComparatorResults;
-import org.als.random.domain.DatabaseDifference;
 import org.als.random.domain.DatabaseSnapshotRequest;
+import org.als.random.enums.DatabaseTypeEnum;
 import org.als.random.service.DBSnapshotService;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,19 +16,23 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/snapshots")
 public class DatabaseSnapshotsController {
     @Autowired
     private DBSnapshotService snapshotService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseSnapshotsController.class);
 
     @GetMapping({"", "/"})
     public ModelAndView getDBSnapshotsHome() {
+        long startTime = System.nanoTime();
         ModelAndView mv = new ModelAndView("snapshots");
+        // TODO: implement parameter for sending the list without data
         mv.addObject("snapshotGroupList", snapshotService.getDatabaseSnapshotGroupList());
+        mv.addObject("dbTypeList", DatabaseTypeEnum.values());
+        double duration = ((double)(System.nanoTime() - startTime))/1_000_000.0;
+        LOGGER.info("Retrieve snapshot group list process duration: %s seconds.".formatted(duration/1000));
 
         return mv;
     }
@@ -47,10 +53,15 @@ public class DatabaseSnapshotsController {
 
     @PostMapping("/compare")
     public ResponseEntity<String> getSnapshotDifference(@RequestBody CompareSnapshotsRequest compareSnapshotsRequest) throws IOException {
+        long startTime = System.nanoTime();
         DatabaseComparatorResults results = new DatabaseComparatorResults(compareSnapshotsRequest.getSnapshotList());
-        //results.printNewRowsByTable();
-        results.printUpdatedRowsByTable();
-        return ResponseEntity.ok(results.getDatabaseDifferenceListToJson().toString());
+        results.getNewRowsByTable(false);
+        results.getUpdatedRowsByTable(false);
+
+        String compareResponse = results.getDatabaseDifferenceListToJson().toString();
+        double duration = ((double)(System.nanoTime() - startTime))/1_000_000.0;
+        LOGGER.info("Snapshots comparison process duration: %s seconds.".formatted(duration/1000));
+        return ResponseEntity.ok(compareResponse);
     }
 
     @PostMapping("/create")

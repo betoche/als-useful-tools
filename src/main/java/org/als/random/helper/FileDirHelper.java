@@ -6,13 +6,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 public class FileDirHelper {
     public static boolean containsSubDirectoriesOrSubFiles( File directory ) {
-        return isValidDirectory(directory) && Objects.nonNull(directory.listFiles());
+        return isValidDirectory(directory) && Objects.nonNull(directory.listFiles()) && directory.listFiles().length>0;
     }
     public static boolean isValidDirectory( File directory ){
         return Objects.nonNull(directory) && directory.exists() && directory.isDirectory();
@@ -58,5 +59,44 @@ public class FileDirHelper {
         }
 
         Files.write(Paths.get(String.format("%s/%s", outputStr, fName)), formattedTableData, StandardCharsets.UTF_8);
+    }
+
+    public static List<File> findFileListWithPattern(String filePattern, String primaryDirectory) {
+        List<File> fileList = new ArrayList<>();
+        File directory = new File(primaryDirectory);
+        for( File subFile : Objects.requireNonNull(directory.listFiles())) {
+            if( isValidDirectory(subFile) ) {
+                fileList.addAll(findFileListWithPattern(filePattern, subFile.getAbsolutePath()));
+            } else if( isValidFile(subFile) ){
+                if( subFile.getName().endsWith(filePattern) ) {
+                    fileList.add(subFile);
+                }
+            }
+        }
+
+        return fileList;
+    }
+
+    public static File findFileInDirectory(String simpleFileName, String secondaryDirectory) {
+        File directory = new File(secondaryDirectory);
+        for( File subFile : Objects.requireNonNull(directory.listFiles())) {
+            if( isValidDirectory(subFile) && !subFile.getName().contains(".git") ) {
+                File file = findFileInDirectory(simpleFileName, subFile.getAbsolutePath());
+                if( Objects.nonNull(file) )
+                    return file;
+            } else if( isValidFile(subFile) ){
+                if( FileDirHelper.getSimpleFileName(subFile).equalsIgnoreCase(simpleFileName) ) {
+                    return subFile;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public static String getLastDirectory(String directory) {
+        int lastIndexOf = directory.lastIndexOf("\\");
+
+        return directory.substring(lastIndexOf);
     }
 }

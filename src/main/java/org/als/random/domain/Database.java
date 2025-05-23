@@ -38,6 +38,7 @@ public class Database {
     public static final String HOST_JSON_KEY = "host";
     public static final String PORT_JSON_KEY = "port";
     public static final String NAME_JSON_KEY = "name";
+    public static final String DATABASE_TYPE_JSON_KEY = "databaseType";
     public static final String TABLES_JSON_KEY = "tables";
     public static final String RECORDS_COUNT_JSON_KEY = "recordsCount";
 
@@ -52,6 +53,7 @@ public class Database {
         try { dbBuilder.dbHost(databaseJson.getString(HOST_JSON_KEY)); } catch( JSONException ex ) {}
         try { dbBuilder.dbPort(databaseJson.getInt(PORT_JSON_KEY)); } catch( JSONException ex ) {}
         try { dbBuilder.totalRecordsCount(databaseJson.getInt(RECORDS_COUNT_JSON_KEY)); } catch( JSONException ex ) {}
+        try { dbBuilder.databaseTypeEnum(DatabaseTypeEnum.valueOf(databaseJson.getString(DATABASE_TYPE_JSON_KEY))); } catch( JSONException ex ) {}
 
         Database db = dbBuilder.build();
         List<DatabaseTable> tableList = new ArrayList<>();
@@ -145,6 +147,7 @@ public class Database {
         json.put(HOST_JSON_KEY, getDbHost());
         json.put(PORT_JSON_KEY, getDbPort());
         json.put(NAME_JSON_KEY, getName());
+        json.put(DATABASE_TYPE_JSON_KEY, getDatabaseTypeEnum());
         json.put(TABLES_JSON_KEY, tableArray);
         json.put(RECORDS_COUNT_JSON_KEY, getRecordsCount());
 

@@ -96,11 +96,17 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="title" class="col-sm-3 col-form-label">Snapshot Title:</label>
-              <div class="col-sm-6">
+              <label for="title" class="col-sm-2 col-form-label">Snapshot Title:</label>
+              <div class="col-sm-5">
                 <input type="text" class="form-control" id="title">
               </div>
-              <div class="col-sm-3"></div>
+              <label for="databaseType" class="col-sm-2 col-form-label">Snapshot Title:</label>
+              <div class="col-sm-3">
+                <select id="databaseType" class="form-select form-select-sm" aria-label="Small select example">
+                  <option value="" selected disabled>Pick a Type</option>
+                  <option th:each="dbType, iStat3 : ${dbTypeList}" th:value="${dbType}" th:text="${dbType}"></option>
+                </select>
+              </div>
             </div>
             <div class="form-group row">
               <button class="btn btn-primary" onclick="javascript:takeDBSnapshot();" type="button">Take DB Snapshot!</button>
@@ -133,7 +139,10 @@
                 <br>
                 <div class="row">
                   <div class="col-4">
-                    <h6 class="border-bottom">Table List</h6>
+                    <div class="form-group row">
+                      <h6 class="border-bottom">Table List</h6>
+                      <input type="text" class="form-control" id="table-name-filter" onclick="javascript:filterTablesByText();">
+                    </div>
                     <div class="list-group list-group-flush" id="database-table-list" style="overflow-y: auto; max-height: 550px;">
                     </div>
                   </div>

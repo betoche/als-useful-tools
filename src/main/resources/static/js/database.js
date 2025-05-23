@@ -76,18 +76,20 @@ function loadDbSnapshotDetails(snapshotElement) {
             let databaseName = databaseJson.name;
             let fileName = snapshotJson.snapshotFileName;
             let creationDate = snapshotJson.creationDate;
+            let dbType = databaseJson.databaseType;
 
             let tablesCount = databaseJson.tables.length;
             let recordsCount = databaseJson.recordsCount;
             let tables = databaseJson.tables;
 
-            $('#name').val(databaseName);
-            $('#host').val(host);
-            $('#port').val(port);
-            $('#username').val(username);
-            $('#password').val(password);
-            $('#title').val(snapshotTitle);
-            $('#retrieveData').prop('checked', hasData);
+            setFormFieldValue('name', databaseName, 'text');
+            setFormFieldValue('host', host, 'text');
+            setFormFieldValue('port', port, 'number');
+            setFormFieldValue('username', username, 'text');
+            setFormFieldValue('password', password, 'password');
+            setFormFieldValue('title', snapshotTitle, 'text');
+            setFormFieldValue('retrieveData', hasData, 'checkbox');
+            setFormFieldValue('databaseType', dbType, 'select');
 
             $('#snap-db-name').text(databaseName);
             $('#snap-db-file-name').text(fileName);
@@ -99,6 +101,40 @@ function loadDbSnapshotDetails(snapshotElement) {
             spinner.remove();
         }
     });
+}
+
+function filterTablesByText(){
+    let filterText = $('#table-name-filter').val();
+    let tableDivs = $('.database-table');
+
+    if( filterText ) {
+        tableDivs.each((idx, elem) => {
+            $(elem).removeClass('hideTable');
+        });
+    } else {
+        // TODO: finish this filter
+        //let matchedTables =
+    }
+}
+
+function setFormFieldValue( fieldId, fieldValue, fieldType ) {
+    try {
+        switch( fieldType ) {
+            case 'password':
+            case 'text':
+            case 'number':
+                $(`#${fieldId}`).val(fieldValue);
+                break;
+            case 'checkbox':
+                $(`#${fieldId}`).prop('checked', fieldValue);
+                break;
+            case 'select':
+                $(`#${fieldId} option[value='${fieldValue}']`).prop('selected', true);
+                break;
+        }
+    } catch (e) {
+        console.error(`Error at setFieldValue method: ${e}`);
+    }
 }
 
 function loadDbSnapshotTablesDetails(tableArray) {
@@ -284,6 +320,7 @@ function takeDBSnapshot() {
     let dbHost = $('#host').val();
     let dbPort = $('#port').val();
     let title = $('#title').val();
+    let databaseType = $('#databaseType').val();
     let retrieveData = $('#retrieveData').is(":checked");
 
     let formData = {
@@ -293,7 +330,8 @@ function takeDBSnapshot() {
         'host': dbHost,
         'port': dbPort,
         'retrieveData': retrieveData,
-        'title': title
+        'title': title,
+        'databaseType': databaseType
     };
 
     let spinner = showRandomSpinning();

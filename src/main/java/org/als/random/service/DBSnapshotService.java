@@ -36,7 +36,11 @@ public class DBSnapshotService {
             for( File snapshotsDir : Objects.requireNonNull(storageDir.listFiles())) {
                 if( FileDirHelper.isValidDirectory(snapshotsDir) ) {
                     try {
-                        databaseSnapshotGroups.add(DatabaseSnapshotGroup.parse(snapshotsDir, false));
+                        DatabaseSnapshotGroup dbSnapGrp = DatabaseSnapshotGroup.parse(snapshotsDir, false);
+
+                        if( dbSnapGrp.getSnapshotList()!=null && !dbSnapGrp.getSnapshotList().isEmpty() ) {
+                            databaseSnapshotGroups.add(DatabaseSnapshotGroup.parse(snapshotsDir, false));
+                        }
                     } catch (JSONException e ) {
                         LOGGER.error(String.format("Error parsing snapshot file: %s", snapshotsDir.getAbsolutePath()));
                         LOGGER.error(String.format("%s: %s", e.toString(), e.getMessage()), e);
@@ -67,12 +71,20 @@ public class DBSnapshotService {
     }
 
     public static String generateSnapshotFileName(Database db) {
+        DatabaseTypeEnum type = db.getDatabaseTypeEnum();
+        if( type==DatabaseTypeEnum.ORACLE ) {
+            return String.format("%s-snapshot-%s%s", db.getUsername(), DateHelper.getTodaysDateStr(), RandomConstants.SNAPSHOT_FILE_EXTENSION);
+        }
         return String.format("%s-snapshot-%s%s", db.getName(), DateHelper.getTodaysDateStr(), RandomConstants.SNAPSHOT_FILE_EXTENSION);
     }
 
     public static File getSnapshotDirectory(Database db) throws IOException {
         File f = new File(RandomConstants.SNAPSHOT_STORAGE_DIRECTORY);
-        File snapshotGroupDir = new File(String.format("%s/%s", f.getAbsolutePath(), db.getName()));
+        String subDirName = String.format("%s_%s", DatabaseTypeEnum.SQL_SERVER, db.getName());
+        if( db.getDatabaseTypeEnum() == DatabaseTypeEnum.ORACLE ){
+            subDirName = String.format("%s_%s", DatabaseTypeEnum.ORACLE, db.getUsername());
+        }
+        File snapshotGroupDir = new File(String.format("%s/%s", f.getAbsolutePath(), subDirName));
 
         if( !f.exists() )
             Files.createDirectory(Path.of(f.getAbsolutePath()));
@@ -90,12 +102,13 @@ public class DBSnapshotService {
         String databaseHost = request.getHost();
         String snapshotTitle = request.getTitle();
         int databasePort = request.getPort();
+        DatabaseTypeEnum databaseTypeEnum = request.getDatabaseType();
 
         boolean retrieveData = request.isRetrieveData();
         DatabaseSnapshot.DatabaseSnapshotBuilder builder = DatabaseSnapshot.builder();
         DatabaseSnapshot databaseSnapshot;
 
-        DBSnapshot dbSnapshot = new DBSnapshot(DatabaseTypeEnum.ORACLE, databaseName, databaseUserName, databasePassword,
+        DBSnapshot dbSnapshot = new DBSnapshot(databaseTypeEnum, databaseName, databaseUserName, databasePassword,
                 databaseHost, databasePort, retrieveData, snapshotTitle);
 
         Database database = dbSnapshot.getDatabase();

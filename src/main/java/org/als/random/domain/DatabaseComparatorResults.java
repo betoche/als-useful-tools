@@ -1,6 +1,7 @@
 package org.als.random.domain;
 
 import lombok.Getter;
+import org.als.random.enums.DatabaseTypeEnum;
 import org.als.random.helper.FileDirHelper;
 import org.als.random.helper.StringHelper;
 import org.json.JSONArray;
@@ -270,7 +271,7 @@ public class DatabaseComparatorResults {
                     toPk = table1.getLastPrimaryKey();
                 }
 
-                LOGGER.error("SELECT * FROM %s WHERE PRIMARY_KEY BETWEEN %s AND %s".formatted(table1.getName(), fromPK, toPk));
+                LOGGER.info("SELECT * FROM %s WHERE PRIMARY_KEY BETWEEN %s AND %s".formatted(table1.getName(), fromPK, toPk));
             }
 
             if( databaseDifferenceMap.containsKey(table1.getName()) ) {
@@ -354,13 +355,16 @@ public class DatabaseComparatorResults {
         }
     }
 
-    public void printNewRowsByTable() throws IOException {
+    public void getNewRowsByTable(boolean printToConsole) throws IOException {
         List<String> formattedTableData = new ArrayList<>();
         List<String> tableInfo = new ArrayList<>();
         String databaseName = "";
         for( Map.Entry<String, List<DatabaseTableRowData>> entry : getNewRecordsMap().entrySet() ) {
             DatabaseTable table = entry.getValue().getFirst().getTableData().getTable();
             databaseName = table.getDatabase().getName();
+            if( table.getDatabase().getDatabaseTypeEnum() == DatabaseTypeEnum.ORACLE ){
+                databaseName = table.getDatabase().getUsername();
+            }
             String[] headers = table.getColumnList().stream().map(DatabaseTableColumn::getName).toArray(String[]::new);
             String[][] data = new String[entry.getValue().size()][headers.length];
 
@@ -385,7 +389,8 @@ public class DatabaseComparatorResults {
 
             tableInfo.add(String.format("  - %s[%s]", table.getName(), data.length));
             formattedTableData.addAll(StringHelper.getDataToTableFormat(table.getName(), headers, data));
-            StringHelper.printDataToTableFormat( table.getName(), headers, data );
+            if(printToConsole)
+                StringHelper.printDataToTableFormat( table.getName(), headers, data );
         }
 
         Collections.sort(tableInfo);
@@ -394,13 +399,16 @@ public class DatabaseComparatorResults {
         FileDirHelper.saveListContentToFile( databaseName+"_new_records", formattedTableData );
     }
 
-    public void printUpdatedRowsByTable() throws IOException {
+    public void getUpdatedRowsByTable(boolean printToConsole) throws IOException {
         List<String> formattedTableData = new ArrayList<>();
         List<String> tableInfo = new ArrayList<>();
         String databaseName = "";
         for( Map.Entry<String, List<DatabaseTableRowData>> entry : getUpdatedRecordsMap().entrySet() ) {
             DatabaseTable table = entry.getValue().getFirst().getTableData().getTable();
             databaseName = table.getDatabase().getName();
+            if( table.getDatabase().getDatabaseTypeEnum() == DatabaseTypeEnum.ORACLE ){
+                databaseName = table.getDatabase().getUsername();
+            }
             String[] headers = table.getColumnList().stream().map(DatabaseTableColumn::getName).toArray(String[]::new);
             String[][] data = new String[entry.getValue().size()][headers.length];
 
@@ -425,7 +433,8 @@ public class DatabaseComparatorResults {
 
             tableInfo.add(String.format("  - %s[%s]", table.getName(), data.length));
             formattedTableData.addAll(StringHelper.getDataToTableFormat(table.getName(), headers, data));
-            //StringHelper.printDataToTableFormat( table.getName(), headers, data );
+            if(printToConsole)
+                StringHelper.printDataToTableFormat( table.getName(), headers, data );
         }
 
         Collections.sort(tableInfo);
