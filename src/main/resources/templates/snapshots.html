@@ -100,9 +100,9 @@
               <div class="col-sm-5">
                 <input type="text" class="form-control" id="title">
               </div>
-              <label for="databaseType" class="col-sm-2 col-form-label">Snapshot Title:</label>
+              <label for="databaseType" class="col-sm-2 col-form-label">DB Type:</label>
               <div class="col-sm-3">
-                <select id="databaseType" class="form-select form-select-sm" aria-label="Small select example">
+                <select id="databaseType" class="form-select form-select-sm" aria-label="Small select example" onchange="javascript:setDefaultDBValues();">
                   <option value="" selected disabled>Pick a Type</option>
                   <option th:each="dbType, iStat3 : ${dbTypeList}" th:value="${dbType}" th:text="${dbType}"></option>
                 </select>

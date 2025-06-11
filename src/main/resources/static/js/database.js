@@ -313,6 +313,28 @@ function retrieveOptionContent(buttonElem) {
     $(buttonElem).addClass('active');
 }
 
+function setDefaultDBValues() {
+    let inputName = $('#name');
+    let inputPort = $('#port');
+    let selectDbType = $('#databaseType');
+    let dbName = inputName.val();
+    let dbType = selectDbType.val();
+    let oracleDbName = 'xe';
+
+    if( dbType=='ORACLE' ) {
+        inputName.attr('last-value-name', dbName);
+        inputName.val(oracleDbName);
+        inputPort.val(1521);
+    } else {
+        if(dbName != oracleDbName) {
+            dbName = inputName.attr('last-value-name');
+            inputName.val(dbName);
+        }
+        inputPort.val(1433);
+    }
+
+}
+
 function takeDBSnapshot() {
     let dbName = $('#name').val();
     let dbUsername = $('#username').val();
