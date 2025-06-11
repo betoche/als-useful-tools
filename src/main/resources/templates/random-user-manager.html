@@ -48,7 +48,7 @@
           color: #fff;
         }
         #mycard {
-          height: 600px;
+          /*height: 600px;*/
           width:100%;
          display:flex;
           flex-direction: row;
@@ -76,9 +76,17 @@
               <form action="#">
                 <div id="name">
                   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <i class="material-icons mdl-textfield__icon">email</i>
+                    <input class="mdl-textfield__input" type="email" id="email" name="email">
+                    <label class="mdl-textfield__label" for="email">Email Address</label>
+                    <span class="mdl-textfield__helper-text">Example: example@domain.com</span>
+                  </div>
+                  <!--
+                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input class="mdl-textfield__input" type="text" id="firstName">
                     <label class="mdl-textfield__label" for="firstName">First Name</label>
                   </div>
+                  -->
                   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input class="mdl-textfield__input" type="text" id="lastName">
                     <label class="mdl-textfield__label" for="lastName">Last Name</label>
